@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "products": "Mahsulotlar",
+    "about": "Biz haqimizda",
+    "contact": "Aloqa"
+  },
+  "hero": {
+    "title": "Sog'lom hayot uchun toza havo va suv",
+    "subtitle": "Uy va idorangiz uchun mo'ljallangan ilg'or filtr tizimlarimiz bilan tanishing.",
+    "cta": "Mahsulotlarni ko'rish"
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "viewMore": "Batafsil",
+    "addToCart": "Savatga qo'shish"
+  },
+  "chat": {
+    "title": "Qo'llab-quvvatlash",
+    "placeholder": "Xabaringizni yozing...",
+    "send": "Yuborish",
+    "assistantName": "HydroAir Yordamchisi",
+    "online": "Onlayn",
+    "you": "Siz",
+    "assistant": "Yordamchi",
+    "typing": "Yozmoqda...",
+    "clearChat": "Chatni tozalash",
+    "initialMessage": "Assalomu alaykum! Men sizning HydroAir yordamchingizman. Bugun sizga qanday yordam bera olaman?",
+    "newChat": "Yangi chat",
+    "history": "Chatlar tarixi",
+    "noSessions": "Oldingi seanslar yo'q",
+    "deleteSession": "Seansni o'chirish",
+    "actions": {
+      "howToOrder": "Buyurtma berish",
+      "viewProducts": "Mahsulotlar",
+      "createTicket": "Murojaat yaratish",
+      "checkStatus": "Holatni tekshirish"
+    },
+    "queries": {
+      "howToOrder": "Qanday qilib buyurtma berishim mumkin?",
+      "viewProducts": "Havo va suvni filtrlash mahsulotlaringizni ko'rsating.",
+      "createTicket": "Men qo'llab-quvvatlash chiptasini yaratmoqchiman.",
+      "checkStatus": "Chiptam holatini qanday tekshirsam bo'ladi?"
+    }
+  },
+  "about": {
+    "title": "HydroAir Technologies haqida",
+    "description": "Biz havo va suvni filtrlash bo'yicha ilg'or yechimlarning yetakchi yetkazib beruvchisimiz, har bir xonadon va idoraga toza, xavfsiz va sog'lom muhitni yetkazib berishga intilamiz.",
+    "stats": {
+      "liters": "Litr filtrlangan",
+      "customers": "Mamnun mijozlar",
+      "experience": "Yillik tajriba"
+    },
+    "mission": {
+      "title": "Bizning vazifamiz",
+      "description": "2010-yilda tashkil etilgan HydroAir Technologies oddiy haqiqatdan kelib chiqqan: toza havo va suvdan foydalanish insonning asosiy huquqidir. O'shandan beri biz dunyodagi eng yaxshi filtrlash texnologiyasini topishga va uni butun dunyo oilalari uchun ochiq qilishga bag'ishladik.",
+      "items": [
+        "Sertifikatlangan tibbiy darajadagi komponentlar",
+        "24/7 professional qo'llab-quvvatlash",
+        "Ilg'or ko'p bosqichli filtrlash texnologiyasi",
+        "Ekologik toza resurslarni tejash"
+      ]
+    }
+  },
+  "contact": {
+    "title": "Biz bilan bog'lanish",
+    "description": "Filtrlash tizimlarimiz haqida savollaringiz bormi? Bizning jamoamiz sizning ehtiyojlaringiz uchun eng yaxshi yechimni tanlashda yordam berishga tayyor.",
+    "info": {
+      "title": "Aloqa ma'lumotlari",
+      "phone": "Telefon",
+      "email": "Elektron pochta",
+      "office": "Ofis",
+      "officeAddress": "Tex Plaza, Toshkent, O'zbekiston"
+    },
+    "ticket": {
+      "title": "Chiptani tekshirish",
+      "description": "Holatni tekshirish va suhbatni ko'rish uchun chipta ID-sini kiriting.",
+      "placeholder": "TKT-2026...",
+      "button": "Tekshirish",
+      "status": "Qo'llab-quvvatlash chiptasi",
+      "conversation": "Suhbat",
+      "you": "Siz",
+      "support": "Qo'llab-quvvatlash jamoasi",
+      "back": "Aloqa formasiga qaytish",
+      "live": "Jonli"
+    },
+    "form": {
+      "name": "Ism",
+      "email": "Elektron pochta",
+      "subject": "Mavzu",
+      "message": "Xabar",
+      "namePlaceholder": "Ismingiz",
+      "emailPlaceholder": "Elektron pochta manzili",
+      "subjectPlaceholder": "Qanday yordam bera olamiz?",
+      "messagePlaceholder": "Batafsilroq ma'lumot bering...",
+      "button": "Xabarni yuborish",
+      "successTitle": "Chipta yuborildi!",
+      "successDesc": "Murojaat uchun rahmat. Chipta ID-si: {id}. Tez orada siz bilan bog'lanamiz.",
+      "sendAnother": "Boshqa yuborish",
+      "viewStatus": "Holatni ko'rish"
+    }
+  }
+}

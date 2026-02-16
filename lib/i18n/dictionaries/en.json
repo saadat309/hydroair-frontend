@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Pure Air & Water for a Healthy Life",
+    "subtitle": "Discover our range of advanced filtration systems designed for your home and office.",
+    "cta": "Explore Products"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "viewMore": "View More",
+    "addToCart": "Add to Cart"
+  },
+  "chat": {
+    "title": "Support Chat",
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "assistantName": "HydroAir Assistant",
+    "online": "Online",
+    "you": "You",
+    "assistant": "Assistant",
+    "typing": "Typing...",
+    "clearChat": "Clear Chat",
+    "initialMessage": "Hello! I am your HydroAir assistant. How can I help you today?",
+    "newChat": "New Chat",
+    "history": "Chat History",
+    "noSessions": "No previous sessions",
+    "deleteSession": "Delete Session",
+    "actions": {
+      "howToOrder": "How to Order",
+      "viewProducts": "View Products",
+      "createTicket": "Create Ticket",
+      "checkStatus": "Check Status"
+    },
+    "queries": {
+      "howToOrder": "How can I place an order?",
+      "viewProducts": "Show me your air and water filtration products.",
+      "createTicket": "I want to create a support ticket.",
+      "checkStatus": "How do I check my ticket status?"
+    }
+  },
+  "about": {
+    "title": "About HydroAir Technologies",
+    "description": "We are a leading provider of advanced air and water filtration solutions, committed to bringing pure, safe, and healthy environments to every household and office.",
+    "stats": {
+      "liters": "Liters Filtered",
+      "customers": "Happy Customers",
+      "experience": "Years Experience"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "Founded in 2010, HydroAir Technologies was born from a simple realization: access to clean air and water is a fundamental human right. Since then, we've dedicated ourselves to sourcing the world's best filtration technology and making it accessible to families worldwide.",
+      "items": [
+        "Certified Medical-Grade Components",
+        "24/7 Professional Support",
+        "Advanced Multistage Filtration Technology",
+        "Eco-Friendly Resource Conservation"
+      ]
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Have questions about our filtration systems? Our team is here to help you choose the best solution for your needs.",
+    "info": {
+      "title": "Get in Touch",
+      "phone": "Phone",
+      "email": "Email",
+      "office": "Office",
+      "officeAddress": "Tech Plaza, Tashkent, Uzbekistan"
+    },
+    "ticket": {
+      "title": "Check Ticket",
+      "description": "Enter your ticket ID to check status and view conversation.",
+      "placeholder": "TKT-2026...",
+      "button": "Check",
+      "status": "Support Ticket",
+      "conversation": "Conversation",
+      "you": "You",
+      "support": "Support Team",
+      "back": "Back to Contact Form",
+      "live": "Live"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "Email address",
+      "subjectPlaceholder": "How can we help?",
+      "messagePlaceholder": "Tell us more details...",
+      "button": "Send Message",
+      "successTitle": "Ticket Submitted!",
+      "successDesc": "Thank you for reaching out. Your ticket ID is {id}. We will get back to you shortly.",
+      "sendAnother": "Send another",
+      "viewStatus": "View Status"
+    }
+  }
+}
