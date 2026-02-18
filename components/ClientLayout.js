@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import Navbar from "@/components/Navbar";
+import SiteFooter from "@/components/SiteFooter";
 import ChatbotWidget from "@/components/Chatbot/ChatbotWidget";
 import Lenis from 'lenis';
 
@@ -47,22 +48,18 @@ export default function ClientLayout({ children }) {
     };
   }, []);
 
+  if (!mounted) {
+      return null;
+  }
+
   return (
-    <div className={mounted ? "flex flex-col min-h-screen" : "invisible flex flex-col min-h-screen"}>
-      {mounted && (
-        <>
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <ChatbotWidget />
-          <footer className="border-t py-8 bg-muted/30">
-            <div className="container mx-auto px-4 text-center text-muted-foreground text-sm">
-              &copy; {new Date().getFullYear()} HydroAir Technologies. All rights reserved.
-            </div>
-          </footer>
-        </>
-      )}
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow selection:bg-primary/20">
+        {children}
+      </main>
+      <ChatbotWidget />
+      <SiteFooter />
     </div>
   );
 }

@@ -3,46 +3,139 @@
     "home": "Bosh sahifa",
     "products": "Mahsulotlar",
     "about": "Biz haqimizda",
-    "contact": "Aloqa"
-  },
-  "hero": {
-    "title": "Sog'lom hayot uchun toza havo va suv",
-    "subtitle": "Uy va idorangiz uchun mo'ljallangan ilg'or filtr tizimlarimiz bilan tanishing.",
-    "cta": "Mahsulotlarni ko'rish"
+    "contact": "Aloqa",
+    "cart": "Savat"
   },
   "common": {
     "loading": "Yuklanmoqda...",
     "error": "Xatolik yuz berdi",
     "viewMore": "Batafsil",
-    "addToCart": "Savatga qo'shish"
+    "addToCart": "Savatga qo'shish",
+    "outOfStock": "Sotuvda yo'q",
+    "inStock": "Sotuvda mavjud",
+    "readMore": "Ko'proq o'qish",
+    "shopNow": "Xarid qilish",
+    "save": "Saqlash",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "apply": "Qo'llash",
+    "subtotal": "Jami",
+    "total": "Umumiy",
+    "shipping": "Yetkazib berish",
+    "free": "Bepul",
+    "continueShopping": "Xaridni davom ettirish",
+    "checkout": "Buyurtma berish"
   },
-  "chat": {
-    "title": "Qo'llab-quvvatlash",
-    "placeholder": "Xabaringizni yozing...",
-    "send": "Yuborish",
-    "assistantName": "HydroAir Yordamchisi",
-    "online": "Onlayn",
-    "you": "Siz",
-    "assistant": "Yordamchi",
-    "typing": "Yozmoqda...",
-    "clearChat": "Chatni tozalash",
-    "initialMessage": "Assalomu alaykum! Men sizning HydroAir yordamchingizman. Bugun sizga qanday yordam bera olaman?",
-    "newChat": "Yangi chat",
-    "history": "Chatlar tarixi",
-    "noSessions": "Oldingi seanslar yo'q",
-    "deleteSession": "Seansni o'chirish",
-    "actions": {
-      "howToOrder": "Buyurtma berish",
-      "viewProducts": "Mahsulotlar",
-      "createTicket": "Murojaat yaratish",
-      "checkStatus": "Holatni tekshirish"
+  "homepage": {
+    "hero": {
+      "title": "Toza Havo va Suv Yechimlari",
+      "subtitle": "Uyingiz va ofisingiz uchun sog'lom muhit yaratuvchi ilg'or filtrlash texnologiyalari.",
+      "ctaPrimary": "Xarid qilish",
+      "ctaSecondary": "Batafsil"
     },
-    "queries": {
-      "howToOrder": "Qanday qilib buyurtma berishim mumkin?",
-      "viewProducts": "Havo va suvni filtrlash mahsulotlaringizni ko'rsating.",
-      "createTicket": "Men qo'llab-quvvatlash chiptasini yaratmoqchiman.",
-      "checkStatus": "Chiptam holatini qanday tekshirsam bo'ladi?"
+    "story": {
+      "title": "Bizning Tarix",
+      "description": "2010-yilda tashkil etilgan HydroAir Technologies eng yuqori sifatli havo va suv filtrlash tizimlarini taqdim etishga bag'ishlangan. Biz toza havo va suv insonning asosiy huquqi ekanligiga ishonamiz.",
+      "cards": {
+        "lab": "Laboratoriya Nazorati",
+        "composition": "Ajoyib Tarkib",
+        "filtration": "Nano Filtrlash",
+        "quality": "Sifat Sertifikati"
+      }
+    },
+    "products": {
+      "title": "Filtrni Tanlang",
+      "subtitle": "Bizning Filtrlar",
+      "allProducts": "Barcha Mahsulotlar"
+    },
+    "filtration": {
+      "title": "Filtrlash Texnologiyasi",
+      "subtitle": "Ichida nima bor?",
+      "items": [
+        { "label": "Faollashgan Ko'mir", "desc": "Xlor, hidlar va organik birikmalarni tozalaydi." },
+        { "label": "HEPA Filtr", "desc": "Havodagi 99.97% zarralarni ushlab qoladi." },
+        { "label": "UB Sterilizatsiya", "desc": "Bakteriya va viruslarni yo'q qiladi." },
+        { "label": "Teskari Osmos", "desc": "Eruvchan qattiq moddalar va og'ir metallarni tozalaydi." },
+        { "label": "Ion Almashinuvi", "desc": "Kalsiy va magniyni yo'qotish orqali suvni yumshatadi." },
+        { "label": "Minerallashtirish", "desc": "Tozalangan suvga kerakli minerallarni qaytaradi." }
+      ]
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": [
+        { "q": "Filtrlarni qancha vaqtda almashtirish kerak?", "a": "Havo filtrlarini har 6-12 oyda, suv filtrlarini esa foydalanishga qarab har 3-6 oyda almashtirishni tavsiya qilamiz." },
+        { "q": "O'rnatish xizmatini taklif qilasizmi?", "a": "Ha, biz tanlangan hududlarda barcha filtrlash tizimlarimiz uchun professional o'rnatish xizmatini taklif etamiz." },
+        { "q": "Kafolat muddati qancha?", "a": "Barcha mahsulotlarimiz ishlab chiqarish nuqsonlariga qarshi standart 2 yillik kafolat bilan ta'minlanadi." },
+        { "q": "Mahsulotni qaytarishim mumkinmi?", "a": "Ha, agar mahsulot ishlatilmagan va original qadoqda bo'lsa, xariddan keyin 30 kun ichida qaytarishni qabul qilamiz." },
+        { "q": "To'g'ri filtrni qanday tanlashim mumkin?", "a": "Qo'llab-quvvatlash jamoamiz bilan bog'laning yoki ehtiyojlaringizga mos keladiganini topish uchun mahsulot xususiyatlarini tekshiring." },
+        { "q": "Yetkazib berish bepulmi?", "a": "100 dollardan ortiq buyurtmalar uchun bepul yetkazib berish xizmatini taklif etamiz." },
+        { "q": "Xalqaro yetkazib berish mavjudmi?", "a": "Ha, biz dunyoning ko'plab mamlakatlariga yetkazib beramiz. Yetkazib berish narxi joylashuvga qarab farq qiladi." }
+      ]
     }
+  },
+  "products": {
+    "title": "Bizning Mahsulotlar",
+    "breadcrumb": "Mahsulotlar",
+    "filter": "Filtr",
+    "sort": "Saralash",
+    "searchPlaceholder": "Mahsulotlarni qidirish...",
+    "noResults": "Mahsulotlar topilmadi.",
+    "categories": "Kategoriyalar",
+    "price": "Narx",
+    "details": {
+      "features": "Asosiy Xususiyatlar",
+      "description": "Tavsif",
+      "reviews": "Sharhlar",
+      "related": "O'xshash Mahsulotlar",
+      "warranty": "2 Yillik Kafolat",
+      "delivery": "Bepul Yetkazib Berish",
+      "certified": "Sertifikatlangan Sifat"
+    }
+  },
+  "cart": {
+    "title": "Sizning Savatingiz",
+    "empty": "Savatingiz bo'sh",
+    "table": {
+      "product": "Mahsulot",
+      "price": "Narx",
+      "quantity": "Miqdor",
+      "total": "Jami"
+    },
+    "summary": "Buyurtma Xulosasi",
+    "coupon": "Kupon Kodi",
+    "applyCoupon": "Qo'llash"
+  },
+  "checkout": {
+    "title": "Buyurtmani Rasmiylashtirish",
+    "billing": {
+      "title": "To'lov Ma'lumotlari",
+      "firstName": "Ism",
+      "lastName": "Familiya",
+      "email": "Elektron Pochta",
+      "phone": "Telefon Raqami",
+      "address": "Ko'cha Manzili",
+      "city": "Shahar",
+      "zip": "Pochta Indeksi",
+      "country": "Mamlakat"
+    },
+    "payment": {
+      "title": "To'lov Usuli",
+      "card": "Kredit Karta",
+      "cod": "Yetkazib berilganda to'lash",
+      "placeOrder": "Buyurtma berish"
+    },
+    "success": {
+      "title": "Buyurtma Tasdiqlandi!",
+      "message": "Xaridingiz uchun rahmat. Buyurtmangiz qabul qilindi."
+    }
+  },
+  "footer": {
+    "menu": "Menyu",
+    "contact": "Biz bilan bog'lanish",
+    "subscribe": "Yangiliklarga obuna bo'lish",
+    "subscribePlaceholder": "Email manzilingiz",
+    "subscribeBtn": "Obuna bo'lish",
+    "rights": "© 2026 HydroAir Technologies. Barcha huquqlar himoyalangan."
   },
   "about": {
     "title": "HydroAir Technologies haqida",
@@ -99,6 +192,34 @@
       "successDesc": "Murojaat uchun rahmat. Chipta ID-si: {id}. Tez orada siz bilan bog'lanamiz.",
       "sendAnother": "Boshqa yuborish",
       "viewStatus": "Holatni ko'rish"
+    }
+  },
+  "chat": {
+    "title": "Qo'llab-quvvatlash",
+    "placeholder": "Xabaringizni yozing...",
+    "send": "Yuborish",
+    "assistantName": "HydroAir Yordamchisi",
+    "online": "Onlayn",
+    "you": "Siz",
+    "assistant": "Yordamchi",
+    "typing": "Yozmoqda...",
+    "clearChat": "Chatni tozalash",
+    "initialMessage": "Assalomu alaykum! Men sizning HydroAir yordamchingizman. Bugun sizga qanday yordam bera olaman?",
+    "newChat": "Yangi chat",
+    "history": "Chatlar tarixi",
+    "noSessions": "Oldingi seanslar yo'q",
+    "deleteSession": "Seansni o'chirish",
+    "actions": {
+      "howToOrder": "Buyurtma berish",
+      "viewProducts": "Mahsulotlar",
+      "createTicket": "Murojaat yaratish",
+      "checkStatus": "Holatni tekshirish"
+    },
+    "queries": {
+      "howToOrder": "Qanday qilib buyurtma berishim mumkin?",
+      "viewProducts": "Havo va suvni filtrlash mahsulotlaringizni ko'rsating.",
+      "createTicket": "Men qo'llab-quvvatlash chiptasini yaratmoqchiman.",
+      "checkStatus": "Chiptam holatini qanday tekshirsam bo'ladi?"
     }
   }
 }
