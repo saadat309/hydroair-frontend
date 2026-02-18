@@ -12,24 +12,27 @@ if (typeof window !== "undefined") {
 export default function ScrollVideo({ 
   folderPath, 
   frameCount, 
-  triggerRef, // The element that triggers the scroll animation
+  triggerRef, 
   start = "top top", 
-  end = "bottom bottom" 
+  end = "bottom bottom",
+  fit = "cover", 
+  anchor = "center", // center, top, bottom
+  padding = 0, // Padding in pixels
+  manualProgress = null 
 }) {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const currentFrameRef = useRef(0);
 
   // 1. Preload Images
   useEffect(() => {
     let loadedCount = 0;
     const imgs = [];
 
-    // Preload loop
     const preload = async () => {
       for (let i = 1; i <= frameCount; i++) {
         const img = new Image();
-        // Pad with zeros (e.g. frame_001.webp)
         const frameNum = i.toString().padStart(3, "0");
         img.src = `${folderPath}/frame_${frameNum}.webp`;
         
@@ -45,32 +48,87 @@ export default function ScrollVideo({
     preload();
   }, [folderPath, frameCount]);
 
-  // 2. Setup Canvas & GSAP
-  useGSAP(() => {
-    if (!isLoaded || images.length === 0 || !canvasRef.current || !triggerRef?.current) return;
+  const renderFrame = (idx, canvas, ctx, imgs) => {
+    if (!imgs || imgs.length === 0 || !canvas || !ctx) return;
+    const img = imgs[idx];
+    if (!img) return;
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const logicalWidth = canvas.width / dpr;
+    const logicalHeight = canvas.height / dpr;
+
+    // Available drawing area
+    const availableWidth = logicalWidth - padding * 2;
+    const availableHeight = logicalHeight - padding * 2;
+
+    const hRatio = availableWidth / img.width;
+    const vRatio = availableHeight / img.height;
+    const ratio = fit === "cover" ? Math.max(hRatio, vRatio) : Math.min(hRatio, vRatio);
     
-    // Resize handler
+    const centerShift_x = (logicalWidth - img.width * ratio) / 2;
+    let centerShift_y = (logicalHeight - img.height * ratio) / 2;
+
+    if (anchor === "top") centerShift_y = padding;
+    if (anchor === "bottom") centerShift_y = logicalHeight - img.height * ratio - padding;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.drawImage(
+      img, 
+      0, 0, img.width, img.height,
+      centerShift_x, centerShift_y, img.width * ratio, img.height * ratio
+    );
+    ctx.restore();
+  };
+
+  // Handle Canvas Resizing (HiDPI)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const handleResize = () => {
       const parent = canvas.parentElement;
-      canvas.width = parent.clientWidth;
-      canvas.height = parent.clientHeight;
-      // Re-render current frame on resize
-      // Since we don't have easy access to current frame index here without ref, 
-      // typically we just let the next scroll update handle it, or store frame in a ref.
-      // For simplicity, we can just clear.
+      if (!parent) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = parent.clientWidth * dpr;
+      canvas.height = parent.clientHeight * dpr;
+      
+      const ctx = canvas.getContext("2d");
+      renderFrame(currentFrameRef.current, canvas, ctx, images);
     };
-    
-    // Initial size
-    handleResize();
-    window.addEventListener("resize", handleResize);
 
-    // Frame object to tween
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(canvas.parentElement);
+    
+    handleResize();
+    return () => resizeObserver.disconnect();
+  }, [images, fit, anchor, padding]);
+
+  // Handle Manual Progress
+  useEffect(() => {
+    if (manualProgress !== null && isLoaded && images.length > 0 && canvasRef.current) {
+      const frameIndex = Math.min(
+        frameCount - 1,
+        Math.max(0, Math.round(manualProgress * (frameCount - 1)))
+      );
+      currentFrameRef.current = frameIndex;
+      const canvas = canvasRef.current;
+      renderFrame(frameIndex, canvas, canvas.getContext("2d"), images);
+    }
+  }, [manualProgress, isLoaded, images, frameCount, padding]);
+
+  // 2. Setup GSAP (Only if not manual)
+  useGSAP(() => {
+    if (manualProgress !== null) return;
+    if (!isLoaded || images.length === 0 || !canvasRef.current || !triggerRef?.current) return;
+
     const frameObj = { frame: 0 };
 
-    // ScrollTrigger Animation
     gsap.to(frameObj, {
       frame: frameCount - 1,
       snap: "frame",
@@ -83,32 +141,12 @@ export default function ScrollVideo({
       },
       onUpdate: () => {
         const frameIndex = Math.round(frameObj.frame);
-        const img = images[frameIndex];
-        
-        if (img && ctx) {
-          // Calculate "cover" dimensions
-          const hRatio = canvas.width / img.width;
-          const vRatio = canvas.height / img.height;
-          const ratio = Math.max(hRatio, vRatio);
-          
-          const centerShift_x = (canvas.width - img.width * ratio) / 2;
-          const centerShift_y = (canvas.height - img.height * ratio) / 2;
-          
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(
-            img, 
-            0, 0, img.width, img.height,
-            centerShift_x, centerShift_y, img.width * ratio, img.height * ratio
-          );
-        }
+        currentFrameRef.current = frameIndex;
+        const canvas = canvasRef.current;
+        if (canvas) renderFrame(frameIndex, canvas, canvas.getContext("2d"), images);
       }
     });
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-
-  }, [isLoaded, images, triggerRef, start, end]);
+  }, [isLoaded, images, triggerRef, start, end, manualProgress]);
 
   return (
     <div className="w-full h-full relative flex items-center justify-center overflow-hidden">

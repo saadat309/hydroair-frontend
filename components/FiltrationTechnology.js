@@ -4,7 +4,6 @@ import { useTranslation } from "@/lib/i18n";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
-import ScrollVideo from "./ScrollVideo";
 
 export default function FiltrationTechnology() {
   const { t } = useTranslation();
@@ -84,18 +83,13 @@ export default function FiltrationTechnology() {
                     ))}
                 </div>
                 
-                {/* Center Column: Video */}
-                <div className="w-full lg:w-1/3 h-[500px] relative order-1 lg:order-2 flex items-center justify-center">
-                    {/* The video container scrubbed by the section scroll */}
-                     <div className="w-full h-full relative rounded-full overflow-hidden border-4 border-white shadow-2xl bg-white/50 backdrop-blur-sm">
-                        <ScrollVideo 
-                            folderPath="/videos/water-glass-2" 
-                            frameCount={65} 
-                            triggerRef={containerRef}
-                            start="top bottom"
-                            end="bottom top"
-                        />
-                    </div>
+                {/* Center Column: Bottle Image */}
+                <div className="w-full lg:w-1/3 h-[600px] relative order-1 lg:order-2 flex items-center justify-center drop-shadow-2xl">
+                    <img 
+                        src="/photos/bottle.png" 
+                        alt="Filtration Bottle" 
+                        className="h-full w-auto object-contain animate-in zoom-in duration-1000"
+                    />
                 </div>
                 
                 {/* Right Column */}

@@ -8,7 +8,7 @@ import ChatbotWidget from "@/components/Chatbot/ChatbotWidget";
 import Lenis from 'lenis';
 
 export default function ClientLayout({ children }) {
-  const { locale, dir } = useLanguageStore();
+  const { language: locale, dir } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
 
   // Update HTML tag attributes when locale or dir changes

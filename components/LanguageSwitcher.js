@@ -4,7 +4,7 @@ import { useLanguageStore } from '@/lib/stores/useLanguageStore';
 import { cn } from '@/lib/utils';
 
 export default function LanguageSwitcher() {
-  const { locale, setLocale } = useLanguageStore();
+  const { language: locale, setLanguage: setLocale } = useLanguageStore();
 
   return (
     <div className="flex items-center gap-1 bg-muted p-1 rounded-full border">
