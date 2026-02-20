@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import { useSearchParams } from 'next/navigation';
 import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2, Ticket, MessageCircle, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import PageHeader from '@/components/PageHeader';
 
 export default function ContactPage() {
   const { t, locale } = useTranslation();
@@ -148,14 +149,16 @@ export default function ContactPage() {
   const allReplies = [...(ticketData?.conversation || []), ...optimisticReplies];
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4">{t('contact.title')}</h1>
-          <p className="text-foreground max-w-2xl mx-auto">
-            {t('contact.description')}
-          </p>
-        </div>
+    <div className="pb-20">
+      <PageHeader title={t('contact.title')} />
+
+      <div className="container mx-auto px-4 mt-36">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-foreground max-w-2xl mx-auto">
+              {t('contact.description')}
+            </p>
+          </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Info */}
@@ -415,6 +418,7 @@ export default function ContactPage() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

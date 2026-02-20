@@ -5,6 +5,7 @@ import useCartStore from "@/lib/stores/useCartStore";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/PageHeader";
 
 export default function CheckoutPage() {
   const { t } = useTranslation();
@@ -12,16 +13,21 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
      return (
-        <div className="min-h-screen bg-background pt-32 pb-20 text-center container">
-             <h1 className="text-3xl font-bold mb-4">Your cart is empty</h1>
-             <Link href="/products" className="text-primary hover:underline">Return to Shop</Link>
+        <div className="min-h-screen pb-20">
+            <PageHeader title={t('checkout.title')} />
+            <div className="container mt-36 text-center">
+                <h1 className="text-3xl font-bold mb-4">{t('cart.empty')}</h1>
+                <Link href="/products" className="text-primary hover:underline">{t('common.continueShopping')}</Link>
+            </div>
         </div>
      );
   }
 
   return (
-    <div className="min-h-screen bg-secondary/10 pt-32 pb-20">
-      <div className="container max-w-6xl">
+    <div className="min-h-screen pb-20">
+      <PageHeader title={t('checkout.title')} />
+      
+      <div className="container max-w-6xl mt-36">
         <div className="mb-8">
             <Link href="/cart" className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors">
                 <ArrowLeft className="w-4 h-4" />

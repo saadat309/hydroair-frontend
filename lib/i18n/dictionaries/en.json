@@ -24,7 +24,8 @@
     "shipping": "Shipping",
     "free": "Free",
     "continueShopping": "Continue Shopping",
-    "checkout": "Checkout"
+    "checkout": "Checkout",
+    "search": "Search"
   },
   "homepage": {
     "hero": {
@@ -79,10 +80,24 @@
     "breadcrumb": "Products",
     "filter": "Filter",
     "sort": "Sort by",
+    "searchByProducts": "Filter Products",
     "searchPlaceholder": "Search products...",
     "noResults": "No products found.",
+    "noResultsDescription": "Try adjusting your filters or search query.",
+    "noImage": "No Image",
     "categories": "Categories",
+    "allProducts": "All Products",
     "price": "Price",
+    "showing": "Showing {start}-{end} of {total} results",
+    "results": "results",
+    "sortOptions": {
+      "default": "Default Sorting",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low"
+    },
+    "pagination": {
+      "last": "Last"
+    },
     "details": {
       "features": "Key Features",
       "description": "Description",

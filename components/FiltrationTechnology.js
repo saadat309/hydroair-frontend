@@ -65,9 +65,9 @@ export default function FiltrationTechnology() {
             <path
               d="M 105 320 L 90 305 M 105 320 L 120 305"
               stroke="currentColor"
-              stroke-width="10"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </div>

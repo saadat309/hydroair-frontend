@@ -144,7 +144,7 @@ export default function FeaturedProducts() {
                 asChild
                 className="px-8 py-3 text-lg bg-primary text-primary-foreground rounded-full ease-in-out shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300"
               >
-                <a>{t("homepage.products.allProducts")}</a>
+                <span>{t("homepage.products.allProducts")}</span>
               </Button>
             </Link>
           </div>

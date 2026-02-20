@@ -6,16 +6,18 @@ import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/PageHeader";
 
 export default function CartPage() {
   const { t } = useTranslation();
   const { items, totalItems, totalPrice, removeItem, updateQuantity } = useCartStore();
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-20">
-      <div className="container max-w-6xl">
-        <h1 className="text-4xl font-heading font-bold text-foreground mb-8 text-center">{t('cart.title')}</h1>
-
+    <div className="min-h-screen pb-20">
+      <PageHeader title={t('cart.title')} />
+      
+<div className="container max-w-6xl mt-36">
+        
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-6 py-20 bg-secondary/10 rounded-3xl border border-dashed border-border">
              <div className="text-6xl">🛒</div>

@@ -1,8 +1,12 @@
 @import 'tailwindcss';
-
-/* @import 'tailwindcss-animate'; Removed to fix build error */
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+  overflow: visible !important;
+}
 
 @theme {
   --font-heading: 'Dosis', sans-serif;
@@ -50,30 +54,7 @@
     from { height: var(--radix-accordion-content-height); }
     to { height: 0; }
   }
-
-  /* Manual shadcn animations since plugin is failing */
-  @keyframes enter {
-    from { opacity: var(--tw-enter-opacity, 1); transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0)); }
-  }
-  @keyframes exit {
-    to { opacity: var(--tw-exit-opacity, 1); transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0)); }
-  }
-  
-  --animate-in: enter 0.15s ease-out;
-  --animate-out: exit 0.15s ease-in;
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
-
-/* Utility classes for manual animation support */
-@utility animate-in { animation: enter 0.15s ease-out; --tw-enter-opacity: 0; --tw-enter-scale: 0.95; --tw-enter-translate-y: 10px; }
-@utility animate-out { animation: exit 0.15s ease-in; --tw-exit-opacity: 0; --tw-exit-scale: 0.95; --tw-exit-translate-y: 10px; }
-@utility fade-in { --tw-enter-opacity: 0; }
-@utility fade-out { --tw-exit-opacity: 0; }
-@utility zoom-in-95 { --tw-enter-scale: 0.95; }
-@utility zoom-out-95 { --tw-exit-scale: 0.95; }
-@utility slide-in-from-top-2 { --tw-enter-translate-y: -0.5rem; }
-@utility slide-in-from-bottom-2 { --tw-enter-translate-y: 0.5rem; }
 
 @utility container {
   margin-inline: auto;

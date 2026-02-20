@@ -24,7 +24,8 @@
     "shipping": "Yetkazib berish",
     "free": "Bepul",
     "continueShopping": "Xaridni davom ettirish",
-    "checkout": "Buyurtma berish"
+    "checkout": "Buyurtma berish",
+    "search": "Qidirish"
   },
   "homepage": {
     "hero": {
@@ -74,15 +75,29 @@
       ]
     }
   },
-  "products": {
+"products": {
     "title": "Bizning Mahsulotlar",
     "breadcrumb": "Mahsulotlar",
     "filter": "Filtr",
     "sort": "Saralash",
+    "searchByProducts": "Mahsulotlarni qidirish...",
     "searchPlaceholder": "Mahsulotlarni qidirish...",
     "noResults": "Mahsulotlar topilmadi.",
+    "noResultsDescription": "Filtrlarni yoki qidiruv so'rovini o'zgartirib ko'ring.",
+    "noImage": "Rasm yo'q",
     "categories": "Kategoriyalar",
+    "allProducts": "Barcha Mahsulotlar",
     "price": "Narx",
+    "showing": "{start}-{end} dan {total} natija ko'rsatilmoqda",
+    "results": "natija",
+    "sortOptions": {
+      "default": "Odatiy Saralash",
+      "priceAsc": "Narx: Pastdan yuqoriga",
+      "priceDesc": "Narx: Yuqoridan pastga"
+    },
+    "pagination": {
+      "last": "Oxirgi"
+    },
     "details": {
       "features": "Asosiy Xususiyatlar",
       "description": "Tavsif",

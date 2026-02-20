@@ -24,12 +24,12 @@ export default function CartDrawer({ children }) {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 bg-background border-l-border">
+      <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0 bg-background border-l-border">
         <SheetHeader className="px-6 py-4 border-b border-border">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-primary" />
             <span className="font-heading text-xl">{t('cart.title')}</span>
-            <span className="ml-auto text-sm font-normal text-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
+            <span className="text-sm font-normal text-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
                 {totalItems} items
             </span>
           </SheetTitle>

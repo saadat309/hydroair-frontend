@@ -24,7 +24,8 @@
     "shipping": "Доставка",
     "free": "Бесплатно",
     "continueShopping": "Продолжить покупки",
-    "checkout": "Оформить"
+    "checkout": "Оформить",
+    "search": "Поиск"
   },
   "homepage": {
     "hero": {
@@ -74,15 +75,29 @@
       ]
     }
   },
-  "products": {
+"products": {
     "title": "Наши продукты",
     "breadcrumb": "Продукты",
     "filter": "Фильтр",
     "sort": "Сортировка",
+    "searchByProducts": "Искать продукты...",
     "searchPlaceholder": "Поиск продуктов...",
     "noResults": "Продукты не найдены.",
+    "noResultsDescription": "Попробуйте изменить фильтры или поисковый запрос.",
+    "noImage": "Нет изображения",
     "categories": "Категории",
+    "allProducts": "Все продукты",
     "price": "Цена",
+    "showing": "Показано {start}-{end} из {total} результатов",
+    "results": "результатов",
+    "sortOptions": {
+      "default": "Сортировка по умолчанию",
+      "priceAsc": "Цена: по возрастанию",
+      "priceDesc": "Цена: по убыванию"
+    },
+    "pagination": {
+      "last": "Последняя"
+    },
     "details": {
       "features": "Ключевые особенности",
       "description": "Описание",

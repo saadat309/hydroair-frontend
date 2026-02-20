@@ -16,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased min-h-screen font-body">
+      <body className="antialiased min-h-screen font-body" suppressHydrationWarning={true}>
         <ClientLayout>
           {children}
           <Toaster />

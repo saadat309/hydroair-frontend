@@ -3,6 +3,7 @@
 import { useTranslation } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import { CheckCircle2, Award, Users, Droplets } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 
 export default function AboutPage() {
   const { t } = useTranslation();
@@ -15,21 +16,11 @@ export default function AboutPage() {
 
   return (
     <div className="flex flex-col gap-20 pb-20">
-      {/* Hero Section */}
-      <section className="relative py-20 bg-slate-900 text-white overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 blur-3xl rounded-full" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">{t('about.title')}</h1>
-            <p className="text-xl text-slate-300 leading-relaxed">
-              {t('about.description')}
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Page Header */}
+      <PageHeader title={t('about.title')} />
 
       {/* Stats Section */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-4 mt-36">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, i) => (
             <motion.div 

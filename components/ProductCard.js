@@ -41,7 +41,7 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group rounded-2xl overflow-visible shadow-md bg-card flex flex-col h-full relative">
+    <div className="group rounded-2xl overflow-visible shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.3)] bg-card flex flex-col h-full relative group-hover:shadow-[0_0_50px_rgba(var(--color-primary-rgb),0.5)] transition-shadow duration-300">
       {tag && (
         <div className="absolute -top-6 -right-6 z-10 drop-shadow-md">
           <WavyBadge text={tag} />
@@ -107,7 +107,7 @@ export default function ProductCard({
         <div className="flex justify-center">
           <Button
             variant="outline"
-            className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground inline-flex items-center space-x-2 px-6 py-2 w-fit"
+            className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground inline-flex items-center space-x-2 px-6 py-2 w-fit shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/50 transition-all"
             onClick={handleAddToCart}
             disabled={!inStock}
           >

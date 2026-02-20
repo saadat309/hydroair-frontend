@@ -11,54 +11,94 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Star, Check, Shield, Truck, Share2, Heart, ShoppingCart } from "lucide-react";
 import { BlocksRenderer } from "@strapi/blocks-react-renderer";
+import WavyTopBackground from "@/components/WavyTopBackground";
 
 export default function ProductDetailPage() {
-  const params = useParams(); // params.slug
-  const { slug } = params;
+  const params = useParams();
+  const slug = params?.slug;
   const { t } = useTranslation();
   const { language } = useLanguageStore();
   const { addItem } = useCartStore();
 
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
       async function loadProduct() {
+          if (!slug) return;
+          
+          setIsLoading(true);
+          setError(null);
           try {
               const res = await fetchAPI("/products", {
                   "filters[slug][$eq]": slug,
                   locale: language,
+                  populate: ["image", "category"]
               });
 
+              console.log("API Response:", JSON.stringify(res, null, 2));
+
               if (!res.data || res.data.length === 0) {
-                  // handle 404
                   setProduct(null);
               } else {
                   setProduct(res.data[0]);
               }
           } catch (err) {
-              console.error(err);
+              console.error("Error loading product:", err);
+              setError(err);
               toast.error("Error loading product");
           } finally {
               setIsLoading(false);
           }
       }
-      if (slug) loadProduct();
+      loadProduct();
   }, [slug, language]);
 
 
   if (isLoading) {
-      return <div className="min-h-screen pt-32 container"><div className="w-full h-[500px] bg-muted/20 animate-pulse rounded-2xl" /></div>;
+      return (
+        <div className="relative min-h-screen overflow-hidden pt-15">
+          <div className="absolute top-0 left-0 w-full" style={{ height: "calc(50vh + 80px)" }}>
+            <WavyTopBackground height="100%" />
+          </div>
+          <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
+            <div className="container text-center">
+              <div className="w-64 h-12 bg-muted/20 animate-pulse rounded mx-auto" />
+              <div className="w-48 h-6 bg-muted/20 animate-pulse rounded mx-auto mt-4" />
+            </div>
+          </div>
+          <div className="container relative z-10 mt-36 pb-12">
+            <div className="w-full h-[500px] bg-muted/20 animate-pulse rounded-2xl" />
+          </div>
+        </div>
+      );
   }
 
   if (!product) {
-      return <div className="min-h-screen pt-32 container text-center">Product not found.</div>;
+      return (
+        <div className="relative min-h-screen overflow-hidden pt-15">
+          <div className="absolute top-0 left-0 w-full" style={{ height: "calc(50vh + 80px)" }}>
+            <WavyTopBackground height="100%" />
+          </div>
+          <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
+            <div className="container text-center">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
+                {t('products.noResults')}
+              </h1>
+            </div>
+          </div>
+        </div>
+      );
   }
 
   // Strapi v5: attributes are flattened
   const { name, price, description, category, image, addFeatures, inStock } = product;
   const imageUrl = getStrapiMedia(image?.url);
+  
+  console.log("Product description:", description);
+  console.log("Product full:", product);
 
   const handleAddToCart = () => {
     addItem({
@@ -71,14 +111,46 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background">
-      <div className="container">
+    <div className="relative min-h-screen overflow-hidden pt-15">
+      {/* Wavy Background */}
+      <div
+        className="absolute top-0 left-0 w-full"
+        style={{ height: "calc(50vh + 80px)" }}
+      >
+        <WavyTopBackground height="100%" />
+      </div>
+      
+      {/* Top Section with Product Name */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
+        <div className="container text-center">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
+            {name}
+          </h1>
+
+          <svg
+            className="w-56 h-6 text-primary mt-3 mb-6 mx-auto"
+            viewBox="0 0 192 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M 0 6 Q 8 2, 16 6 Q 24 10, 32 6 Q 40 2, 48 6 Q 56 10, 64 6 Q 72 2, 80 6 Q 88 10, 96 6 Q 104 2, 112 6 Q 120 10, 128 6 Q 136 2, 144 6 Q 152 10, 160 6 Q 168 2, 176 6 Q 184 10, 192 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Product Detail Content */}
+      <div className="container relative z-10 mt-36 pb-24">
         
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-sm text-foreground mb-8">
-            <a href="/" className="hover:text-primary transition-colors">Home</a>
+            <a href="/" className="hover:text-primary transition-colors">{t('nav.home')}</a>
             <span>/</span>
-            <a href="/products" className="hover:text-primary transition-colors">Products</a>
+            <a href="/products" className="hover:text-primary transition-colors">{t('nav.products')}</a>
             <span>/</span>
             {category && (
                 <>
@@ -102,12 +174,12 @@ export default function ProductDetailPage() {
                             priority
                         />
                     ) : (
-                         <div className="w-full h-full flex items-center justify-center text-foreground">No Image</div>
+                         <div className="w-full h-full flex items-center justify-center text-foreground">{t('products.noImage') || 'No Image'}</div>
                     )}
                 </div>
             </div>
 
-            {/* Info */}
+{/* Info */}
             <div>
                 <div className="mb-6">
                    {category && (
@@ -115,9 +187,6 @@ export default function ProductDetailPage() {
                             {category.name}
                         </span>
                    )}
-                   <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4 leading-tight">
-                       {name}
-                   </h1>
                    <div className="flex items-center gap-4 mb-6">
                        <div className="flex items-center gap-1 text-yellow-400">
                            <Star className="w-5 h-5 fill-current" />
@@ -127,9 +196,9 @@ export default function ProductDetailPage() {
                            <Star className="w-5 h-5 fill-current" />
                        </div>
                        <span className="text-foreground text-sm">(12 reviews)</span>
-                       <span className={`px-2 py-0.5 text-xs font-bold rounded border ${inStock ? 'bg-green-500/10 text-green-600 border-green-200' : 'bg-red-500/10 text-red-600 border-red-200'}`}>
-                           {inStock ? 'In Stock' : 'Out of Stock'}
-                       </span>
+<span className={`px-2 py-0.5 text-xs font-bold rounded border ${inStock ? 'bg-green-500/10 text-green-600 border-green-200' : 'bg-red-500/10 text-red-600 border-red-200'}`}>
+                            {inStock ? t('common.inStock') : t('common.outOfStock')}
+                        </span>
                    </div>
                    <div className="text-3xl font-bold text-primary mb-6">
                        ${price}
@@ -148,7 +217,7 @@ export default function ProductDetailPage() {
                         disabled={!inStock}
                     >
                         <ShoppingCart className="w-5 h-5" />
-                        Add to Cart
+                        {t('common.addToCart')}
                     </Button>
                     <Button 
                         variant="outline" 
