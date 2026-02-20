@@ -1,109 +1,185 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18n";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 export default function FiltrationTechnology() {
-  const { t } = useTranslation();
-  const containerRef = useRef(null);
+    const { t } = useTranslation();
+    const containerRef = useRef(null);
   
-  useGSAP(() => {
-    // Animate the title
-    gsap.from(".tech-title", {
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 80%",
-      },
-      y: 50,
-      opacity: 0,
-      duration: 0.8
-    });
-
-    // Animate list items coming in from sides
-    gsap.from(".tech-item-left", {
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 60%",
-      },
-      x: -50,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1
-    });
-
-    gsap.from(".tech-item-right", {
-        scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 60%",
+    const titleVariants = {
+      hidden: { y: 50, opacity: 0 },
+      visible: { y: 0, opacity: 1, transition: { duration: 0.8 } },
+    };
+  
+    const containerItemVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.1,
         },
-        x: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1
-    });
-
-  }, { scope: containerRef });
-
-  const items = t('homepage.filtration.items', { returnObjects: true });
-  const leftItems = items.slice(0, 3);
-  const rightItems = items.slice(3, 6);
-
-  return (
-    <section ref={containerRef} className="py-24 bg-secondary/20 relative overflow-hidden">
-        {/* Droplets SVG Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none opacity-20 text-primary">
-            <svg className="w-full h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M200 0C200 0 100 150 100 250C100 332.843 144.772 400 200 400C255.228 400 300 332.843 300 250C300 150 200 0 200 0Z" fill="currentColor"/>
-                <path d="M50 100C50 100 0 200 0 250C0 291.421 22.3858 325 50 325C77.6142 325 100 291.421 100 250C100 200 50 100 50 100Z" fill="currentColor" opacity="0.5"/>
-                <path d="M350 100C350 100 300 200 300 250C300 291.421 322.386 325 350 325C377.614 325 400 291.421 400 250C400 200 350 100 350 100Z" fill="currentColor" opacity="0.5"/>
-            </svg>
+      },
+    };
+  
+    const itemLeftVariants = {
+      hidden: { x: -50, opacity: 0 },
+      visible: { x: 0, opacity: 1, transition: { duration: 0.8 } },
+    };
+  
+    const itemRightVariants = {
+      hidden: { x: 50, opacity: 0 },
+      visible: { x: 0, opacity: 1, transition: { duration: 0.8 } },
+    };
+  
+    const items = t('homepage.filtration.items', { returnObjects: true });
+    const leftItems = items.slice(0, 3);
+    const rightItems = items.slice(3, 6);
+  
+    const dropPath = "M3,10.333 C3,13.463 5.427,16 8.418,16 C11.41,16 14,13.463 14,10.333 C14,7.204 8.418,0 8.418,0 C8.418,0 3,7.204 3,10.333 Z";
+  
+    return (
+      <section ref={containerRef} className="py-24 relative bg-background">
+        {/* Swirl Arrow SVG */}
+        <div className="absolute top-0 right-30 -translate-x-1/2 -mt-40 md:-mt-40 w-40 h-auto md:w-80 text-secondary rotate-[50deg] z-0">
+          <svg
+            width="150"
+            height="350"
+            viewBox="0 0 150 350"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M 80 10 C 110 10, 120 40, 90 60
+                 S 30 100, 60 120
+                 S 120 160, 90 180
+                 S 30 220, 60 240
+                 S 115 300, 105 320"
+              stroke="currentColor"
+              strokeWidth="10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="16 14"
+            />
+            <path
+              d="M 105 320 L 90 305 M 105 320 L 120 305"
+              stroke="currentColor"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
 
         <div className="container relative z-10">
-            <div className="text-center mb-16 tech-title">
-                <span className="text-sm font-bold tracking-widest text-primary uppercase mb-2 block">
-                    {t('homepage.filtration.subtitle')}
-                </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground">
-                    {t('homepage.filtration.title')}
-                </h2>
-            </div>
-            
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-                
-                {/* Left Column */}
-                <div className="flex-1 flex flex-col gap-12 order-2 lg:order-1">
-                    {leftItems.map((item, idx) => (
-                        <div key={idx} className="tech-item-left flex flex-col items-center lg:items-end text-center lg:text-right gap-2">
-                             <h3 className="text-xl font-bold text-primary">{item.label}</h3>
-                             <p className="text-muted-foreground max-w-xs">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-                
-                {/* Center Column: Bottle Image */}
-                <div className="w-full lg:w-1/3 h-[600px] relative order-1 lg:order-2 flex items-center justify-center drop-shadow-2xl">
-                    <img 
-                        src="/photos/bottle.png" 
-                        alt="Filtration Bottle" 
-                        className="h-full w-auto object-contain animate-in zoom-in duration-1000"
-                    />
-                </div>
-                
-                {/* Right Column */}
-                <div className="flex-1 flex flex-col gap-12 order-3">
-                     {rightItems.map((item, idx) => (
-                        <div key={idx} className="tech-item-right flex flex-col items-center lg:items-start text-center lg:text-left gap-2">
-                             <h3 className="text-xl font-bold text-primary">{item.label}</h3>
-                             <p className="text-muted-foreground max-w-xs">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
+          <motion.div
+            className="text-center mb-16"
+            variants={titleVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground">
+              {t("homepage.filtration.title")}
+            </h2>
+            <span className="text-sm font-bold tracking-widest text-primary uppercase mt-4 block">
+              {t("homepage.filtration.subtitle")}
+            </span>
+          </motion.div>
 
-            </div>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+            {/* Left Column */}
+            <motion.div
+              className="flex-1 flex flex-col gap-24 order-2 lg:order-1 lg:pr-12"
+              variants={containerItemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+            >
+              {leftItems.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  className="relative flex flex-col items-center lg:items-end text-center lg:text-left"
+                  variants={itemLeftVariants}
+                >
+                  {/* Droplet BG */}
+                  <div className="absolute top-1/2 left-1/2 lg:left-auto lg:right-0 -translate-x-1/2 lg:translate-x-1/3 -translate-y-1/2 w-24 h-24 md:w-36 md:h-36 pointer-events-none text-secondary -z-10">
+                    <svg
+                      viewBox="0 -0.5 17 17"
+                      className="w-full h-full"
+                      fill="currentColor"
+                    >
+                      <path d={dropPath} />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-primary mb-3">
+                    {item.label}
+                  </h3>
+                  <p className="text-foreground max-w-[200px] text-sm leading-relaxed text-right">
+                    <span className="inline-block w-[3px] h-3.5 bg-primary mr-1 translate-y-[2px] rounded-full" />
+                    {item.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Center Column: Bottle Image */}
+            
+              <motion.div
+                initial={{ y: 0 }}
+                animate={{ y: [0, -15, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-full lg:w-1/3 h-[400px] relative order-1 lg:order-2 flex items-center justify-center z-10"
+              >
+                <img
+                  src="/photos/bottle.png"
+                  alt="Filtration Bottle"
+                  className="h-full w-auto object-contain drop-shadow-2xl animate-in zoom-in duration-1000"
+                />
+              </motion.div>
+            
+
+            {/* Right Column */}
+            <motion.div
+              className="flex-1 flex flex-col gap-24 order-3 lg:pl-12"
+              variants={containerItemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+            >
+              {rightItems.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  className="relative flex flex-col items-center lg:items-start text-center lg:text-left"
+                  variants={itemRightVariants}
+                >
+                  {/* Droplet BG */}
+                  <div className="absolute top-1/2 left-1/2 lg:left-0 -translate-x-1/2 lg:-translate-x-1/3 -translate-y-1/2 w-24 h-24 md:w-36 md:h-36 pointer-events-none text-secondary -z-10">
+                    <svg
+                      viewBox="0 -0.5 17 17"
+                      className="w-full h-full"
+                      fill="currentColor"
+                    >
+                      <path d={dropPath} />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-primary mb-3">
+                    {item.label}
+                  </h3>
+                  <p className="text-foreground max-w-[200px] text-sm leading-relaxed text-left">
+                    <span className="inline-block w-[3px] h-3.5 bg-primary mr-1 translate-y-[2px] rounded-full" />
+                    {item.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
         </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }

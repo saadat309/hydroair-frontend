@@ -28,7 +28,7 @@
   },
   "homepage": {
     "hero": {
-      "title": "Pure Water & Clean Air Solutions",
+      "title": "Pure Water & <br/>**Clean Air Solutions**",
       "subtitle": "Advanced filtration technology for a healthier home and office environment.",
       "ctaPrimary": "Shop Now",
       "ctaSecondary": "Read More"
@@ -44,7 +44,8 @@
       }
     },
     "products": {
-      "title": "Choose Your Filter",
+      "title_part1": "Choose Your",
+      "title_part2": "Filter",
       "subtitle": "Filters We Offer",
       "allProducts": "All Products"
     },
@@ -141,9 +142,9 @@
     "title": "About HydroAir Technologies",
     "description": "We are a leading provider of advanced air and water filtration solutions, committed to bringing pure, safe, and healthy environments to every household and office.",
     "stats": {
-      "liters": "Liters Filtered",
-      "customers": "Happy Customers",
-      "experience": "Years Experience"
+      "filtersDelivered": "System installed",
+      "yearsExperience": "Years of Market experience",
+      "happyCustomers": "happy customers"
     },
     "mission": {
       "title": "Our Mission",

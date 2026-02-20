@@ -14,7 +14,7 @@ export default function ChatbotWidget() {
   const { 
     isOpen, toggleChat, setIsOpen,
     sessions, currentSessionId, 
-    ensureSession, createNewSession, addMessage, switchSession, deleteSession
+    ensureSession, createNewSession, addMessage, switchSession, deleteSession, updateInitialMessage
   } = useChatStore();
   
   const { locale } = useLanguageStore();
@@ -30,10 +30,17 @@ export default function ChatbotWidget() {
 
   // Robust session initialization
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !currentSessionId) {
       ensureSession(t('chat.initialMessage'));
     }
-  }, [isOpen, currentSessionId, sessions.length]);
+  }, [isOpen, currentSessionId, ensureSession, t]);
+
+  // Update initial message on locale change for current session
+  useEffect(() => {
+    if (isOpen && currentSessionId) {
+      updateInitialMessage(t('chat.initialMessage'));
+    }
+  }, [isOpen, currentSessionId, locale, updateInitialMessage, t]);
 
   // Click outside to minimize
   useEffect(() => {
@@ -198,7 +205,7 @@ export default function ChatbotWidget() {
                       className="flex-grow overflow-y-auto p-4 space-y-4 scroll-smooth"
                     >
                       {messages.length === 0 && !isLoading && (
-                        <div className="flex items-center justify-center h-full text-muted-foreground italic text-xs">
+                        <div className="flex items-center justify-center h-full text-foreground italic text-xs">
                           {t('common.loading')}
                         </div>
                       )}
@@ -237,7 +244,7 @@ export default function ChatbotWidget() {
                               </div>
                             )}
                           </div>
-                          <span className="text-[9px] text-muted-foreground mt-1 px-1 font-medium uppercase tracking-tighter opacity-70">
+                          <span className="text-[9px] text-foreground mt-1 px-1 font-medium uppercase tracking-tighter opacity-70">
                             {msg.role === 'user' ? t('chat.you') : t('chat.assistant')}
                           </span>
                         </div>
@@ -251,7 +258,7 @@ export default function ChatbotWidget() {
                               <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
                               <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" />
                             </div>
-                            <span className="text-muted-foreground italic text-xs font-medium">{t('chat.typing')}</span>
+                            <span className="text-foreground italic text-xs font-medium">{t('chat.typing')}</span>
                           </div>
                         </div>
                       )}
@@ -289,7 +296,7 @@ export default function ChatbotWidget() {
                   >
                     <div className="flex-grow overflow-y-auto space-y-3" data-lenis-prevent>
                       {sessions.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                        <div className="flex flex-col items-center justify-center h-full text-foreground">
                           <History className="w-12 h-12 mb-2 opacity-20" />
                           <p className="text-sm font-medium">{t('chat.noSessions')}</p>
                         </div>
@@ -312,7 +319,7 @@ export default function ChatbotWidget() {
                               <p className="text-sm font-bold truncate group-hover:text-primary transition-colors">
                                 {session.title}
                               </p>
-                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                              <p className="text-[10px] text-foreground mt-0.5">
                                 {new Date(session.timestamp).toLocaleString()}
                               </p>
                             </div>
@@ -321,7 +328,7 @@ export default function ChatbotWidget() {
                                 e.stopPropagation();
                                 deleteSession(session.id);
                               }}
-                              className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                              className="p-2 text-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                               title={t('chat.deleteSession')}
                             >
                               <Trash2 className="w-4 h-4" />

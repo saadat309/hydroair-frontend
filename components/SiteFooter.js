@@ -10,17 +10,17 @@ export default function SiteFooter() {
   return (
     <footer className="relative bg-foreground text-background mt-20">
       {/* Wave Footer Decoration - Top */}
-      <div className="absolute -top-20 left-0 w-full h-[120px] text-(--forground) pointer-events-none">
+      <div className="absolute -top-20 left-0 w-full h-[120px] text-foreground pointer-events-none">
         <svg
           className="w-full h-full"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
-          fill="none"
+          fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            fill="#120d48"
-            d="M0,96L34.3,106.7C68.6,117,137,139,206,144C274.3,149,343,139,411,149.3C480,160,549,192,617,176C685.7,160,754,96,823,96C891.4,96,960,160,1029,186.7C1097.1,213,1166,203,1234,165.3C1302.9,128,1371,64,1406,32L1440,0L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"
+            fill="currentColor"
+            d="M0,96L30,80C60,64,120,32,180,53.3C240,75,300,149,360,154.7C420,160,480,96,540,96C600,96,660,160,720,192C780,224,840,224,900,202.7C960,181,1020,139,1080,101.3C1140,64,1200,32,1260,37.3C1320,43,1380,85,1410,106.7L1440,128L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320L0,320Z"
           ></path>
         </svg>
       </div>
@@ -28,7 +28,8 @@ export default function SiteFooter() {
       <div className="container relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 pt-20 pb-12">
         {/* Column 1: Menu */}
         <div>
-          <h3 className="text-2xl font-bold font-heading mb-6 text-primary">
+          <h3 className="text-2xl font-bold font-heading mb-6 text-background flex items-center">
+            <span className="inline-block w-[3px] h-6 bg-primary mr-2 rounded-full" />
             {t("footer.menu")}
           </h3>
           <ul className="space-y-4">
@@ -66,7 +67,8 @@ export default function SiteFooter() {
 
         {/* Column 2: Contact */}
         <div>
-          <h3 className="text-2xl font-bold font-heading mb-6 text-primary">
+          <h3 className="text-2xl font-bold font-heading mb-6 text-background flex items-center">
+            <span className="inline-block w-[3px] h-6 bg-primary mr-2 rounded-full" />
             {t("footer.contact")}
           </h3>
           <ul className="space-y-4">
@@ -107,7 +109,8 @@ export default function SiteFooter() {
 
         {/* Column 3: Newsletter */}
         <div>
-          <h3 className="text-2xl font-bold font-heading mb-6 text-primary">
+          <h3 className="text-2xl font-bold font-heading mb-6 text-background flex items-center">
+            <span className="inline-block w-[3px] h-6 bg-primary mr-2 rounded-full" />
             {t("footer.subscribe")}
           </h3>
           <p className="mb-4 text-background/70">

@@ -23,7 +23,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-secondary/10 pt-32 pb-20">
       <div className="container max-w-6xl">
         <div className="mb-8">
-            <Link href="/cart" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/cart" className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Cart
             </Link>
@@ -59,7 +59,7 @@ export default function CheckoutPage() {
                     {/* Payment Placeholder */}
                     <section>
                         <h3 className="text-lg font-semibold mb-4 text-foreground">Payment</h3>
-                        <div className="p-6 bg-secondary/20 rounded-xl border border-dashed border-primary/30 text-center text-muted-foreground">
+                        <div className="p-6 bg-secondary/20 rounded-xl border border-dashed border-primary/30 text-center text-foreground">
                             Payment integration coming soon.
                         </div>
                     </section>
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
                         {items.map((item) => (
                             <div key={item.id} className="flex gap-4 items-start">
                                 <div className="w-16 h-16 bg-secondary/20 rounded-lg flex items-center justify-center shrink-0 relative overflow-hidden">
-                                     <div className="text-[10px] text-muted-foreground px-1 text-center">{item.name}</div>
+                                     <div className="text-[10px] text-foreground px-1 text-center">{item.name}</div>
                                      <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center rounded-bl-lg font-bold">
                                         {item.quantity}
                                      </span>
@@ -94,11 +94,11 @@ export default function CheckoutPage() {
 
                     <div className="border-t border-border pt-4 space-y-2 mb-6 text-sm">
                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Subtotal</span>
+                            <span className="text-foreground">Subtotal</span>
                             <span className="font-medium">${totalPrice.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-muted-foreground">Shipping</span>
+                            <span className="text-foreground">Shipping</span>
                             <span className="font-medium">Free</span>
                         </div>
                     </div>

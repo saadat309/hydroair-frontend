@@ -28,7 +28,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] z-50 transition-all duration-300 ${
           isScrolled
             ? "bg-background/80 backdrop-blur-md shadow-sm py-4"
             : "bg-transparent py-6"
@@ -41,7 +41,7 @@ export default function Navbar() {
                 alt="HydroAir Technologies" 
                 width={150} 
                 height={40} 
-                className="h-10 w-auto object-contain"
+                className="h-13 w-auto object-contain"
                 priority
             />
           </Link>
@@ -82,7 +82,7 @@ export default function Navbar() {
                   key={lang}
                   onClick={() => setLanguage(lang)}
                   className={`uppercase transition-colors ${
-                    language === lang ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+                    language === lang ? "text-primary font-bold" : "text-foreground hover:text-foreground"
                   }`}
                 >
                   {lang}

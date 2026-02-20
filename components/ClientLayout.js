@@ -53,7 +53,7 @@ export default function ClientLayout({ children }) {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto bg-background shadow-xl ring-1 ring-border relative">
       <Navbar />
       <main className="flex-grow selection:bg-primary/20">
         {children}

@@ -45,7 +45,7 @@ export default function AboutPage() {
               </div>
               <div>
                 <p className="text-4xl font-bold text-primary">{stat.value}</p>
-                <p className="text-muted-foreground font-medium uppercase tracking-wider text-sm">{stat.label}</p>
+                <p className="text-foreground font-medium uppercase tracking-wider text-sm">{stat.label}</p>
               </div>
             </motion.div>
           ))}
@@ -57,7 +57,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold">{t('about.mission.title')}</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-lg text-foreground leading-relaxed">
               {t('about.mission.description')}
             </p>
             <div className="space-y-4 pt-4">

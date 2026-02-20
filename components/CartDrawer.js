@@ -29,7 +29,7 @@ export default function CartDrawer({ children }) {
           <SheetTitle className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-primary" />
             <span className="font-heading text-xl">{t('cart.title')}</span>
-            <span className="ml-auto text-sm font-normal text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
+            <span className="ml-auto text-sm font-normal text-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
                 {totalItems} items
             </span>
           </SheetTitle>
@@ -56,7 +56,7 @@ export default function CartDrawer({ children }) {
                                      {item.image ? (
                                         <Image src={item.image} alt={item.name} fill className="object-cover" />
                                      ) : (
-                                        <span className="text-xs text-muted-foreground p-1 text-center">{item.name}</span>
+                                        <span className="text-xs text-foreground p-1 text-center">{item.name}</span>
                                      )}
                                 </div>
                                 
@@ -65,7 +65,7 @@ export default function CartDrawer({ children }) {
                                         <h4 className="font-semibold text-foreground line-clamp-2 pr-2">{item.name}</h4>
                                         <button 
                                             onClick={() => handleRemove(item.id, item.name)}
-                                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                                            className="text-foreground hover:text-destructive transition-colors p-1"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -98,10 +98,10 @@ export default function CartDrawer({ children }) {
 
                 <div className="p-6 border-t border-border bg-muted/10">
                     <div className="flex justify-between items-center mb-4">
-                        <span className="text-muted-foreground">{t('common.subtotal')}</span>
+                        <span className="text-foreground">{t('common.subtotal')}</span>
                         <span className="text-xl font-bold font-heading text-foreground">${totalPrice.toFixed(2)}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6 text-center">
+                    <p className="text-xs text-foreground mb-6 text-center">
                         Tax and shipping calculated at checkout.
                     </p>
                     <SheetTrigger asChild>

@@ -152,7 +152,7 @@ export default function ContactPage() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4">{t('contact.title')}</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-foreground max-w-2xl mx-auto">
             {t('contact.description')}
           </p>
         </div>
@@ -168,7 +168,7 @@ export default function ContactPage() {
                     <Phone className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">{t('contact.info.phone')}</p>
+                    <p className="text-sm font-bold text-foreground uppercase tracking-wider">{t('contact.info.phone')}</p>
                     <p className="text-lg font-medium">+998 90 123 45 67</p>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function ContactPage() {
                     <Mail className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">{t('contact.info.email')}</p>
+                    <p className="text-sm font-bold text-foreground uppercase tracking-wider">{t('contact.info.email')}</p>
                     <p className="text-lg font-medium">support@hydroair.tech</p>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">{t('contact.info.office')}</p>
+                    <p className="text-sm font-bold text-foreground uppercase tracking-wider">{t('contact.info.office')}</p>
                     <p className="text-lg font-medium">{t('contact.info.officeAddress')}</p>
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export default function ContactPage() {
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Ticket className="w-5 h-5 text-primary" /> {t('contact.ticket.title')}
               </h3>
-              <p className="text-sm text-muted-foreground mb-4">{t('contact.ticket.description')}</p>
+              <p className="text-sm text-foreground mb-4">{t('contact.ticket.description')}</p>
               <form 
                 className="flex gap-2"
                 onSubmit={(e) => {
@@ -231,7 +231,7 @@ export default function ContactPage() {
                   <div className="flex items-center gap-3">
                     {/* Auto-refresh indicator */}
                     {ticketData.ticketStatus !== 'closed' && (
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 text-xs text-foreground">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         <span>{t('contact.ticket.live')}</span>
                       </div>
@@ -248,7 +248,7 @@ export default function ContactPage() {
                 
                 <div className="space-y-6">
                   <div className="bg-muted/30 p-4 rounded-2xl">
-                    <p className="text-xs font-bold text-muted-foreground uppercase mb-2">{t('contact.form.subject')}</p>
+                    <p className="text-xs font-bold text-foreground uppercase mb-2">{t('contact.form.subject')}</p>
                     <p className="font-medium">{ticketData.subject}</p>
                   </div>
                   
@@ -315,14 +315,14 @@ export default function ContactPage() {
                     
                     {ticketData.ticketStatus === 'closed' && (
                       <div className="mt-6 p-4 bg-slate-100 rounded-xl text-center">
-                        <p className="text-sm text-muted-foreground">This ticket is closed. If you need further assistance, please create a new ticket.</p>
+                        <p className="text-sm text-foreground">This ticket is closed. If you need further assistance, please create a new ticket.</p>
                       </div>
                     )}
                   </div>
                   
                   <button 
                     onClick={() => setTicketData(null)}
-                    className="w-full py-4 border-2 border-dashed rounded-2xl text-muted-foreground hover:text-primary hover:border-primary transition-all font-medium mt-8"
+                    className="w-full py-4 border-2 border-dashed rounded-2xl text-foreground hover:text-primary hover:border-primary transition-all font-medium mt-8"
                   >
                     {t('contact.ticket.back')}
                   </button>
@@ -334,7 +334,7 @@ export default function ContactPage() {
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h2 className="text-3xl font-bold mb-4">{t('contact.form.successTitle')}</h2>
-                <p className="text-muted-foreground mb-8 text-lg">
+                <p className="text-foreground mb-8 text-lg">
                   {t('contact.form.successDesc').replace('{id}', submittedId)}
                 </p>
                 <div className="flex gap-4 justify-center">
@@ -356,7 +356,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="bg-background border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t('contact.form.name')}</label>
+                    <label className="text-sm font-bold uppercase tracking-wider text-foreground">{t('contact.form.name')}</label>
                     <input 
                       required
                       value={formData.name}
@@ -366,7 +366,7 @@ export default function ContactPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t('contact.form.email')}</label>
+                    <label className="text-sm font-bold uppercase tracking-wider text-foreground">{t('contact.form.email')}</label>
                     <input 
                       required
                       type="email"
@@ -378,7 +378,7 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t('contact.form.subject')}</label>
+                  <label className="text-sm font-bold uppercase tracking-wider text-foreground">{t('contact.form.subject')}</label>
                   <input 
                     required
                     value={formData.subject}
@@ -388,7 +388,7 @@ export default function ContactPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t('contact.form.message')}</label>
+                  <label className="text-sm font-bold uppercase tracking-wider text-foreground">{t('contact.form.message')}</label>
                   <textarea 
                     required
                     rows={5}

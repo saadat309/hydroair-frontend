@@ -19,7 +19,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-6 py-20 bg-secondary/10 rounded-3xl border border-dashed border-border">
              <div className="text-6xl">🛒</div>
-             <p className="text-2xl font-semibold text-muted-foreground">{t('cart.empty')}</p>
+             <p className="text-2xl font-semibold text-foreground">{t('cart.empty')}</p>
              <Link href="/products">
                 <Button size="lg" className="rounded-full px-8">{t('common.continueShopping')}</Button>
              </Link>
@@ -33,19 +33,19 @@ export default function CartPage() {
                         <div key={item.id} className="flex gap-6 bg-card p-6 rounded-2xl border border-border items-center">
                             <div className="w-24 h-24 bg-secondary/20 rounded-xl flex items-center justify-center shrink-0 relative overflow-hidden">
                                  {/* Fallback image */}
-                                 <div className="text-xs text-muted-foreground">{item.name}</div>
+                                 <div className="text-xs text-foreground">{item.name}</div>
                             </div>
                             
                             <div className="flex-1">
                                 <h3 className="text-xl font-bold mb-1">{item.name}</h3>
-                                <p className="text-muted-foreground text-sm mb-4">{item.category} Filter</p>
+                                <p className="text-foreground text-sm mb-4">{item.category} Filter</p>
                                 <div className="text-lg font-bold text-primary">${item.price}</div>
                             </div>
 
                             <div className="flex flex-col items-end gap-4">
                                 <button 
                                     onClick={() => removeItem(item.id)}
-                                    className="text-muted-foreground hover:text-destructive transition-colors p-2 hover:bg-destructive/10 rounded-full"
+                                    className="text-foreground hover:text-destructive transition-colors p-2 hover:bg-destructive/10 rounded-full"
                                 >
                                     <Trash2 className="w-5 h-5" />
                                 </button>
@@ -76,7 +76,7 @@ export default function CartPage() {
                     <div className="bg-card p-8 rounded-3xl border border-border sticky top-32">
                         <h2 className="text-2xl font-bold font-heading mb-6">{t('common.summary')}</h2>
                         
-                        <div className="space-y-4 mb-6 text-muted-foreground">
+                        <div className="space-y-4 mb-6 text-foreground">
                             <div className="flex justify-between">
                                 <span>{t('cart.subtotal')}</span>
                                 <span className="font-medium text-foreground">${totalPrice.toFixed(2)}</span>

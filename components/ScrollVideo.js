@@ -1,13 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScroll, useTransform, motion } from "framer-motion";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export default function ScrollVideo({ 
   folderPath, 
@@ -20,7 +15,14 @@ export default function ScrollVideo({
   padding = 0, // Padding in pixels
   manualProgress = null 
 }) {
+
   const canvasRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: triggerRef,
+    offset: [start, end],
+  });
+  const currentFrameIndex = useTransform(scrollYProgress, [0, 1], [0, frameCount - 1]);
+
   const [images, setImages] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const currentFrameRef = useRef(0);
@@ -122,31 +124,20 @@ export default function ScrollVideo({
     }
   }, [manualProgress, isLoaded, images, frameCount, padding]);
 
-  // 2. Setup GSAP (Only if not manual)
-  useGSAP(() => {
-    if (manualProgress !== null) return;
-    if (!isLoaded || images.length === 0 || !canvasRef.current || !triggerRef?.current) return;
+  useEffect(() => {
+    if (manualProgress !== null) return; // Manual progress takes precedence
+    if (!isLoaded || images.length === 0 || !canvasRef.current) return;
 
-    const frameObj = { frame: 0 };
-
-    gsap.to(frameObj, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
-      scrollTrigger: {
-        trigger: triggerRef.current,
-        start: start,
-        end: end,
-        scrub: 0.5,
-      },
-      onUpdate: () => {
-        const frameIndex = Math.round(frameObj.frame);
-        currentFrameRef.current = frameIndex;
-        const canvas = canvasRef.current;
-        if (canvas) renderFrame(frameIndex, canvas, canvas.getContext("2d"), images);
-      }
+    const unsubscribe = currentFrameIndex.onChange((latest) => {
+      const frameIndex = Math.round(latest);
+      currentFrameRef.current = frameIndex;
+      const canvas = canvasRef.current;
+      if (canvas) renderFrame(frameIndex, canvas, canvas.getContext("2d"), images);
     });
-  }, [isLoaded, images, triggerRef, start, end, manualProgress]);
+
+    return () => unsubscribe();
+  }, [isLoaded, images, currentFrameIndex, manualProgress]);
+
 
   return (
     <div className="w-full h-full relative flex items-center justify-center overflow-hidden">

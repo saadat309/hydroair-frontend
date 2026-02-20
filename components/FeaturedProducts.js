@@ -2,126 +2,153 @@
 
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
-import { fetchAPI, getStrapiMedia } from "@/lib/api";
-import Image from "next/image";
+import { fetchAPI } from "@/lib/api";
+import { motion } from "framer-motion";
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button"; // Import Button component
 
 export default function FeaturedProducts() {
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
-  const containerRef = useRef(null);
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch products from Strapi
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const data = await fetchAPI("/products", {
-          locale: language,
-          "pagination[limit]": 3,
-        });
-        setProducts(data.data || []);
-      } catch (error) {
-        console.error("Failed to load featured products:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadProducts();
-  }, [language]);
-
-  useGSAP(() => {
-    if (!isLoading && products.length > 0) {
-      gsap.from(".product-card", {
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 75%",
+    const { t } = useTranslation();
+    const { language } = useLanguageStore();
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+  
+    const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.1,
         },
-        y: 100,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2
-      });
-    }
-  }, { scope: containerRef, dependencies: [isLoading, products] });
-
-  return (
-    <section ref={containerRef} className="py-24 bg-background relative z-10">
-      <div className="container">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
-                    {t('homepage.products.title')}
-                </h2>
-                <p className="text-muted-foreground text-lg">
-                    {t('homepage.products.subtitle')}
-                </p>
-            </div>
-            <Link 
-                href="/products" 
-                className="group flex items-center gap-2 text-primary font-semibold hover:text-primary/80 transition-colors"
-            >
-                {t('homepage.products.allProducts')}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+      },
+    };
+  
+    const itemVariants = {
+      hidden: { y: 100, opacity: 0 },
+      visible: { y: 0, opacity: 1, transition: { duration: 0.8 } },
+    };
+  
+    // Fetch products from Strapi
+    useEffect(() => {
+      async function loadProducts() {
+        try {
+          const data = await fetchAPI("/products", {
+            locale: language,
+            "pagination[limit]": 3,
+          });
+          setProducts(data.data || []);
+        } catch (error) {
+          console.error("Failed to load featured products:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+      loadProducts();
+    }, [language]);
+  
+    return (
+      <section className="py-24 bg-secondary relative z-10">
+        {/* Wave Background SVG */}
+        <div className="absolute inset-0 h-full w-full pointer-events-none z-0">
+          <svg
+            className="w-full h-full text-background"
+            viewBox="0 0 1440 800"
+            fill="none"
+            preserveAspectRatio="none"
+          >
+            <g transform="scale(-1, 1) translate(-1440, 0)">
+              {/* Top Wave: new downward pattern, horizontally flipped */}
+              <path
+                d="M0 0 C 140 460, 480 0, 720 100 S 1200 0, 1440 160 V 0 Z"
+                fill="currentColor"
+              />
+            </g>
+            {/* Bottom Wave: different S-curves, more pronounced */}
+            <path
+              d="M0 800 C 200 750, 500 400, 600 550 S 1000 700, 1440 550 V 800 Z"
+              fill="currentColor"
+            />
+          </svg>
         </div>
+        <div className="container relative z-10">
+          <div className="flex flex-col justify-center items-center mb-8 text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
+              {t("homepage.products.title_part1")}{" "}
+              <span className="text-primary">
+                {t("homepage.products.title_part2")}
+              </span>
+            </h2>
+            <p className="text-foreground text-lg">
+              {t("homepage.products.subtitle")}
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl mx-auto p-4"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {isLoading ? (
-               // Skeleton loading state
-               Array(3).fill(0).map((_, i) => (
-                   <div key={i} className="h-[400px] bg-muted/20 rounded-2xl animate-pulse" />
-               ))
+              // Skeleton loading state
+              Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[400px] bg-muted/20 rounded-2xl animate-pulse"
+                  />
+                ))
             ) : products.length > 0 ? (
-                products.map((product) => {
-                    const imageUrl = getStrapiMedia(product.image?.url);
-                    return (
-                        <div key={product.documentId} className="product-card group relative bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                            <Link href={`/products/${product.slug}`} className="block">
-                                <div className="aspect-square bg-secondary/20 flex items-center justify-center p-8 relative overflow-hidden">
-                                    {imageUrl ? (
-                                        <Image 
-                                            src={imageUrl} 
-                                            alt={product.name}
-                                            fill
-                                            className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-white/50 rounded-xl flex items-center justify-center text-muted-foreground text-sm">
-                                            No Image
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                <div className="p-6">
-                                    <div className="flex items-center gap-1 mb-2">
-                                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                        <span className="text-sm font-medium">5.0</span>
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">{product.name}</h3>
-                                    <div className="flex items-center justify-between mt-4">
-                                        <span className="text-2xl font-bold text-foreground">${product.price}</span>
-                                        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold hover:bg-primary/90 transition-colors">
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-                    );
-                })
+              products.map((product, index) => {
+                const dummyPrice = product.price || 25.00; // Fallback dummy price
+                const tags = ["SALE", "NEW", "15% OFF"];
+                const priceTypes = ["sale", "normal", "range"];
+
+                const tag = tags[index % tags.length];
+                const priceType = priceTypes[index % priceTypes.length];
+                const oldPrice = (dummyPrice * 1.2).toFixed(2);
+                const newPrice = dummyPrice.toFixed(2);
+                const minPrice = (dummyPrice * 0.8).toFixed(2);
+                const maxPrice = (dummyPrice * 1.1).toFixed(2);
+
+                return (
+                  <motion.div
+                    key={product.documentId}
+                    className="group relative"
+                    variants={itemVariants}
+                  >
+                    <ProductCard
+                      product={{ ...product, oldPrice, newPrice, minPrice, maxPrice }}
+                      tag={tag}
+                      priceType={priceType}
+                      rating={4.5}
+                    />
+                  </motion.div>
+                );
+              })
             ) : (
-                <div className="col-span-3 text-center py-12 text-muted-foreground">
-                    No featured products found.
-                </div>
+              <div className="col-span-3 text-center py-12 text-foreground">
+                No featured products found.
+              </div>
             )}
+          </motion.div>
+
+          <div className="mt-12 text-center">
+            <Link href="/products" passHref>
+              <Button
+                asChild
+                className="px-8 py-3 text-lg bg-primary text-primary-foreground rounded-full ease-in-out shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300"
+              >
+                <a>{t("homepage.products.allProducts")}</a>
+              </Button>
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }

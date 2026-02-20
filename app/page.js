@@ -4,15 +4,17 @@ import HeroSection from "@/components/HeroSection";
 import BrandStory from "@/components/BrandStory";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import FiltrationTechnology from "@/components/FiltrationTechnology";
+import StatsSection from "@/components/StatsSection";
 import FAQSection from "@/components/FAQSection";
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <BrandStory />
-      <FeaturedProducts />
       <FiltrationTechnology />
+      <FeaturedProducts />
+      <StatsSection />
+      <BrandStory />
       <FAQSection />
     </>
   );

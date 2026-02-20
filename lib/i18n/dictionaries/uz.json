@@ -28,7 +28,7 @@
   },
   "homepage": {
     "hero": {
-      "title": "Toza Havo va Suv Yechimlari",
+      "title": "Toza Suv va <br/>**Toza Havo Yechimlari**",
       "subtitle": "Uyingiz va ofisingiz uchun sog'lom muhit yaratuvchi ilg'or filtrlash texnologiyalari.",
       "ctaPrimary": "Xarid qilish",
       "ctaSecondary": "Batafsil"
@@ -44,7 +44,8 @@
       }
     },
     "products": {
-      "title": "Filtrni Tanlang",
+      "title_part1": "Filtrni",
+      "title_part2": "Tanlang",
       "subtitle": "Bizning Filtrlar",
       "allProducts": "Barcha Mahsulotlar"
     },
@@ -141,9 +142,9 @@
     "title": "HydroAir Technologies haqida",
     "description": "Biz havo va suvni filtrlash bo'yicha ilg'or yechimlarning yetakchi yetkazib beruvchisimiz, har bir xonadon va idoraga toza, xavfsiz va sog'lom muhitni yetkazib berishga intilamiz.",
     "stats": {
-      "liters": "Litr filtrlangan",
-      "customers": "Mamnun mijozlar",
-      "experience": "Yillik tajriba"
+      "filtersDelivered": "Filtrlar yetkazildi",
+      "yearsExperience": "Yillik bozor tajribasi",
+      "happyCustomers": "mamnun mijozlar"
     },
     "mission": {
       "title": "Bizning vazifamiz",

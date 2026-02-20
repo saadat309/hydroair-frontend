@@ -75,7 +75,7 @@ export default function ProductDetailPage() {
       <div className="container">
         
         {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <div className="flex items-center gap-2 text-sm text-foreground mb-8">
             <a href="/" className="hover:text-primary transition-colors">Home</a>
             <span>/</span>
             <a href="/products" className="hover:text-primary transition-colors">Products</a>
@@ -102,7 +102,7 @@ export default function ProductDetailPage() {
                             priority
                         />
                     ) : (
-                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Image</div>
+                         <div className="w-full h-full flex items-center justify-center text-foreground">No Image</div>
                     )}
                 </div>
             </div>
@@ -126,7 +126,7 @@ export default function ProductDetailPage() {
                            <Star className="w-5 h-5 fill-current" />
                            <Star className="w-5 h-5 fill-current" />
                        </div>
-                       <span className="text-muted-foreground text-sm">(12 reviews)</span>
+                       <span className="text-foreground text-sm">(12 reviews)</span>
                        <span className={`px-2 py-0.5 text-xs font-bold rounded border ${inStock ? 'bg-green-500/10 text-green-600 border-green-200' : 'bg-red-500/10 text-red-600 border-red-200'}`}>
                            {inStock ? 'In Stock' : 'Out of Stock'}
                        </span>
@@ -134,7 +134,7 @@ export default function ProductDetailPage() {
                    <div className="text-3xl font-bold text-primary mb-6">
                        ${price}
                    </div>
-                   <div className="prose prose-neutral dark:prose-invert max-w-none text-muted-foreground mb-8">
+                   <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground mb-8">
                        {/* Description from Blocks */}
                        {description && <BlocksRenderer content={description} />}
                    </div>
@@ -179,17 +179,17 @@ export default function ProductDetailPage() {
 
                 <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-border">
                     <div className="flex items-center gap-3">
-                        <Shield className="w-8 h-8 text-muted-foreground" />
+                        <Shield className="w-8 h-8 text-foreground" />
                         <div>
                             <div className="font-bold text-sm text-foreground">5 Year Warranty</div>
-                            <div className="text-xs text-muted-foreground">Full coverage</div>
+                            <div className="text-xs text-foreground">Full coverage</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Truck className="w-8 h-8 text-muted-foreground" />
+                        <Truck className="w-8 h-8 text-foreground" />
                         <div>
                             <div className="font-bold text-sm text-foreground">Free Shipping</div>
-                            <div className="text-xs text-muted-foreground">On all orders</div>
+                            <div className="text-xs text-foreground">On all orders</div>
                         </div>
                     </div>
                 </div>
