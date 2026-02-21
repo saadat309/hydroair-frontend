@@ -33,7 +33,7 @@ export default function BrandStory() {
     ];
   
     return (
-      <section ref={containerRef} className="relative m-24 p-24 shadow-[0_0_60px_rgba(var(--color-primary-rgb),0.3)] rounded-2xl overflow-hidden">
+      <section ref={containerRef} className="relative m-4 p-24 shadow-[0_0_60px_rgba(var(--color-primary-rgb),0.3)] rounded-2xl overflow-hidden">
   
           <div className="container relative z-10 flex flex-col items-center text-center">
               <h2 className="text-sm font-bold tracking-widest text-primary uppercase mb-2">Since 2010</h2>

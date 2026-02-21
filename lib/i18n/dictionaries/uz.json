@@ -108,9 +108,14 @@
       "certified": "Sertifikatlangan Sifat"
     }
   },
-  "cart": {
+"cart": {
     "title": "Sizning Savatingiz",
     "empty": "Savatingiz bo'sh",
+    "items": "ta maxsulot",
+    "filter": "Filtr",
+    "calculatedAtCheckout": "Buyurtmada hisoblanadi",
+    "tax": "Soliq",
+    "taxShippingCheckout": "Soliq va yetkazib berish buyurtmada hisoblanadi.",
     "table": {
       "product": "Mahsulot",
       "price": "Narx",
@@ -123,6 +128,13 @@
   },
   "checkout": {
     "title": "Buyurtmani Rasmiylashtirish",
+    "backToCart": "Savatga qaytish",
+    "contactInfo": "Aloqa ma'lumotlari",
+    "shippingAddress": "Yetkazib berish manzili",
+    "orderSummary": "Buyurtma xulosasi",
+    "paymentSection": "To'lov",
+    "paymentComingSoon": "To'lov integratsiyasi tez orada qo'shiladi.",
+    "completeOrder": "Buyurtmani yakunlash",
     "billing": {
       "title": "To'lov Ma'lumotlari",
       "firstName": "Ism",
@@ -132,7 +144,13 @@
       "address": "Ko'cha Manzili",
       "city": "Shahar",
       "zip": "Pochta Indeksi",
-      "country": "Mamlakat"
+      "country": "Mamlakat",
+      "firstNamePlaceholder": "Ism",
+      "lastNamePlaceholder": "Familiya",
+      "addressPlaceholder": "Manzil",
+      "cityPlaceholder": "Shahar",
+      "postalCodePlaceholder": "Pochta indeksi",
+      "emailPlaceholder": "Elektron pochta"
     },
     "payment": {
       "title": "To'lov Usuli",

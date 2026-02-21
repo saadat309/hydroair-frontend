@@ -15,7 +15,9 @@ export default function Home() {
       <FeaturedProducts />
       <StatsSection />
       <BrandStory />
-      <FAQSection />
+      <div className="mt-40">
+        <FAQSection />
+      </div>
     </>
   );
 }

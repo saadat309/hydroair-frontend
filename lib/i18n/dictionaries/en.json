@@ -111,6 +111,11 @@
   "cart": {
     "title": "Your Cart",
     "empty": "Your cart is empty",
+    "items": "items",
+    "filter": "Filter",
+    "calculatedAtCheckout": "Calculated at checkout",
+    "tax": "Tax",
+    "taxShippingCheckout": "Tax and shipping calculated at checkout.",
     "table": {
       "product": "Product",
       "price": "Price",
@@ -123,6 +128,13 @@
   },
   "checkout": {
     "title": "Checkout",
+    "backToCart": "Back to Cart",
+    "contactInfo": "Contact Information",
+    "shippingAddress": "Shipping Address",
+    "orderSummary": "Order Summary",
+    "paymentSection": "Payment",
+    "paymentComingSoon": "Payment integration coming soon.",
+    "completeOrder": "Complete Order",
     "billing": {
       "title": "Billing Details",
       "firstName": "First Name",
@@ -132,7 +144,13 @@
       "address": "Street Address",
       "city": "City",
       "zip": "ZIP Code",
-      "country": "Country"
+      "country": "Country",
+      "firstNamePlaceholder": "First name",
+      "lastNamePlaceholder": "Last name",
+      "addressPlaceholder": "Address",
+      "cityPlaceholder": "City",
+      "postalCodePlaceholder": "Postal code",
+      "emailPlaceholder": "Email address"
     },
     "payment": {
       "title": "Payment Method",

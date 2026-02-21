@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useCallback, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import useCartStore from "@/lib/stores/useCartStore";
 import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
@@ -7,16 +8,73 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
+import { fetchAPI } from "@/lib/api";
+import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 
 export default function CartPage() {
   const { t } = useTranslation();
-  const { items, totalItems, totalPrice, removeItem, updateQuantity } = useCartStore();
+  const { language } = useLanguageStore();
+  const { items, totalItems, totalPrice, removeItem, updateQuantity, refreshItem } = useCartStore();
+  const [loading, setLoading] = useState(true);
+
+  const getCurrency = (item) => {
+    const useInternational = item?.international_currency;
+    if (useInternational) return { prefix: '$', suffix: '' };
+    switch (language) {
+      case 'ru': return { prefix: '', suffix: ' руб.' };
+      case 'uz': return { prefix: '', suffix: " so'm" };
+      default: return { prefix: '$', suffix: '' };
+    }
+  };
+
+  const formatPrice = (price, item) => {
+    const { prefix, suffix } = getCurrency(item);
+    return `${prefix}${price.toFixed(2)}${suffix}`;
+  };
+
+  const fetchLocalizedItems = useCallback(async () => {
+    if (items.length === 0) {
+      setLoading(false);
+      return;
+    }
+    
+    const ids = items.map(item => item.documentId || item.id);
+    try {
+      const productsRes = await fetchAPI("/products", { 
+        locale: language,
+        'filters[id][$in]': ids,
+        populate: '*'
+      });
+      
+      if (productsRes?.data) {
+        productsRes.data.forEach(product => {
+          const itemId = product.documentId || product.id;
+          const localizedData = {
+            name: product.name,
+            price: product.price,
+            category: product.category?.name,
+            international_currency: product.international_currency
+          };
+          refreshItem(itemId, localizedData);
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch localized products:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [items, language, refreshItem]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchLocalizedItems();
+  }, [fetchLocalizedItems]);
 
   return (
     <div className="min-h-screen pb-20">
       <PageHeader title={t('cart.title')} />
       
-<div className="container max-w-6xl mt-36">
+<div className="container max-w-6xl">
         
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-6 py-20 bg-secondary/10 rounded-3xl border border-dashed border-border">
@@ -38,10 +96,10 @@ export default function CartPage() {
                                  <div className="text-xs text-foreground">{item.name}</div>
                             </div>
                             
-                            <div className="flex-1">
+<div className="flex-1">
                                 <h3 className="text-xl font-bold mb-1">{item.name}</h3>
-                                <p className="text-foreground text-sm mb-4">{item.category} Filter</p>
-                                <div className="text-lg font-bold text-primary">${item.price}</div>
+                                <p className="text-foreground text-sm mb-4">{t('cart.filter')} {item.category}</p>
+                                <div className="text-lg font-bold text-primary">{formatPrice(item.price, item)}</div>
                             </div>
 
                             <div className="flex flex-col items-end gap-4">
@@ -76,27 +134,27 @@ export default function CartPage() {
                 {/* Order Summary */}
                 <div className="w-full lg:w-96 shrink-0">
                     <div className="bg-card p-8 rounded-3xl border border-border sticky top-32">
-                        <h2 className="text-2xl font-bold font-heading mb-6">{t('common.summary')}</h2>
+<h2 className="text-2xl font-bold font-heading mb-6">{t('cart.summary')}</h2>
                         
                         <div className="space-y-4 mb-6 text-foreground">
                             <div className="flex justify-between">
-                                <span>{t('cart.subtotal')}</span>
-                                <span className="font-medium text-foreground">${totalPrice.toFixed(2)}</span>
+                                <span>{t('common.subtotal')}</span>
+                                <span className="font-medium text-foreground">{formatPrice(totalPrice, items[0])}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span>{t('cart.shipping')}</span>
-                                <span className="font-medium text-foreground">Calculated at checkout</span>
+                                <span>{t('common.shipping')}</span>
+                                <span className="font-medium text-foreground">{t('cart.calculatedAtCheckout')}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span>{t('cart.tax')}</span>
-                                <span className="font-medium text-foreground">Calculated at checkout</span>
+                                <span className="font-medium text-foreground">{t('cart.calculatedAtCheckout')}</span>
                             </div>
                         </div>
 
                         <div className="border-t border-border pt-6 mb-8">
                             <div className="flex justify-between text-xl font-bold text-foreground">
-                                <span>{t('cart.total')}</span>
-                                <span>${totalPrice.toFixed(2)}</span>
+                                <span>{t('common.total')}</span>
+                                <span>{formatPrice(totalPrice, items[0])}</span>
                             </div>
                         </div>
 

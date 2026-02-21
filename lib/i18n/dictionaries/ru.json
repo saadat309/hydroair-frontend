@@ -108,9 +108,14 @@
       "certified": "Сертифицированное качество"
     }
   },
-  "cart": {
+"cart": {
     "title": "Ваша корзина",
     "empty": "Ваша корзина пуста",
+    "items": "товаров",
+    "filter": "Фильтр",
+    "calculatedAtCheckout": "Рассчитывается при оформлении",
+    "tax": "Налог",
+    "taxShippingCheckout": "Налог и доставка рассчитываются при оформлении.",
     "table": {
       "product": "Товар",
       "price": "Цена",
@@ -123,6 +128,13 @@
   },
   "checkout": {
     "title": "Оформление заказа",
+    "backToCart": "Вернуться в корзину",
+    "contactInfo": "Контактная информация",
+    "shippingAddress": "Адрес доставки",
+    "orderSummary": "Итого заказа",
+    "paymentSection": "Оплата",
+    "paymentComingSoon": "Интеграция оплаты скоро появится.",
+    "completeOrder": "Оформить заказ",
     "billing": {
       "title": "Детали оплаты",
       "firstName": "Имя",
@@ -132,7 +144,13 @@
       "address": "Адрес",
       "city": "Город",
       "zip": "Индекс",
-      "country": "Страна"
+      "country": "Страна",
+      "firstNamePlaceholder": "Имя",
+      "lastNamePlaceholder": "Фамилия",
+      "addressPlaceholder": "Адрес",
+      "cityPlaceholder": "Город",
+      "postalCodePlaceholder": "Почтовый индекс",
+      "emailPlaceholder": "Эл. почта"
     },
     "payment": {
       "title": "Способ оплаты",

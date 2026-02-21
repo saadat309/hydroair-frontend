@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useCallback, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import useCartStore from "@/lib/stores/useCartStore";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -9,10 +10,69 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { useLanguageStore } from "@/lib/stores/useLanguageStore";
+import { fetchAPI } from "@/lib/api";
 
 export default function CartDrawer({ children }) {
   const { t } = useTranslation();
-  const { items, totalItems, totalPrice, removeItem, updateQuantity } = useCartStore();
+  const { language } = useLanguageStore();
+  const { items, totalItems, totalPrice, removeItem, updateQuantity, refreshItem } = useCartStore();
+  const [loading, setLoading] = useState(false);
+
+  const getCurrency = (item) => {
+    const useInternational = item?.international_currency;
+    if (useInternational) return { prefix: '$', suffix: '' };
+    switch (language) {
+      case 'ru': return { prefix: '', suffix: ' руб.' };
+      case 'uz': return { prefix: '', suffix: " so'm" };
+      default: return { prefix: '$', suffix: '' };
+    }
+  };
+
+  const formatPrice = (price, item) => {
+    const { prefix, suffix } = getCurrency(item);
+    return `${prefix}${price.toFixed(2)}${suffix}`;
+  };
+
+  const fetchLocalizedItems = useCallback(async () => {
+    if (items.length === 0) return;
+    
+    const ids = items.map(item => item.documentId || item.id);
+    try {
+      setLoading(true);
+      const productsRes = await fetchAPI("/products", { 
+        locale: language,
+        'filters[id][$in]': ids,
+        populate: '*'
+      });
+      
+      if (productsRes?.data) {
+        productsRes.data.forEach(product => {
+          const itemId = product.documentId || product.id;
+          const localizedData = {
+            name: product.name,
+            price: product.price,
+            category: product.category?.name,
+            international_currency: product.international_currency
+          };
+          refreshItem(itemId, localizedData);
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch localized products:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [items, language, refreshItem]);
+
+  useEffect(() => {
+    fetchLocalizedItems();
+  }, [fetchLocalizedItems]);
+
+  // Force re-render when language changes
+  useEffect(() => {
+    // This ensures the component re-renders when language changes
+  }, [language]);
 
   const handleRemove = (id, name) => {
     removeItem(id);
@@ -29,8 +89,8 @@ export default function CartDrawer({ children }) {
           <SheetTitle className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5 text-primary" />
             <span className="font-heading text-xl">{t('cart.title')}</span>
-            <span className="text-sm font-normal text-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
-                {totalItems} items
+<span className="text-sm font-normal text-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
+                {totalItems} {t('cart.items')}
             </span>
           </SheetTitle>
         </SheetHeader>
@@ -88,7 +148,7 @@ export default function CartDrawer({ children }) {
                                                 <Plus className="w-3 h-3" />
                                             </button>
                                         </div>
-                                        <p className="font-bold text-primary">${(item.price * item.quantity).toFixed(2)}</p>
+                                        <p className="font-bold text-primary">{formatPrice(item.price * item.quantity, item)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -97,12 +157,12 @@ export default function CartDrawer({ children }) {
                 </ScrollArea>
 
                 <div className="p-6 border-t border-border bg-muted/10">
-                    <div className="flex justify-between items-center mb-4">
+<div className="flex justify-between items-center mb-4">
                         <span className="text-foreground">{t('common.subtotal')}</span>
-                        <span className="text-xl font-bold font-heading text-foreground">${totalPrice.toFixed(2)}</span>
+                        <span className="text-xl font-bold font-heading text-foreground">{formatPrice(totalPrice, items[0])}</span>
                     </div>
                     <p className="text-xs text-foreground mb-6 text-center">
-                        Tax and shipping calculated at checkout.
+                        {t('cart.taxShippingCheckout')}
                     </p>
                     <SheetTrigger asChild>
                         <Link href="/checkout" className="w-full">

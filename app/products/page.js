@@ -45,7 +45,7 @@ export default function ProductsPage() {
         // Prepare product filters
         const productFilters = {
           locale: language,
-          populate: ["image", "category"],
+          populate: ["images", "category"],
         };
 
         if (selectedCategory !== "all") {

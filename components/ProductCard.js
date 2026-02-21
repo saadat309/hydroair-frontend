@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
@@ -9,6 +10,8 @@ import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import WavyBadge from "@/components/ui/WavyBadge";
+import { getStrapiMedia } from "@/lib/api";
+import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 
 export default function ProductCard({
   product,
@@ -18,24 +21,44 @@ export default function ProductCard({
 }) {
   const { t } = useTranslation();
   const { addItem } = useCartStore();
+  const { language } = useLanguageStore();
+  
+  const [currency, setCurrency] = useState(() => {
+    if (product.international_currency) return { prefix: '$', suffix: '' };
+    switch (language) {
+      case 'ru': return { prefix: '', suffix: ' руб.' };
+      case 'uz': return { prefix: '', suffix: " so'm" };
+      default: return { prefix: '$', suffix: '' };
+    }
+  });
 
-  const { name, slug, image, inStock, price: basePrice } = product;
-  const imageUrl = image?.url
-    ? `http://localhost:1337${image.url}`
-    : "/placeholder-product.svg";
+  useEffect(() => {
+    if (product.international_currency) {
+      setCurrency({ prefix: '$', suffix: '' });
+    } else {
+      switch (language) {
+        case 'ru': setCurrency({ prefix: '', suffix: ' руб.' }); break;
+        case 'uz': setCurrency({ prefix: '', suffix: " so'm" }); break;
+        default: setCurrency({ prefix: '$', suffix: '' });
+      }
+    }
+  }, [language, product.international_currency]);
 
-  // Extract price variants from product if available, otherwise use defaults
-  const currentPrice = product.newPrice || basePrice;
-  const oldPrice = product.oldPrice;
-  const minPrice = product.minPrice;
-  const maxPrice = product.maxPrice;
+  const { name, slug, images, inStock, price, old_price, international_currency } = product;
+  const imageUrl = getStrapiMedia(images?.[0]?.url) || "/placeholder-product.svg";
+
+  const { prefix, suffix } = currency;
+
+  // Handle case where we might be passed attributes (Strapi 4 style) though we aim for v5
+  // const data = product.attributes || product; 
 
   const handleAddToCart = () => {
     addItem({
-      id: product.id || product.documentId,
+      id: product.documentId || product.id,
       name: name,
-      price: currentPrice,
+      price: price,
       image: imageUrl,
+      international_currency: international_currency
     });
     toast.success(`${name} added to cart`);
   };
@@ -59,49 +82,43 @@ export default function ProductCard({
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-card-foreground">
-            No Image
+          <div className="w-full h-full flex items-center justify-center text-card-foreground bg-secondary/40">
+            {t('products.noImage') || 'No Image'}
           </div>
         )}
       </Link>
 
       <div className="p-4 flex flex-col flex-grow text-center">
         <Link href={`/products/${slug}`}>
-          <h3 className="font-semibold text-lg mb-2 text-card-foreground hover:text-primary transition-colors">
+          <h3 className="font-bold text-lg mb-2 text-foreground hover:text-primary transition-colors">
             {name}
           </h3>
         </Link>
 
         {rating > 0 && (
           <div className="flex justify-center mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={cn(
-                  "w-4 h-4",
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={cn(
+                "w-4 h-4",
                   i < rating ? "text-primary" : "text-muted",
-                )}
+              )}
                 fill={i < rating ? "currentColor" : "none"}
-              />
-            ))}
-          </div>
+            />
+          ))}
+        </div>
         )}
 
-        <div className="flex justify-center items-baseline mb-4 mt-auto">
-          {priceType === "sale" && oldPrice && (
-            <span className="text-muted-foreground line-through mr-2">
-              ${oldPrice}
+        <div className="flex justify-center items-center gap-2 mb-4 mt-auto">
+          {old_price && (
+            <span className="text-muted-foreground line-through text-sm">
+              {prefix}{old_price}{suffix}
             </span>
           )}
-          {priceType === "range" ? (
-            <span className="text-xl font-bold text-primary">
-              ${minPrice} - ${maxPrice}
-            </span>
-          ) : (
-            <span className="text-xl font-bold text-primary">
-              ${currentPrice}
-            </span>
-          )}
+          <span className="text-xl font-bold text-primary">
+            {prefix}{price}{suffix}
+          </span>
         </div>
 
         <div className="flex justify-center">

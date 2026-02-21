@@ -4,7 +4,7 @@ import WavyTopBackground from './WavyTopBackground';
 
 export default function PageHeader({ title, subtitle }) {
   return (
-    <div className="relative min-h-screen overflow-hidden pt-15">
+    <div className="relative min-h-80 overflow-hidden pt-15">
       {/* Wavy Background */}
       <div
         className="absolute top-0 left-0 w-full"
