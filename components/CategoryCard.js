@@ -10,6 +10,12 @@ export default function CategoryCard({
 }) {
   const { t } = useTranslation();
 
+  const handleCategoryClick = (slug, name) => {
+    if (onSelect) {
+      onSelect(slug, name);
+    }
+  };
+
   return (
     <div className="bg-card rounded-lg p-6 shadow-[0_0_40px_rgba(var(--color-primary-rgb),0.3)]">
       <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center">
@@ -21,21 +27,24 @@ export default function CategoryCard({
           className={`text-foreground hover:text-primary transition-colors cursor-pointer ${
             selectedCategory === 'all' ? 'font-bold text-primary' : ''
           }`}
-          onClick={() => onSelect('all')}
+          onClick={() => handleCategoryClick('all', t('products.allProducts'))}
         >
           {t('products.allProducts')} ({productsCount})
         </li>
-        {categories.map((cat) => (
-          <li
-            key={cat.id}
-            className={`text-foreground hover:text-primary transition-colors cursor-pointer ${
-              selectedCategory === cat.slug ? 'font-bold text-primary' : ''
-            }`}
-            onClick={() => onSelect(cat.slug)}
-          >
-            {cat.name} ({cat.products_count || 0})
-          </li>
-        ))}
+        {categories.map((cat) => {
+          const productsCount = cat.productsCount ?? 0;
+          return (
+            <li
+              key={cat.id}
+              className={`text-foreground hover:text-primary transition-colors cursor-pointer ${
+                selectedCategory === cat.slug ? 'font-bold text-primary' : ''
+              }`}
+              onClick={() => handleCategoryClick(cat.slug, cat.name)}
+            >
+              {cat.name} ({productsCount})
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

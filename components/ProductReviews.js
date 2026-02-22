@@ -4,40 +4,78 @@ import { useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { Star, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { fetchAPI } from "@/lib/api";
+import { toast } from "sonner";
+import { z } from "zod";
 
-export default function ProductReviews({ productId }) {
+const reviewSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  email: z.string().email("Invalid email address"),
+  text: z.string().max(1000).optional(),
+  rating: z.number().min(1, "Rating is required").max(5)
+});
+
+export default function ProductReviews({ productId, reviews = [] }) {
   const { t } = useTranslation();
-  const [reviews, setReviews] = useState([
-    { id: 1, name: "John D.", rating: 5, text: "Excellent product! The water quality has improved significantly.", date: "2024-01-15" },
-    { id: 2, name: "Sarah M.", rating: 4, text: "Good filter, easy to install. Would recommend.", date: "2024-01-10" },
-  ]);
-  const [newReview, setNewReview] = useState({ name: "", email: "", text: "", rating: 0 });
+  const [newReview, setNewReview] = useState({ name: "", email: "", text: "", rating: 5 });
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+  
+  const approvedReviews = reviews.filter(r => r.is_approved);
+  
+  const averageRating = approvedReviews.length > 0 
+    ? (approvedReviews.reduce((acc, r) => acc + (r.rating || 0), 0) / approvedReviews.length)
+    : 5;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newReview.name || !newReview.email || !newReview.text || newReview.rating === 0) return;
-
+    
+    const result = reviewSchema.safeParse({
+      name: newReview.name,
+      email: newReview.email,
+      text: newReview.text || undefined,
+      rating: newReview.rating
+    });
+    
+    if (!result.success) {
+      const fieldErrors = {};
+      result.error.errors.forEach(err => {
+        fieldErrors[err.path[0]] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    
+    setErrors({});
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      const review = {
-        id: Date.now(),
-        name: newReview.name,
-        rating: newReview.rating,
-        text: newReview.text,
-        date: new Date().toISOString().split('T')[0]
-      };
-      setReviews([review, ...reviews]);
-      setNewReview({ name: "", email: "", text: "", rating: 0 });
+    try {
+      const slug = `${newReview.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
+      
+      await fetchAPI("/reviews", {
+        method: "POST",
+        body: JSON.stringify({
+          data: {
+            name: newReview.name,
+            slug: slug,
+            email: newReview.email,
+            review: newReview.text || "",
+            rating: newReview.rating,
+            is_approved: false,
+            product: productId
+          }
+        })
+      });
+      
+      toast.success(t('products.reviews.form.success') || "Review submitted successfully!");
+      setNewReview({ name: "", email: "", text: "", rating: 5 });
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      toast.error(t('products.reviews.form.error') || "Failed to submit review");
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
-
-  const averageRating = reviews.length > 0 
-    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) 
-    : 0;
 
   return (
     <div>
@@ -48,62 +86,51 @@ export default function ProductReviews({ productId }) {
             {t('products.details.reviews')}
           </h3>
 
-          {/* Rating Summary */}
-          <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border">
-            <div className="text-center">
-              <p className="text-4xl font-bold text-primary">{averageRating}</p>
-              <div className="flex gap-1 mt-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star 
-                    key={star} 
-                    className={cn(
-                      "w-4 h-4",
-                      star <= Math.round(averageRating) ? "fill-primary text-primary" : "text-muted"
-                    )} 
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          
 
           {/* Reviews List */}
           <div className="space-y-6 mb-10">
-            {reviews.map((review) => (
-              <div key={review.id} className="pb-6 border-b border-border last:border-0">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-bold">{review.name.charAt(0)}</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold">{review.name}</p>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star 
-                            key={star} 
-                            className={cn(
-                              "w-3 h-3",
-                              star <= review.rating ? "fill-primary text-primary" : "text-muted"
-                            )} 
-                          />
-                        ))}
+            {approvedReviews.length > 0 ? (
+              approvedReviews.map((review) => (
+                <div key={review.id} className="pb-6 border-b border-border last:border-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span className="text-primary font-bold">{review.name?.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{review.name}</p>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star 
+                              key={star} 
+                              className={cn(
+                                "w-3 h-3",
+                                star <= review.rating ? "fill-primary text-primary" : "text-muted"
+                              )} 
+                            />
+                          ))}
+                          <span className="text-xs text-primary ml-1 font-medium">({review.rating})</span>
+                        </div>
                       </div>
                     </div>
+                    <span className="text-sm text-muted-foreground">{review.createdAt?.split('T')[0]}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">{review.date}</span>
+                  <p className="text-foreground mt-2">{review.review}</p>
                 </div>
-                <p className="text-foreground mt-2">{review.text}</p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-muted-foreground text-center py-8">{t('products.reviews.noReviews')}</p>
+            )}
           </div>
 
           {/* Add Review Form */}
           <div className="bg-secondary rounded-xl p-6 lg:p-8">
-            <h4 className="text-lg font-bold mb-4">Write a Review</h4>
+            <h4 className="text-lg font-bold mb-4">{t('products.reviews.form.title')}</h4>
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Star Rating */}
               <div>
-                <label className="block text-sm font-medium mb-2">Rating</label>
+                <label className="block text-sm font-medium mb-2">{t('products.reviews.form.rating')}</label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((star) => {
                     const isFilled = star <= (hoverRating || newReview.rating);
@@ -126,53 +153,62 @@ export default function ProductReviews({ productId }) {
                       </button>
                     );
                   })}
+                  <span className="text-primary font-medium ml-2">({hoverRating || newReview.rating})</span>
                 </div>
+                {errors.rating && <p className="text-red-500 text-sm mt-1">{errors.rating}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Name</label>
+                  <label className="block text-sm font-medium mb-2">{t('products.reviews.form.name')}</label>
                   <input
                     type="text"
                     value={newReview.name}
                     onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                    placeholder="Your name"
+                    className={cn(
+                      "w-full px-4 py-3 rounded-lg border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none",
+                      errors.name ? "border-red-500" : "border-input"
+                    )}
+                    placeholder={t('products.reviews.form.namePlaceholder')}
                     required
                   />
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label className="block text-sm font-medium mb-2">{t('products.reviews.form.email')}</label>
                   <input
                     type="email"
                     value={newReview.email}
                     onChange={(e) => setNewReview({ ...newReview, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                    placeholder="Your email"
+                    className={cn(
+                      "w-full px-4 py-3 rounded-lg border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none",
+                      errors.email ? "border-red-500" : "border-input"
+                    )}
+                    placeholder={t('products.reviews.form.emailPlaceholder')}
                     required
                   />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Review</label>
+                <label className="block text-sm font-medium mb-2">{t('products.reviews.form.review')}</label>
                 <textarea
                   value={newReview.text}
                   onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
-                  placeholder="Share your experience with this product..."
+                  placeholder={t('products.reviews.form.reviewPlaceholder')}
                   rows={4}
-                  required
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={isSubmitting || !newReview.name || !newReview.email || !newReview.text || newReview.rating === 0}
+                disabled={isSubmitting}
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
-                {isSubmitting ? 'Submitting...' : 'Submit Review'}
+                {isSubmitting ? t('products.reviews.form.submitting') : t('products.reviews.form.submit')}
               </button>
             </form>
           </div>

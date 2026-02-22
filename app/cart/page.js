@@ -49,11 +49,13 @@ export default function CartPage() {
       if (productsRes?.data) {
         productsRes.data.forEach(product => {
           const itemId = product.documentId || product.id;
+          const imageUrl = product.images?.[0]?.formats?.thumbnail || product.images?.[0]?.url;
           const localizedData = {
             name: product.name,
             price: product.price,
             category: product.category?.name,
-            international_currency: product.international_currency
+            international_currency: product.international_currency,
+            image: imageUrl
           };
           refreshItem(itemId, localizedData);
         });
@@ -92,8 +94,11 @@ export default function CartPage() {
                     {items.map((item) => (
                         <div key={item.id} className="flex gap-6 bg-card p-6 rounded-2xl border border-border items-center">
                             <div className="w-24 h-24 bg-secondary/20 rounded-xl flex items-center justify-center shrink-0 relative overflow-hidden">
-                                 {/* Fallback image */}
-                                 <div className="text-xs text-foreground">{item.name}</div>
+                                {item.image ? (
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                                ) : (
+                                    <div className="text-xs text-foreground">{item.name}</div>
+                                )}
                             </div>
                             
 <div className="flex-1">

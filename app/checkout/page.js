@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import useCartStore from "@/lib/stores/useCartStore";
 import Link from "next/link";
@@ -48,11 +49,13 @@ export default function CheckoutPage() {
       if (productsRes?.data) {
         productsRes.data.forEach(product => {
           const itemId = product.documentId || product.id;
+          const imageUrl = product.images?.[0]?.formats?.thumbnail || product.images?.[0]?.url;
           const localizedData = {
             name: product.name,
             price: product.price,
             category: product.category?.name,
-            international_currency: product.international_currency
+            international_currency: product.international_currency,
+            image: imageUrl
           };
           refreshItem(itemId, localizedData);
         });
@@ -143,10 +146,14 @@ export default function CheckoutPage() {
                         {items.map((item) => (
                             <div key={item.id} className="flex gap-4 items-start">
                                 <div className="w-16 h-16 bg-secondary/20 rounded-lg flex items-center justify-center shrink-0 relative overflow-hidden">
-                                     <div className="text-[10px] text-foreground px-1 text-center">{item.name}</div>
-                                     <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center rounded-bl-lg font-bold">
+                                    {item.image ? (
+                                        <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                                    ) : (
+                                        <div className="text-[10px] text-foreground px-1 text-center">{item.name}</div>
+                                    )}
+                                    <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center rounded-bl-lg font-bold">
                                         {item.quantity}
-                                     </span>
+                                    </span>
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="text-sm font-semibold line-clamp-2">{item.name}</h4>

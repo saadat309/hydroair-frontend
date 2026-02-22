@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { fetchAPI, getStrapiMedia } from "@/lib/api";
-import { Filter, ShoppingCart } from "lucide-react";
+import { Filter, ShoppingCart, ChevronLeft, ChevronRight, X } from "lucide-react";
 import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const PAGE_SIZE = 9;
+
 export default function ProductsPage() {
   const { t } = useTranslation();
   const { language } = useLanguageStore();
@@ -30,31 +32,70 @@ export default function ProductsPage() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
+    const [selectedCategoryName, setSelectedCategoryName] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedSort, setSelectedSort] = useState("default"); // New state for sorting
+    const [selectedSort, setSelectedSort] = useState("default");
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [displayedCount, setDisplayedCount] = useState(0);
+
+  const totalPages = Math.ceil(displayedCount / PAGE_SIZE);
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
       try {
-        // Fetch categories
-        const categoriesRes = await fetchAPI("/categories", { locale: language });
-        setCategories(categoriesRes.data || []);
+        const categoriesRes = await fetchAPI("/categories", { 
+          locale: language,
+          fields: ['name', 'slug'],
+        });
+        
+        const categoriesWithCounts = await Promise.all(
+          (categoriesRes.data || []).map(async (cat) => {
+            const countRes = await fetchAPI("/products", {
+              locale: language,
+              'filters[category][slug][$eq]': cat.slug,
+              pagination: { page: 1, pageSize: 1 },
+            });
+            return {
+              ...cat,
+              productsCount: countRes.meta?.pagination?.total || 0
+            };
+          })
+        );
+        setCategories(categoriesWithCounts);
 
-        // Prepare product filters
+        const allProductsRes = await fetchAPI("/products", { 
+          locale: language,
+          pagination: { page: 1, pageSize: 1 },
+        });
+        setTotalProducts(allProductsRes.meta?.pagination?.total || 0);
+
         const productFilters = {
           locale: language,
-          populate: ["images", "category"],
+          pagination: {
+            page: currentPage,
+            pageSize: PAGE_SIZE,
+          },
         };
 
-        if (selectedCategory !== "all") {
+        if (searchQuery) {
+          productFilters["filters[$or][0][name][$containsi]"] = searchQuery;
+          productFilters["filters[$or][1][description][$containsi]"] = searchQuery;
+        } else if (selectedCategory !== "all") {
           productFilters["filters[category][slug][$eq]"] = selectedCategory;
         }
 
-        // Fetch products
+        if (selectedSort === "price-asc") {
+          productFilters.sort = ["price:asc"];
+        } else if (selectedSort === "price-desc") {
+          productFilters.sort = ["price:desc"];
+        }
+
         const productsRes = await fetchAPI("/products", productFilters);
         setProducts(productsRes.data || []);
+        setDisplayedCount(productsRes.meta?.pagination?.total || 0);
 
       } catch (error) {
         console.error("Failed to fetch products or categories:", error);
@@ -65,11 +106,67 @@ export default function ProductsPage() {
     }
 
     fetchData();
-  }, [language, selectedCategory]);
+  }, [language, selectedCategory, currentPage, selectedSort, searchQuery]);
 
-  const filteredProducts = products.filter(product => 
-    product.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery]);
+
+  const handleCategorySelect = (slug, name = "") => {
+    setSelectedCategory(slug);
+    setSelectedCategoryName(name || "");
+  };
+
+  const getPageTitle = () => {
+    if (selectedCategory !== "all" && selectedCategoryName) {
+      return selectedCategoryName;
+    }
+    return t("homepage.products.allProducts");
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const clearFilters = () => {
+    setSelectedCategory("all");
+    setSelectedCategoryName("");
+    setSearchQuery("");
+    setSelectedSort("default");
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = selectedCategory !== "all" || searchQuery || selectedSort !== "default";
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden pt-15">
@@ -91,7 +188,7 @@ export default function ProductsPage() {
         {/* pt-20 to push content below actual navbar */}
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
-            {t("homepage.products.allProducts")}
+            {getPageTitle()}
           </h1>
 
           <svg
@@ -120,9 +217,9 @@ export default function ProductsPage() {
               <span className="font-bold flex items-center">
                 <span className="inline-block w-[3px] h-5 bg-primary mr-1 translate-y-[2px] rounded-full" />
                 {t('products.showing', {
-                  start: 1,
-                  end: filteredProducts.length,
-                  total: filteredProducts.length
+                  start: displayedCount > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0,
+                  end: Math.min(currentPage * PAGE_SIZE, displayedCount),
+                  total: displayedCount
                 })}
               </span>
               {/* Default sorting dropdown */}
@@ -141,6 +238,15 @@ export default function ProductsPage() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="px-3 py-1 text-sm text-primary hover:text-primary/80 transition-colors bg-secondary rounded-xl hover:bg-secondary/80 flex items-center gap-1"
+                  >
+                    <X className="w-4 h-4" />
+                    {t('products.clearFilters')}
+                  </button>
+                )}
               </div>
             </div>
             {isLoading ? (
@@ -154,9 +260,9 @@ export default function ProductsPage() {
                     />
                   ))}
               </div>
-            ) : filteredProducts.length > 0 ? (
+            ) : products.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {filteredProducts.map((product) => (
+                {products.map((product) => (
                   <ProductCard
                     key={product.documentId || product.id}
                     product={product}
@@ -174,21 +280,45 @@ export default function ProductsPage() {
             )}
 
             {/* Pagination */}
-            <div className="flex justify-center mt-12">
-              {/* Placeholder for pagination controls */}
-              <nav className="flex items-center gap-2">
-                <button className="px-4 py-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 transition-colors">
-                  1
-                </button>
-                <button className="px-4 py-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 transition-colors">
-                  2
-                </button>
-                <span className="px-4 py-2 text-foreground">...</span>
-                <button className="px-4 py-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 transition-colors">
-                  {t('products.pagination.last')}
-                </button>
-              </nav>
-            </div>
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-12">
+                <nav className="flex items-center gap-1">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  
+                  {getPageNumbers().map((page, index) => (
+                    page === '...' ? (
+                      <span key={`ellipsis-${index}`} className="px-2 py-2 text-foreground">...</span>
+                    ) : (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-full border transition-colors ${
+                          currentPage === page
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'border-border bg-card text-foreground hover:bg-muted/50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )
+                  ))}
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </nav>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -197,8 +327,8 @@ export default function ProductsPage() {
             <CategoryCard
               categories={categories}
               selectedCategory={selectedCategory}
-              onSelect={setSelectedCategory}
-              productsCount={products.length}
+              onSelect={handleCategorySelect}
+              productsCount={totalProducts}
             />
             {/* Search Box Card */}
             <SearchBoxCard

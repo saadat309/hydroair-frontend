@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n";
-import { Search } from "lucide-react"; // Assuming Search icon is still needed
-import { Button } from "@/components/ui/button"; // Import Button component
-import { cn } from "@/lib/utils"; // For combining class names
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const DEBOUNCE_DELAY = 500;
 
 export default function SearchBoxCard({ onSearch, initialQuery = "" }) {
   const { t } = useTranslation();
@@ -14,18 +16,39 @@ export default function SearchBoxCard({ onSearch, initialQuery = "" }) {
     setCurrentInput(initialQuery);
   }, [initialQuery]);
 
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (value) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          onSearch(value);
+        }, DEBOUNCE_DELAY);
+      };
+    })(),
+    [onSearch]
+  );
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setCurrentInput(value);
+    debouncedSearch(value);
+  };
+
   const handleSearchClick = () => {
+    clearTimeout(debouncedSearch.timeoutId);
     onSearch(currentInput);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      clearTimeout(debouncedSearch.timeoutId);
       onSearch(currentInput);
     }
   };
 
   return (
-<div className="bg-card rounded-lg p-6 shadow-[0_0_40px_rgba(var(--color-primary-rgb),0.3)]">
+    <div className="bg-card rounded-lg p-6 shadow-[0_0_40px_rgba(var(--color-primary-rgb),0.3)]">
       <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center">
         <span className="inline-block w-[3px] h-5 bg-primary mr-1 translate-y-[2px] rounded-full" />
         {t("products.searchByProducts")}
@@ -36,7 +59,7 @@ export default function SearchBoxCard({ onSearch, initialQuery = "" }) {
             type="text"
             placeholder={t("products.searchPlaceholder")}
             value={currentInput}
-            onChange={(e) => setCurrentInput(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             className="w-full pl-4 pr-4 py-2 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm shadow-sm"
           />

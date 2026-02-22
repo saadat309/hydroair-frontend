@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/button";
 import WavyBadge from "@/components/ui/WavyBadge";
 import { getStrapiMedia } from "@/lib/api";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
+import { StarRating } from "./StarRating";
 
 export default function ProductCard({
   product,
   tag,
   priceType = "normal",
-  rating = 0,
 }) {
   const { t } = useTranslation();
   const { addItem } = useCartStore();
@@ -44,8 +44,15 @@ export default function ProductCard({
     }
   }, [language, product.international_currency]);
 
-  const { name, slug, images, inStock, price, old_price, international_currency } = product;
-  const imageUrl = getStrapiMedia(images?.[0]?.url) || "/placeholder-product.svg";
+  const { name, slug, images, inStock, price, old_price, international_currency, reviews } = product;
+  const imageUrl = getStrapiMedia(images?.[0]?.formats?.medium) || getStrapiMedia(images?.[0]?.url) || "/placeholder-product.svg";
+
+  console.log("ProductCard - reviews:", JSON.stringify(reviews, null, 2));
+  
+  const approvedReviews = reviews?.filter(r => r.is_approved === true) || [];
+  const averageRating = approvedReviews.length > 0
+    ? approvedReviews.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / approvedReviews.length
+    : 5;
 
   const { prefix, suffix } = currency;
 
@@ -53,11 +60,12 @@ export default function ProductCard({
   // const data = product.attributes || product; 
 
   const handleAddToCart = () => {
+    const thumbUrl = getStrapiMedia(images?.[0]?.formats?.thumbnail) || imageUrl;
     addItem({
       id: product.documentId || product.id,
       name: name,
       price: price,
-      image: imageUrl,
+      image: thumbUrl,
       international_currency: international_currency
     });
     toast.success(`${name} added to cart`);
@@ -95,20 +103,9 @@ export default function ProductCard({
           </h3>
         </Link>
 
-        {rating > 0 && (
-          <div className="flex justify-center mb-2">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={cn(
-                "w-4 h-4",
-                  i < rating ? "text-primary" : "text-muted",
-              )}
-                fill={i < rating ? "currentColor" : "none"}
-            />
-          ))}
+        <div className="flex justify-center">
+          <StarRating rating={averageRating} showValue={true} showInBrackets={true} size="default" />
         </div>
-        )}
 
         <div className="flex justify-center items-center gap-2 mb-4 mt-auto">
           {old_price && (
@@ -116,7 +113,7 @@ export default function ProductCard({
               {prefix}{old_price}{suffix}
             </span>
           )}
-          <span className="text-xl font-bold text-primary">
+          <span className="text-xl font-bold text-foreground">
             {prefix}{price}{suffix}
           </span>
         </div>

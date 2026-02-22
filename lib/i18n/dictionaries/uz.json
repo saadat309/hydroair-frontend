@@ -95,6 +95,7 @@
       "priceAsc": "Narx: Pastdan yuqoriga",
       "priceDesc": "Narx: Yuqoridan pastga"
     },
+    "clearFilters": "Tozalash",
     "pagination": {
       "last": "Oxirgi"
     },
@@ -106,6 +107,23 @@
       "warranty": "2 Yillik Kafolat",
       "delivery": "Bepul Yetkazib Berish",
       "certified": "Sertifikatlangan Sifat"
+    },
+    "reviews": {
+      "form": {
+        "title": "Sharh yozish",
+        "rating": "Reyting",
+        "name": "Ism",
+        "email": "Elektron pochta",
+        "review": "Sharh",
+        "namePlaceholder": "Ismingiz",
+        "emailPlaceholder": "Email manzilingiz",
+        "reviewPlaceholder": "Ushbu mahsulot haqida tajribangizni baham ko'ring...",
+        "submit": "Sharh yuborish",
+        "submitting": "Yuborilmoqda...",
+        "success": "Sharh muvaffaqiyatli yuborildi! Tasdiqlangandan so'ng ko'rinadi.",
+        "error": "Sharh yuborishda xatolik yuz berdi. Qayta urinib ko'ring."
+      },
+      "noReviews": "Hali sharhlar yo'q. Birinchi bo'lib sharh qoldiring!"
     }
   },
 "cart": {

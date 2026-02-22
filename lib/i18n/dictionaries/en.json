@@ -95,6 +95,7 @@
       "priceAsc": "Price: Low to High",
       "priceDesc": "Price: High to Low"
     },
+    "clearFilters": "Clear",
     "pagination": {
       "last": "Last"
     },
@@ -106,6 +107,23 @@
       "warranty": "2 Year Warranty",
       "delivery": "Free Delivery",
       "certified": "Certified Quality"
+    },
+    "reviews": {
+      "form": {
+        "title": "Write a Review",
+        "rating": "Rating",
+        "name": "Name",
+        "email": "Email",
+        "review": "Review",
+        "namePlaceholder": "Your name",
+        "emailPlaceholder": "Your email",
+        "reviewPlaceholder": "Share your experience with this product...",
+        "submit": "Submit Review",
+        "submitting": "Submitting...",
+        "success": "Review submitted successfully! It will be visible after approval.",
+        "error": "Failed to submit review. Please try again."
+      },
+      "noReviews": "No reviews yet. Be the first to review this product!"
     }
   },
   "cart": {

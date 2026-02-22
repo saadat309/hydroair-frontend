@@ -10,11 +10,12 @@ import { fetchAPI, getStrapiMedia } from "@/lib/api";
 import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Star, Check, Shield, Truck, Share2, Heart, ShoppingCart, Minus, Plus, Search } from "lucide-react";
+import { Star, Check, Shield, Truck, Share2, Heart, ShoppingCart, Minus, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { BlocksRenderer } from "@strapi/blocks-react-renderer";
 import WavyTopBackground from "@/components/WavyTopBackground";
 import { cn } from "@/lib/utils";
 import ProductReviews from "@/components/ProductReviews";
+import { StarRating } from "@/components/StarRating";
 
 const WavyDivider = () => (
   <div className="w-full h-3 text-primary/40 my-6 select-none pointer-events-none">
@@ -47,8 +48,7 @@ export default function ProductDetailPage() {
           try {
               const res = await fetchAPI("/products", {
                   "filters[slug][$eq]": slug,
-                  locale: language,
-                  populate: ["images", "category", "addFeatures", "tags"]
+                  locale: language
               });
 
               console.log("Product API Response:", JSON.stringify(res.data?.[0], null, 2));
@@ -65,7 +65,6 @@ export default function ProductDetailPage() {
                           locale: language,
                           "filters[category][id][$eq]": currentProduct.category.id,
                           "filters[id][$ne]": currentProduct.documentId || currentProduct.id,
-                          populate: ["images", "category"],
                           "pagination[limit]": 4
                       });
                       if (relatedRes.data) {
@@ -122,8 +121,14 @@ export default function ProductDetailPage() {
   }
 
   // Strapi v5: attributes are flattened
-  const { name, price, old_price, international_currency, description, category, images, addFeatures, inStock, SKU, tags } = product;
-  const imageUrl = getStrapiMedia(images?.[activeImage]?.url || images?.[0]?.url);
+  const { name, price, old_price, international_currency, description, category, images, addFeatures, inStock, SKU, tags, reviews } = product;
+  const imageUrl = getStrapiMedia(images?.[activeImage]?.formats?.medium) || getStrapiMedia(images?.[activeImage]?.url) || getStrapiMedia(images?.[0]?.formats?.medium) || getStrapiMedia(images?.[0]?.url);
+  
+  // Calculate average rating from approved reviews
+  const approvedReviews = reviews?.filter(r => r.is_approved === true) || [];
+  const averageRating = approvedReviews.length > 0
+    ? approvedReviews.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / approvedReviews.length
+    : 5;
   
   // Currency helper
   const getCurrency = () => {
@@ -145,6 +150,19 @@ export default function ProductDetailPage() {
       quantity: quantity
     });
     toast.success(`${quantity} ${name} added to cart`);
+  };
+
+  const getOriginalImageUrl = () => {
+    const currentImage = images?.[activeImage] || images?.[0];
+    return getStrapiMedia(currentImage?.url);
+  };
+
+  const goToPrevImage = () => {
+    setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const goToNextImage = () => {
+    setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -187,21 +205,42 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             
             {/* Gallery Section */}
-            <div className="p-8 lg:p-16 flex flex-col items-center bg-card lg:sticky lg:top-8 lg:h-fit">
+              <div className="p-8 lg:p-16 flex flex-col items-center bg-card lg:sticky lg:top-8 lg:h-fit">
               <div className="relative group w-full aspect-square max-w-[500px]">
+                {/* Navigation Arrows */}
+                {images && images.length > 1 && (
+                  <>
+                    <button 
+                      onClick={goToPrevImage}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-card/80 border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={goToNextImage}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-card/80 border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
+                
                 <div className="absolute top-4 right-4 z-20">
-                  <button className="p-3 bg-card border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all">
+                  <a 
+                    href={getOriginalImageUrl()} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-3 bg-card border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all inline-flex"
+                  >
                     <Search className="w-5 h-5" />
-                  </button>
+                  </a>
                 </div>
                 
                 {imageUrl ? (
-                  <Image
+                  <img
                     src={imageUrl}
                     alt={name}
-                    fill
-                    className="object-contain transition-transform duration-700 group-hover:scale-105"
-                    priority
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-card-foreground bg-secondary rounded-lg font-bold italic">
@@ -218,11 +257,11 @@ export default function ProductDetailPage() {
                       key={idx}
                       onClick={() => setActiveImage(idx)}
                       className={cn(
-                        "relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-all shrink-0",
+                        "w-20 h-20 rounded-lg overflow-hidden border-2 transition-all shrink-0 flex items-center justify-center",
                         activeImage === idx ? "border-primary shadow-md" : "border-transparent opacity-60 grayscale hover:opacity-100 hover:grayscale-0"
                       )}
                     >
-                      <Image src={getStrapiMedia(img.url)} alt="" fill className="object-cover" />
+                      <img src={getStrapiMedia(img.formats?.small) || getStrapiMedia(img.url)} alt="" className="max-w-full max-h-full object-contain" />
                     </button>
                   ))}
                 </div>
@@ -234,11 +273,7 @@ export default function ProductDetailPage() {
               <WavyDivider />
               
               <div className="flex items-center gap-4 mb-4">
-                              <div className="flex items-center gap-1 text-primary">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} className={cn("w-6 h-6", i < 5 ? "fill-current" : "opacity-30")} />
-                                ))}
-                              </div>                <span className="text-muted-foreground text-sm font-medium">(4 customer reviews)</span>
+                <StarRating rating={averageRating} showValue={true} showInBrackets={true} size="large" />
               </div>
 
               <div className="flex items-baseline gap-3 mb-8">
@@ -364,7 +399,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
           {/* Reviews Card - 60% */}
           <div className="lg:col-span-3">
-            <ProductReviews productId={product?.documentId || product?.id} />
+            <ProductReviews productId={product?.documentId || product?.id} reviews={product?.reviews} />
           </div>
 
           {/* Related Products Card - 40% */}
@@ -383,12 +418,11 @@ export default function ProductDetailPage() {
                       className="flex gap-4 p-3 rounded-xl hover:bg-secondary/50 transition-colors"
                     >
                       <div className="w-16 h-16 bg-secondary/30 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
-                        {relProduct.images?.[0]?.url ? (
-                          <Image 
-                            src={getStrapiMedia(relProduct.images[0].url)} 
+                        {relProduct.images?.[0] ? (
+                          <img 
+                            src={getStrapiMedia(relProduct.images[0].formats?.small) || getStrapiMedia(relProduct.images[0].url)} 
                             alt={relProduct.name} 
-                            fill 
-                            className="object-cover" 
+                            className="w-full h-full object-contain" 
                           />
                         ) : (
                           <span className="text-xs text-muted-foreground p-1">No Image</span>
