@@ -62,6 +62,14 @@ export default function SiteFooter() {
                 {t("nav.contact")}
               </Link>
             </li>
+            <li>
+              <Link
+                href="/orders"
+                className="hover:text-primary transition-colors"
+              >
+                {t("orders.title")}
+              </Link>
+            </li>
           </ul>
         </div>
 

@@ -153,33 +153,35 @@
     "paymentSection": "Payment",
     "paymentComingSoon": "Payment integration coming soon.",
     "completeOrder": "Complete Order",
+    "processing": "Processing...",
+    "success": {
+      "title": "Order Placed Successfully!",
+      "message": "Thank you for your order. We will contact you soon.",
+      "orderId": "Order ID"
+    },
     "billing": {
-      "title": "Billing Details",
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "email": "Email Address",
-      "phone": "Phone Number",
-      "address": "Street Address",
-      "city": "City",
-      "zip": "ZIP Code",
-      "country": "Country",
+      "emailPlaceholder": "Email address",
       "firstNamePlaceholder": "First name",
       "lastNamePlaceholder": "Last name",
       "addressPlaceholder": "Address",
       "cityPlaceholder": "City",
-      "postalCodePlaceholder": "Postal code",
-      "emailPlaceholder": "Email address"
-    },
-    "payment": {
-      "title": "Payment Method",
-      "card": "Credit Card",
-      "cod": "Cash on Delivery",
-      "placeOrder": "Place Order"
-    },
-    "success": {
-      "title": "Order Confirmed!",
-      "message": "Thank you for your purchase. Your order has been received."
+      "countryPlaceholder": "Country",
+      "postalCodePlaceholder": "Postal code"
     }
+  },
+  "orders": {
+    "title": "Track Order",
+    "searchTitle": "Check Your Order Status",
+    "searchDescription": "Enter your order ID to track the status of your order",
+    "searchPlaceholder": "Enter order ID (e.g., ORD-123456)",
+    "search": "Search",
+    "notFound": "Order Not Found",
+    "tryAgain": "Try Another Search",
+    "checkAnother": "Check Another Order",
+    "tracking": "Order Progress",
+    "shippingAddress": "Shipping Address",
+    "orderSummary": "Order Summary",
+    "items": "Order Items"
   },
   "footer": {
     "menu": "Menu",

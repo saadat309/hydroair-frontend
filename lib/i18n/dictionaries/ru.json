@@ -153,33 +153,35 @@
     "paymentSection": "Оплата",
     "paymentComingSoon": "Интеграция оплаты скоро появится.",
     "completeOrder": "Оформить заказ",
+    "processing": "Обработка...",
+    "success": {
+      "title": "Заказ успешно оформлен!",
+      "message": "Спасибо за ваш заказ. Мы свяжемся с вами в ближайшее время.",
+      "orderId": "ID заказа"
+    },
     "billing": {
-      "title": "Детали оплаты",
-      "firstName": "Имя",
-      "lastName": "Фамилия",
-      "email": "Эл. почта",
-      "phone": "Телефон",
-      "address": "Адрес",
-      "city": "Город",
-      "zip": "Индекс",
-      "country": "Страна",
+      "emailPlaceholder": "Эл. почта",
       "firstNamePlaceholder": "Имя",
       "lastNamePlaceholder": "Фамилия",
       "addressPlaceholder": "Адрес",
       "cityPlaceholder": "Город",
-      "postalCodePlaceholder": "Почтовый индекс",
-      "emailPlaceholder": "Эл. почта"
-    },
-    "payment": {
-      "title": "Способ оплаты",
-      "card": "Кредитная карта",
-      "cod": "Наличными при доставке",
-      "placeOrder": "Разместить заказ"
-    },
-    "success": {
-      "title": "Заказ подтвержден!",
-      "message": "Спасибо за покупку. Ваш заказ принят."
+      "countryPlaceholder": "Страна",
+      "postalCodePlaceholder": "Почтовый индекс"
     }
+  },
+  "orders": {
+    "title": "Отследить заказ",
+    "searchTitle": "Проверить статус заказа",
+    "searchDescription": "Введите ID заказа для отслеживания",
+    "searchPlaceholder": "Введите ID заказа",
+    "search": "Найти",
+    "notFound": "Заказ не найден",
+    "tryAgain": "Попробовать снова",
+    "checkAnother": "Проверить другой заказ",
+    "tracking": "Статус заказа",
+    "shippingAddress": "Адрес доставки",
+    "orderSummary": "Итого",
+    "items": "Товары"
   },
   "footer": {
     "menu": "Меню",

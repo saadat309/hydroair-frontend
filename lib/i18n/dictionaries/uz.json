@@ -153,33 +153,35 @@
     "paymentSection": "To'lov",
     "paymentComingSoon": "To'lov integratsiyasi tez orada qo'shiladi.",
     "completeOrder": "Buyurtmani yakunlash",
+    "processing": "Qayta ishlanmoqda...",
+    "success": {
+      "title": "Buyurtma muvaffaqiyatli amalga oshirildi!",
+      "message": "Buyurtmangiz uchun tashakkur. Tez orada siz bilan bog'lanamiz.",
+      "orderId": "Buyurtma ID"
+    },
     "billing": {
-      "title": "To'lov Ma'lumotlari",
-      "firstName": "Ism",
-      "lastName": "Familiya",
-      "email": "Elektron Pochta",
-      "phone": "Telefon Raqami",
-      "address": "Ko'cha Manzili",
-      "city": "Shahar",
-      "zip": "Pochta Indeksi",
-      "country": "Mamlakat",
+      "emailPlaceholder": "Elektron pochta",
       "firstNamePlaceholder": "Ism",
       "lastNamePlaceholder": "Familiya",
       "addressPlaceholder": "Manzil",
       "cityPlaceholder": "Shahar",
-      "postalCodePlaceholder": "Pochta indeksi",
-      "emailPlaceholder": "Elektron pochta"
-    },
-    "payment": {
-      "title": "To'lov Usuli",
-      "card": "Kredit Karta",
-      "cod": "Yetkazib berilganda to'lash",
-      "placeOrder": "Buyurtma berish"
-    },
-    "success": {
-      "title": "Buyurtma Tasdiqlandi!",
-      "message": "Xaridingiz uchun rahmat. Buyurtmangiz qabul qilindi."
+      "countryPlaceholder": "Mamlakat",
+      "postalCodePlaceholder": "Pochta indeksi"
     }
+  },
+  "orders": {
+    "title": "Buyurtmani kuzatish",
+    "searchTitle": "Buyurtma holatini tekshiring",
+    "searchDescription": "Buyurtma holatini kuzatish uchun buyurtma ID sini kiriting",
+    "searchPlaceholder": "Buyurtma ID sini kiriting",
+    "search": "Qidirish",
+    "notFound": "Buyurtma topilmadi",
+    "tryAgain": "Qayta urinish",
+    "checkAnother": "Boshqa buyurtmani tekshirish",
+    "tracking": "Buyurtma jarayoni",
+    "shippingAddress": "Yetkazib berish manzili",
+    "orderSummary": "Buyurtma xulosasi",
+    "items": "Buyurtma tovarlari"
   },
   "footer": {
     "menu": "Menyu",
