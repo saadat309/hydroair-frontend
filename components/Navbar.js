@@ -2,13 +2,12 @@
 
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
-import { ShoppingCart, Menu, Search, X } from "lucide-react";
+import { ShoppingCart, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import useCartStore from "@/lib/stores/useCartStore";
 import CartDrawer from "./CartDrawer";
-import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -28,7 +27,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           isScrolled
             ? "bg-background/80 backdrop-blur-md shadow-sm py-4"
             : "bg-transparent py-6"
@@ -39,9 +38,9 @@ export default function Navbar() {
             <Image 
                 src="/logo.webp" 
                 alt="HydroAir Technologies" 
-                width={150} 
-                height={40} 
-                className="h-13 w-auto object-contain"
+                width={120} 
+                height={32} 
+                className="h-13 md:h-15 w-auto object-contain"
                 priority
             />
           </Link>
@@ -74,7 +73,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
              {/* Language Switcher */}
             <div className="hidden md:flex items-center gap-2 text-sm font-medium border-r border-border pr-4">
               {['en', 'ru', 'uz'].map((lang) => (
@@ -90,10 +89,6 @@ export default function Navbar() {
               ))}
             </div>
 
-            <button className="text-foreground/80 hover:text-primary transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
-
             <CartDrawer>
                 <button className="relative text-foreground/80 hover:text-primary transition-colors">
                     <ShoppingCart className="w-5 h-5" />
@@ -106,7 +101,7 @@ export default function Navbar() {
             </CartDrawer>
             
             <button 
-                className="md:hidden text-foreground"
+                className="md:hidden text-foreground p-1"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -117,25 +112,30 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-background pt-24 px-6 md:hidden animate-in slide-in-from-top-5">
+        <div className="fixed inset-0 z-40 bg-background pt-24 pb-12 px-6 md:hidden animate-in slide-in-from-top-5 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-6 text-xl font-heading font-bold">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.home")}</Link>
                 <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.products")}</Link>
                 <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.about")}</Link>
                 <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.contact")}</Link>
             </div>
-             <div className="mt-8 flex gap-4">
-              {['en', 'ru', 'uz'].map((lang) => (
-                <button
-                  key={lang}
-                  onClick={() => { setLanguage(lang); setIsMobileMenuOpen(false); }}
-                  className={`uppercase px-4 py-2 border rounded-full ${
-                    language === lang ? "bg-primary text-primary-foreground border-primary" : "border-border"
-                  }`}
-                >
-                  {lang}
-                </button>
-              ))}
+             <div className="mt-auto pt-8 border-t border-border">
+              <p className="text-sm text-foreground/60 uppercase tracking-widest mb-4 font-bold">{t('language')}</p>
+              <div className="flex flex-wrap gap-3">
+                {['en', 'ru', 'uz'].map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => { setLanguage(lang); setIsMobileMenuOpen(false); }}
+                    className={`uppercase px-6 py-3 border rounded-xl font-bold transition-all ${
+                      language === lang 
+                        ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20" 
+                        : "border-border text-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
             </div>
         </div>
       )}

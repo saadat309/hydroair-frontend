@@ -46,11 +46,11 @@ export default function StatsSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="bg-background relative z-10 overflow-hidden min-h-[80vh] flex items-center justify-center my-36">
+    <section ref={sectionRef} className="bg-background relative z-10 overflow-hidden min-h-[60vh] md:min-h-[80vh] flex items-center justify-center my-16 md:my-36">
       {/* Top Wave SVG */}
       <svg
-        className="absolute top-0 left-0 w-full pointer-events-none"
-        style={{ height: "25%", zIndex: 0 }}
+        className="absolute top-0 left-0 w-full h-[15%] md:h-[25%] pointer-events-none"
+        style={{ zIndex: 0 }}
         viewBox="0 0 1440 100"
         fill="none"
         preserveAspectRatio="none"
@@ -72,8 +72,8 @@ export default function StatsSection() {
 
       {/* Bottom Wave SVG */}
       <svg
-        className="absolute bottom-0 left-0 w-full pointer-events-none"
-        style={{ height: "25%", zIndex: 0 }}
+        className="absolute bottom-0 left-0 w-full h-[15%] md:h-[25%] pointer-events-none"
+        style={{ zIndex: 0 }}
         viewBox="0 0 1440 100"
         fill="none"
         preserveAspectRatio="none"
@@ -93,7 +93,7 @@ export default function StatsSection() {
 
       {/* Floating Icons */}
       <motion.div
-        className="absolute z-0"
+        className="absolute z-0 hidden md:block"
         initial={{ y: 0 }}
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -102,7 +102,7 @@ export default function StatsSection() {
         <Filter className="w-16 h-16" style={{ color: `hsl(var(--chart-2))` }} />
       </motion.div>
       <motion.div
-        className="absolute z-0"
+        className="absolute z-0 hidden md:block"
         initial={{ y: 0 }}
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -111,14 +111,14 @@ export default function StatsSection() {
         <Droplets className="w-20 h-20" style={{ color: `hsl(var(--chart-4))` }} />
       </motion.div>
 
-      <div className="container relative z-10 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <div className="container relative z-10 py-16 md:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 text-center">
           {stats.map((stat) => (
-            <div key={stat.id}>
+            <div key={stat.id} className="flex flex-col items-center">
               <p className="text-5xl md:text-6xl font-bold font-heading text-primary mb-2">
                 <AnimatedNumber value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-lg text-foreground">{stat.label}</p>
+              <p className="text-base md:text-lg text-foreground max-w-[200px]">{stat.label}</p>
             </div>
           ))}
         </div>

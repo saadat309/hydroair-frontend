@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
-import { fetchAPI, getStrapiMedia } from "@/lib/api";
-import { Filter, ShoppingCart, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { fetchAPI } from "@/lib/api";
+import { Filter, ChevronLeft, ChevronRight, X, Search, SlidersHorizontal } from "lucide-react";
 import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
-import WavyTopBackground from "@/components/WavyTopBackground";
 import SearchBoxCard from "@/components/SearchBoxCard";
 import CategoryCard from "@/components/CategoryCard";
+import TagFilter from "@/components/TagFilter";
+import PageHeader from '@/components/PageHeader';
 import {
   Select,
   SelectContent,
@@ -21,8 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 6;
 
 export default function ProductsPage() {
   const { t } = useTranslation();
@@ -31,25 +38,63 @@ export default function ProductsPage() {
   
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [tags, setTags] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedCategoryName, setSelectedCategoryName] = useState("");
+    const [selectedTag, setSelectedTag] = useState("all");
+    const [selectedTagName, setSelectedTagName] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [localSearch, setLocalSearch] = useState("");
     const [selectedSort, setSelectedSort] = useState("default");
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
     const [displayedCount, setDisplayedCount] = useState(0);
+    const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
   const totalPages = Math.ceil(displayedCount / PAGE_SIZE);
+
+  // Debounce mobile search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== searchQuery) {
+        handleSearch(localSearch);
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [localSearch]);
+
+  // Sync local search when searchQuery changes from other sources (e.g. clear filters)
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query.trim() !== "") {
+      // Clear filters when searching globally
+      setSelectedCategory("all");
+      setSelectedCategoryName("");
+      setSelectedTag("all");
+      setSelectedTagName("");
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const categoriesRes = await fetchAPI("/categories", { 
-          locale: language,
-          fields: ['name', 'slug'],
-        });
+        const [categoriesRes, tagsRes] = await Promise.all([
+          fetchAPI("/categories", { 
+            locale: language,
+            fields: ['name', 'slug'],
+          }),
+          fetchAPI("/tags", {
+            locale: language,
+            fields: ['name', 'slug'],
+          })
+        ]);
         
         const categoriesWithCounts = await Promise.all(
           (categoriesRes.data || []).map(async (cat) => {
@@ -65,6 +110,7 @@ export default function ProductsPage() {
           })
         );
         setCategories(categoriesWithCounts);
+        setTags(tagsRes.data || []);
 
         const allProductsRes = await fetchAPI("/products", { 
           locale: language,
@@ -80,17 +126,28 @@ export default function ProductsPage() {
           },
         };
 
+        // If searching, only apply search filters (Global search)
         if (searchQuery) {
           productFilters["filters[$or][0][name][$containsi]"] = searchQuery;
           productFilters["filters[$or][1][description][$containsi]"] = searchQuery;
-        } else if (selectedCategory !== "all") {
-          productFilters["filters[category][slug][$eq]"] = selectedCategory;
+        } else {
+          // Otherwise apply category and tag filters
+          if (selectedCategory !== "all") {
+            productFilters["filters[category][slug][$eq]"] = selectedCategory;
+          }
+
+          if (selectedTag !== "all") {
+            productFilters["filters[tags][slug][$eq]"] = selectedTag;
+          }
         }
 
         if (selectedSort === "price-asc") {
           productFilters.sort = ["price:asc"];
         } else if (selectedSort === "price-desc") {
           productFilters.sort = ["price:desc"];
+        } else {
+          // Default: Newest first
+          productFilters.sort = ["createdAt:desc"];
         }
 
         const productsRes = await fetchAPI("/products", productFilters);
@@ -106,18 +163,38 @@ export default function ProductsPage() {
     }
 
     fetchData();
-  }, [language, selectedCategory, currentPage, selectedSort, searchQuery]);
+  }, [language, selectedCategory, selectedTag, currentPage, selectedSort, searchQuery]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, selectedTag, searchQuery]);
 
   const handleCategorySelect = (slug, name = "") => {
     setSelectedCategory(slug);
     setSelectedCategoryName(name || "");
+    // Clear tag and search when category is selected
+    setSelectedTag("all");
+    setSelectedTagName("");
+    setSearchQuery("");
+    setLocalSearch("");
+    setIsFilterSheetOpen(false);
+  };
+
+  const handleTagSelect = (slug, name = "") => {
+    setSelectedTag(slug);
+    setSelectedTagName(name || "");
+    // Clear category and search when tag is selected
+    setSelectedCategory("all");
+    setSelectedCategoryName("");
+    setSearchQuery("");
+    setLocalSearch("");
+    setIsFilterSheetOpen(false);
   };
 
   const getPageTitle = () => {
+    if (selectedTag !== "all" && selectedTagName) {
+      return `TAG: ${selectedTagName.toUpperCase()}`;
+    }
     if (selectedCategory !== "all" && selectedCategoryName) {
       return selectedCategoryName;
     }
@@ -134,12 +211,14 @@ export default function ProductsPage() {
   const clearFilters = () => {
     setSelectedCategory("all");
     setSelectedCategoryName("");
+    setSelectedTag("all");
+    setSelectedTagName("");
     setSearchQuery("");
     setSelectedSort("default");
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = selectedCategory !== "all" || searchQuery || selectedSort !== "default";
+  const hasActiveFilters = selectedCategory !== "all" || selectedTag !== "all" || searchQuery || selectedSort !== "default";
 
   const getPageNumbers = () => {
     const pages = [];
@@ -168,85 +247,133 @@ export default function ProductsPage() {
     return pages;
   };
 
-  return (
-    <div className="relative min-h-screen overflow-hidden pt-15">
-      {" "}
-      {/* Add pt-20 to account for fixed navbar */}
-      {/* Wavy Background covering the top 50vh of content below navbar */}
-      <div
-        className="absolute top-0 left-0 w-full"
-        style={{ height: "calc(50vh + 80px)" }}
-      >
-        {" "}
-        {/* 80px is pt-20 offset */}
-        <WavyTopBackground height="100%" />{" "}
-        {/* Make WavyTopBackground fill this div */}
-      </div>
-      {/* Content for the top section (Title + Search) */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
-        {" "}
-        {/* pt-20 to push content below actual navbar */}
-        <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
-            {getPageTitle()}
-          </h1>
+  const SidebarContent = () => (
+    <>
+      {/* Product Categories */}
+      <CategoryCard
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelect={handleCategorySelect}
+        productsCount={totalProducts}
+      />
+      {/* Product Tags */}
+      <TagFilter
+        tags={tags}
+        selectedTag={selectedTag}
+        onSelect={handleTagSelect}
+      />
+    </>
+  );
 
-          <svg
-            className="w-56 h-6 text-primary mt-3 mb-6 mx-auto"
-            viewBox="0 0 192 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M 0 6 Q 8 2, 16 6 Q 24 10, 32 6 Q 40 2, 48 6 Q 56 10, 64 6 Q 72 2, 80 6 Q 88 10, 96 6 Q 104 2, 112 6 Q 120 10, 128 6 Q 136 2, 144 6 Q 152 10, 160 6 Q 168 2, 176 6 Q 184 10, 192 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+  return (
+    <div className="pb-20">
+      <PageHeader title={getPageTitle()} isProductsPage={true}>
+        <div className="max-w-md mx-auto relative px-4 flex flex-col gap-4">
+          {/* Mobile-only debounced search */}
+          <div className="md:hidden relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              type="text"
+              placeholder={t("products.searchPlaceholder")}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 rounded-2xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-base shadow-lg"
             />
-          </svg>
+          </div>
+
+          {/* Mobile-only filter controls */}
+          <div className="md:hidden flex items-center justify-center gap-2">
+            <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="rounded-full w-14 h-14 bg-background border-border shadow-md flex items-center justify-center">
+                  <Filter className="w-6 h-6 text-primary" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto px-0">
+                <SheetHeader className="mb-6 px-6">
+                  <SheetTitle className="text-2xl font-bold flex items-center gap-2">
+                    <Filter className="w-5 h-5 text-primary" />
+                    {t('common.filter') || 'Filters'}
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-8 pb-10 px-6">
+                  <SidebarContent />
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {hasActiveFilters && (
+              <Button 
+                variant="outline" 
+                onClick={clearFilters}
+                className="rounded-full h-14 px-6 bg-background border-border text-primary font-bold shadow-md flex items-center gap-2"
+              >
+                <X className="w-5 h-5" />
+                {t('products.clearFilters')}
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="container relative z-10 mt-36 pb-12">
+      </PageHeader>
+
+      <div className="container mx-auto px-4 md:py-12">
         {" "}
         {/* Adjust margin-top to pull products grid up */}
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
-          {/* Main Content: Products Grid */}
-          <div>
+          {/* Sidebar - Hidden on Mobile, Shown on Desktop */}
+          <div className="hidden lg:flex order-1 lg:order-2 flex-col gap-8">
+            <SearchBoxCard
+              initialQuery={searchQuery}
+              onSearch={handleSearch}
+            />
+            <SidebarContent />
+          </div>
+
+          {/* Main Content: Products Grid - Bottom on Mobile, Left on Desktop */}
+          <div className="order-2 lg:order-1">
             {/* Showing X of Y results */}
             <div className="flex justify-between items-center text-foreground text-sm mb-6">
               <span className="font-bold flex items-center">
                 <span className="inline-block w-[3px] h-5 bg-primary mr-1 translate-y-[2px] rounded-full" />
-                {t('products.showing', {
-                  start: displayedCount > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0,
+                {t("products.showing", {
+                  start:
+                    displayedCount > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0,
                   end: Math.min(currentPage * PAGE_SIZE, displayedCount),
-                  total: displayedCount
+                  total: displayedCount,
                 })}
               </span>
               {/* Default sorting dropdown */}
               <div className="flex items-center gap-2">
                 <Select value={selectedSort} onValueChange={setSelectedSort}>
                   <SelectTrigger className="w-[180px] bg-card border border-border rounded-md px-3 py-1 text-sm text-foreground focus:outline-none">
-                    <SelectValue placeholder={t('products.sortOptions.default')} />
+                    <SelectValue
+                      placeholder={t("products.sortOptions.default")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="default">{t('products.sortOptions.default')}</SelectItem>
+                    <SelectItem value="default">
+                      {t("products.sortOptions.default")}
+                    </SelectItem>
                     <SelectItem value="price-asc">
-                      {t('products.sortOptions.priceAsc')}
+                      {t("products.sortOptions.priceAsc")}
                     </SelectItem>
                     <SelectItem value="price-desc">
-                      {t('products.sortOptions.priceDesc')}
+                      {t("products.sortOptions.priceDesc")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                {hasActiveFilters && (
-                  <button
-                    onClick={clearFilters}
-                    className="px-3 py-1 text-sm text-primary hover:text-primary/80 transition-colors bg-secondary rounded-xl hover:bg-secondary/80 flex items-center gap-1"
-                  >
-                    <X className="w-4 h-4" />
-                    {t('products.clearFilters')}
-                  </button>
-                )}
+                {/* Desktop-only clear filters button */}
+                <div className="hidden md:block">
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearFilters}
+                      className="px-3 py-1 text-sm text-primary hover:text-primary/80 transition-colors bg-secondary rounded-xl hover:bg-secondary/80 flex items-center gap-1"
+                    >
+                      <X className="w-4 h-4" />
+                      {t("products.clearFilters")}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
             {isLoading ? (
@@ -272,9 +399,11 @@ export default function ProductsPage() {
             ) : (
               <div className="text-center py-24 bg-muted/10 rounded-3xl border border-dashed border-border">
                 <Filter className="w-12 h-12 text-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-bold mb-2">{t('products.noResults')}</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  {t("products.noResults")}
+                </h3>
                 <p className="text-foreground">
-                  {t('products.noResultsDescription')}
+                  {t("products.noResultsDescription")}
                 </p>
               </div>
             )}
@@ -290,25 +419,30 @@ export default function ProductsPage() {
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
-                  
-                  {getPageNumbers().map((page, index) => (
-                    page === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-2 py-2 text-foreground">...</span>
+
+                  {getPageNumbers().map((page, index) =>
+                    page === "..." ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-2 py-2 text-foreground"
+                      >
+                        ...
+                      </span>
                     ) : (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
                         className={`px-4 py-2 rounded-full border transition-colors ${
                           currentPage === page
-                            ? 'bg-primary text-primary-foreground border-primary'
-                            : 'border-border bg-card text-foreground hover:bg-muted/50'
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "border-border bg-card text-foreground hover:bg-muted/50"
                         }`}
                       >
                         {page}
                       </button>
-                    )
-                  ))}
-                  
+                    ),
+                  )}
+
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
@@ -319,22 +453,6 @@ export default function ProductsPage() {
                 </nav>
               </div>
             )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Product Categories */}
-            <CategoryCard
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelect={handleCategorySelect}
-              productsCount={totalProducts}
-            />
-            {/* Search Box Card */}
-            <SearchBoxCard
-              initialQuery={searchQuery}
-              onSearch={setSearchQuery}
-            />
           </div>
         </div>
       </div>

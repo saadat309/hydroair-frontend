@@ -87,7 +87,7 @@ export default function CartPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("cart.title")} />
 
-      <div className="container max-w-6xl">
+      <div className="container max-w-6xl md:pt-12">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-6 py-20 bg-secondary/10 rounded-3xl border border-dashed border-border">
             <div className="text-6xl">🛒</div>

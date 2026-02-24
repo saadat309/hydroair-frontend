@@ -11,12 +11,12 @@ export default function AboutPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col gap-20 pb-20">
+    <div className="flex flex-col pb-20">
       {/* Page Header */}
       <PageHeader title={t('about.title')} />
 
       {/* Content Section */}
-      <section className="container mx-auto px-4 mb-12">
+      <section className="container mx-auto px-4 mb-12 md:mt-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold">{t('about.mission.title')}</h2>

@@ -94,7 +94,7 @@ export default function OrderStatusPage() {
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
         
-        <div className="container mt-36 max-w-xl">
+        <div className="container mt-12 md:mt-24 max-w-xl">
           <div className="bg-background p-8 rounded-3xl border border-border shadow-sm">
             <h1 className="text-2xl font-bold mb-6 text-center">
               {t("orders.searchTitle")}
@@ -124,7 +124,7 @@ export default function OrderStatusPage() {
     return (
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
-        <div className="container mt-36 text-center">
+        <div className="container mt-12 md:mt-24 text-center">
           <div className="animate-pulse">
             <div className="h-4 bg-muted rounded w-1/4 mx-auto mb-4"></div>
             <div className="h-32 bg-muted rounded-xl"></div>
@@ -139,7 +139,7 @@ export default function OrderStatusPage() {
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
         
-        <div className="container mt-36 max-w-xl">
+        <div className="container mt-12 md:mt-24 max-w-xl">
           <div className="bg-background p-8 rounded-3xl border border-border shadow-sm text-center">
             <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">{t("orders.notFound")}</h2>
@@ -162,7 +162,7 @@ export default function OrderStatusPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("orders.title")} />
 
-      <div className="container mt-36 max-w-3xl">
+      <div className="container mt-12 md:mt-24 max-w-3xl">
         <div className="bg-background p-8 rounded-3xl border border-border shadow-sm">
           {/* Order ID */}
           <div className="flex justify-between items-start mb-8">

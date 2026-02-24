@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Loader2, Trash2, History, Plus, ChevronLeft, Droplets as WaterIcon } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Trash2, History, Plus, ChevronLeft, Droplets as WaterIcon, User } from 'lucide-react';
 import { useChatStore } from '@/lib/stores/useChatStore';
 import { useLanguageStore } from '@/lib/stores/useLanguageStore';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import QuickActions from './QuickActions';
 import ReactMarkdown from 'react-markdown';
+import { fetchAPI } from '@/lib/api';
 
 export default function ChatbotWidget() {
   const { 
@@ -83,9 +84,8 @@ export default function ChatbotWidget() {
       const sessionForHistory = useChatStore.getState().sessions.find(s => s.id === activeId);
       const history = sessionForHistory?.messages.map(m => ({ role: m.role, text: m.text })) || [];
 
-      const res = await fetch('http://localhost:1337/api/chatbot', {
+      const data = await fetchAPI('/chatbot', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: messageToSend,
           history: history,
@@ -93,7 +93,6 @@ export default function ChatbotWidget() {
         })
       });
 
-      const data = await res.json();
       if (data.response) {
         addMessage({ role: 'model', text: data.response });
       } else {
@@ -214,51 +213,59 @@ export default function ChatbotWidget() {
                         <div 
                           key={msg.id} 
                           className={cn(
-                            "flex flex-col",
+                            "flex flex-col mb-2",
                             msg.role === 'user' ? "items-end" : "items-start"
                           )}
                         >
-                          <div className={cn(
-                            "max-w-[85%] p-4 rounded-2xl text-sm shadow-sm leading-relaxed",
-                            msg.role === 'user' 
-                              ? "bg-primary text-primary-foreground rounded-tr-none" 
-                              : "bg-background border text-foreground rounded-tl-none"
-                          )}>
-                            {msg.role === 'user' ? (
-                              <p className="m-0">{msg.text}</p>
-                            ) : (
-                              <div className="markdown-content overflow-hidden">
-                                <ReactMarkdown
-                                  components={{
-                                    a: ({ node, ...props }) => (
-                                      <a {...props} className="text-primary font-medium hover:underline" target="_blank" rel="noopener noreferrer" />
-                                    ),
-                                    p: ({ node, ...props }) => <p {...props} className="m-0 mb-2 last:mb-0" />,
-                                    ul: ({ node, ...props }) => <ul {...props} className="list-disc pl-4 my-2 space-y-1" />,
-                                    ol: ({ node, ...props }) => <ol {...props} className="list-decimal pl-4 my-2 space-y-1" />,
-                                    li: ({ node, ...props }) => <li {...props} className="leading-normal" />,
-                                  }}
-                                >
-                                  {msg.text || ""}
-                                </ReactMarkdown>
-                              </div>
-                            )}
+                          <div className="flex flex-col items-start max-w-[85%] group">
+                            <div className="mb-1 ml-1 flex items-center">
+                              {msg.role === 'user' ? (
+                                <User className="w-3.5 h-3.5 text-primary opacity-80" />
+                              ) : (
+                                <WaterIcon className="w-3.5 h-3.5 text-primary opacity-80" />
+                              )}
+                            </div>
+                            <div className={cn(
+                              "p-4 rounded-2xl text-sm shadow-sm leading-relaxed w-full",
+                              msg.role === 'user' 
+                                ? "bg-primary text-primary-foreground rounded-tl-none" 
+                                : "bg-background border text-foreground rounded-tl-none"
+                            )}>
+                              {msg.role === 'user' ? (
+                                <p className="m-0">{msg.text}</p>
+                              ) : (
+                                <div className="markdown-content overflow-hidden">
+                                  <ReactMarkdown
+                                    components={{
+                                      a: ({ node, ...props }) => (
+                                        <a {...props} className="text-primary font-medium hover:underline" target="_blank" rel="noopener noreferrer" />
+                                      ),
+                                      p: ({ node, ...props }) => <p {...props} className="m-0 mb-2 last:mb-0" />,
+                                      ul: ({ node, ...props }) => <ul {...props} className="list-disc pl-4 my-2 space-y-1" />,
+                                      ol: ({ node, ...props }) => <ol {...props} className="list-decimal pl-4 my-2 space-y-1" />,
+                                      li: ({ node, ...props }) => <li {...props} className="leading-normal" />,
+                                    }}
+                                  >
+                                    {msg.text || ""}
+                                  </ReactMarkdown>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <span className="text-[9px] text-foreground mt-1 px-1 font-medium uppercase tracking-tighter opacity-70">
-                            {msg.role === 'user' ? t('chat.you') : t('chat.assistant')}
-                          </span>
                         </div>
                       ))}
                       
                       {isLoading && (
-                        <div className="flex justify-start">
+                        <div className="flex flex-col items-start mb-2">
+                          <div className="mb-1 ml-1 flex items-center">
+                            <WaterIcon className="w-3.5 h-3.5 text-primary opacity-80" />
+                          </div>
                           <div className="bg-background border p-4 rounded-2xl rounded-tl-none text-sm flex items-center gap-3 shadow-sm">
                             <div className="flex gap-1">
                               <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
                               <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
                               <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" />
                             </div>
-                            <span className="text-foreground italic text-xs font-medium">{t('chat.typing')}</span>
                           </div>
                         </div>
                       )}
@@ -328,7 +335,7 @@ export default function ChatbotWidget() {
                                 e.stopPropagation();
                                 deleteSession(session.id);
                               }}
-                              className="p-2 text-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                              className="p-2 text-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
                               title={t('chat.deleteSession')}
                             >
                               <Trash2 className="w-4 h-4" />

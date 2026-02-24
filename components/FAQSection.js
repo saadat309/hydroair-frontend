@@ -39,12 +39,12 @@ export default function FAQSection() {
         />
       </svg>
 
-      <div className="container max-w-4xl mx-auto">
-        <div className="text-center mb-16">
+      <div className="container max-w-4xl mx-auto px-4">
+        <div className="text-center mb-12 md:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-background text-foreground text-sm font-semibold mb-4">
             <span>FAQ</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground">
             {t("homepage.faq.title")}
           </h2>
         </div>
@@ -52,16 +52,16 @@ export default function FAQSection() {
         <Accordion
           type="single"
           collapsible
-          className="w-full py-12 px-24 bg-background mx-auto shadow-[0_0_60px_rgba(var(--color-primary-rgb),0.3)] rounded-2xl"
+          className="w-full py-8 md:py-12 px-6 md:px-24 bg-background mx-auto shadow-[0_0_60px_rgba(var(--color-primary-rgb),0.3)] rounded-2xl"
         >
           {Array.isArray(items) &&
             items.map((item, index) => (
               <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-lg font-semibold text-left flex items-center justify-start gap-x-0">
-                  <span className="inline-block w-[3px] h-5 bg-primary mr-2 translate-y-[2px] rounded-full" />
-                  {item.q}
+                <AccordionTrigger className="text-base md:text-lg font-semibold text-left flex items-start justify-start gap-x-0">
+                  <span className="inline-block w-[3px] h-5 bg-primary mr-2 mt-1 shrink-0 rounded-full" />
+                  <span className="leading-tight">{item.q}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-foreground text-base">
+                <AccordionContent className="text-foreground/80 text-sm md:text-base leading-relaxed">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>

@@ -54,14 +54,15 @@ export default function SearchBoxCard({ onSearch, initialQuery = "" }) {
         {t("products.searchByProducts")}
       </h3>
       <div className="flex flex-col gap-2">
-        <div className="relative">
+        <div className="relative group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
           <input
             type="text"
             placeholder={t("products.searchPlaceholder")}
             value={currentInput}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className="w-full pl-4 pr-4 py-2 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm shadow-sm"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm shadow-sm"
           />
         </div>
         <Button

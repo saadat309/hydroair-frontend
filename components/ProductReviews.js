@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/lib/i18n";
-import { Star, Send } from "lucide-react";
+import { Star, Send, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchAPI } from "@/lib/api";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
 
 const reviewSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
@@ -21,12 +22,18 @@ export default function ProductReviews({ productId, reviews = [] }) {
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [visibleCount, setVisibleCount] = useState(3);
   
-  const approvedReviews = reviews.filter(r => r.is_approved);
+  const approvedReviews = [...reviews]
+    .filter(r => r.is_approved)
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0));
   
-  const averageRating = approvedReviews.length > 0 
-    ? (approvedReviews.reduce((acc, r) => acc + (r.rating || 0), 0) / approvedReviews.length)
-    : 5;
+  const displayedReviews = approvedReviews.slice(0, visibleCount);
+  const hasMore = visibleCount < approvedReviews.length;
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 3);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,35 +97,50 @@ export default function ProductReviews({ productId, reviews = [] }) {
 
           {/* Reviews List */}
           <div className="space-y-6 mb-10">
-            {approvedReviews.length > 0 ? (
-              approvedReviews.map((review) => (
-                <div key={review.id} className="pb-6 border-b border-border last:border-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-primary font-bold">{review.name?.charAt(0)}</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold">{review.name}</p>
-                        <div className="flex items-center gap-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star 
-                              key={star} 
-                              className={cn(
-                                "w-3 h-3",
-                                star <= review.rating ? "fill-primary text-primary" : "text-muted"
-                              )} 
-                            />
-                          ))}
-                          <span className="text-xs text-primary ml-1 font-medium">({review.rating})</span>
+            {displayedReviews.length > 0 ? (
+              <>
+                {displayedReviews.map((review) => (
+                  <div key={review.id} className="pb-6 border-b border-border last:border-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-primary font-bold">{review.name?.charAt(0)}</span>
+                        </div>
+                        <div>
+                          <p className="font-semibold">{review.name}</p>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star 
+                                key={star} 
+                                className={cn(
+                                  "w-3 h-3",
+                                  star <= review.rating ? "fill-primary text-primary" : "text-muted"
+                                )} 
+                              />
+                            ))}
+                            <span className="text-xs text-primary ml-1 font-medium">({review.rating})</span>
+                          </div>
                         </div>
                       </div>
+                      <span className="text-sm text-muted-foreground">{review.createdAt?.split('T')[0]}</span>
                     </div>
-                    <span className="text-sm text-muted-foreground">{review.createdAt?.split('T')[0]}</span>
+                    <p className="text-foreground mt-2">{review.review}</p>
                   </div>
-                  <p className="text-foreground mt-2">{review.review}</p>
-                </div>
-              ))
+                ))}
+
+                {hasMore && (
+                  <div className="flex justify-center pt-4">
+                    <Button 
+                      variant="ghost" 
+                      onClick={handleLoadMore}
+                      className="text-primary font-bold hover:bg-primary/5 rounded-full px-8 py-6 flex items-center gap-2 transition-all active:scale-95"
+                    >
+                      {t('common.viewMore') || 'Load More'}
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <p className="text-muted-foreground text-center py-8">{t('products.reviews.noReviews')}</p>
             )}

@@ -21,7 +21,7 @@ export default function OrdersPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("orders.title")} />
       
-      <div className="container mt-36 max-w-xl">
+      <div className="container mt-12 md:mt-24 max-w-xl">
         <div className="bg-background p-8 rounded-3xl border border-border shadow-sm">
           <div className="text-center mb-8">
             <Search className="w-16 h-16 text-primary mx-auto mb-4" />

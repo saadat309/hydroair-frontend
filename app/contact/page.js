@@ -7,6 +7,7 @@ import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2, Ticket, MessageCircle
 import { cn } from '@/lib/utils';
 import PageHeader from '@/components/PageHeader';
 import FAQSection from '@/components/FAQSection';
+import { fetchAPI } from '@/lib/api';
 
 export default function ContactPage() {
   const { t, locale } = useTranslation();
@@ -25,6 +26,27 @@ export default function ContactPage() {
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [optimisticReplies, setOptimisticReplies] = useState([]);
   
+  // Track message arrival times locally since Strapi repeatable components don't have individual timestamps
+  const [messageTimes, setMessageTimes] = useState({});
+
+  const recordMessageTimes = useCallback((conversation, fallbackTime) => {
+    if (!conversation) return;
+    setMessageTimes(prev => {
+      const newTimes = { ...prev };
+      let hasNew = false;
+      conversation.forEach(msg => {
+        if (!newTimes[msg.id]) {
+          // If this is the very first time we're seeing any messages, use the fallback (updatedAt)
+          // Otherwise, if new messages arrive during the session, use the current time
+          const isFirstLoad = Object.keys(prev).length === 0;
+          newTimes[msg.id] = isFirstLoad ? fallbackTime : new Date().toISOString();
+          hasNew = true;
+        }
+      });
+      return hasNew ? newTimes : prev;
+    });
+  }, []);
+  
   // Polling for real-time updates
   const pollingRef = useRef(null);
   const lastReplyCountRef = useRef(0);
@@ -32,10 +54,10 @@ export default function ContactPage() {
   const fetchTicket = useCallback(async (id) => {
     setLoadingTicket(true);
     try {
-      const res = await fetch(`http://localhost:1337/api/support-tickets/by-ticket-id/${id}`);
-      const data = await res.json();
+      const data = await fetchAPI(`/support-tickets/by-ticket-id/${id}`);
       if (data.data) {
         setTicketData(data.data);
+        recordMessageTimes(data.data.conversation, data.data.updatedAt);
         // Clear optimistic replies once we have real data
         setOptimisticReplies([]);
         lastReplyCountRef.current = data.data.conversation?.length || 0;
@@ -45,7 +67,7 @@ export default function ContactPage() {
     } finally {
       setLoadingTicket(false);
     }
-  }, []);
+  }, [recordMessageTimes]);
 
   // Initial load
   useEffect(() => {
@@ -60,13 +82,13 @@ export default function ContactPage() {
       // Poll every 5 seconds for new messages
       pollingRef.current = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:1337/api/support-tickets/by-ticket-id/${ticketData.ticketId}`);
-          const data = await res.json();
+          const data = await fetchAPI(`/support-tickets/by-ticket-id/${ticketData.ticketId}`);
           if (data.data) {
             const currentReplyCount = data.data.conversation?.length || 0;
             // Only update if there are new replies
             if (currentReplyCount !== lastReplyCountRef.current) {
               setTicketData(data.data);
+              recordMessageTimes(data.data.conversation, data.data.updatedAt);
               lastReplyCountRef.current = currentReplyCount;
               setOptimisticReplies([]); // Clear optimistic replies
             }
@@ -82,18 +104,16 @@ export default function ContactPage() {
         }
       };
     }
-  }, [ticketData?.ticketId, ticketData?.ticketStatus]);
+  }, [ticketData?.ticketId, ticketData?.ticketStatus, recordMessageTimes]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:1337/api/support-tickets', {
+      const data = await fetchAPI('/support-tickets', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data: { ...formData, language: locale } })
       });
-      const data = await res.json();
       if (data.data) {
         setSubmittedId(data.data.ticketId);
         setFormData({ name: '', email: '', subject: '', message: '' });
@@ -126,14 +146,13 @@ export default function ContactPage() {
     setIsSendingReply(true);
     
     try {
-      const res = await fetch(`http://localhost:1337/api/support-tickets/by-ticket-id/${ticketData.ticketId}/reply`, {
+      const data = await fetchAPI(`/support-tickets/by-ticket-id/${ticketData.ticketId}/reply`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: messageText, author: 'user' })
       });
-      const data = await res.json();
       if (data.data) {
         setTicketData(data.data);
+        recordMessageTimes(data.data.conversation, data.data.updatedAt);
         setOptimisticReplies([]); // Clear optimistic replies
         lastReplyCountRef.current = data.data.conversation?.length || 0;
       }
@@ -153,7 +172,7 @@ export default function ContactPage() {
     <div className="pb-20">
       <PageHeader title={t("contact.title")} />
 
-      <div className="container mx-auto px-4 py-24">
+      <div className="container mx-auto px-4 py-12 md:py-24">
         <div className="max-w-5xl mx-auto">
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -288,7 +307,7 @@ export default function ContactPage() {
                       <div className="bg-muted/30 p-4 rounded-2xl rounded-tr-none mb-4 ml-auto max-w-[85%]">
                         <p className="text-xs font-bold mb-1 uppercase tracking-tighter opacity-60">
                           {t("contact.ticket.you")} •{" "}
-                          {new Date(ticketData.createdAt).toLocaleDateString()}
+                          {new Date(ticketData.createdAt).toLocaleString(locale, { dateStyle: 'short', timeStyle: 'short' })}
                         </p>
                         <p className="text-sm">{ticketData.message}</p>
                       </div>
@@ -312,7 +331,7 @@ export default function ContactPage() {
                                   ? t("contact.ticket.support")
                                   : t("contact.ticket.you")}{" "}
                                 •{" "}
-                                {new Date(reply.createdAt).toLocaleDateString()}
+                                {new Date(reply.createdAt || messageTimes[reply.id] || ticketData.updatedAt).toLocaleString(locale, { dateStyle: 'short', timeStyle: 'short' })}
                                 {reply.isOptimistic && (
                                   <span className="ml-1">(sending...)</span>
                                 )}
@@ -330,7 +349,7 @@ export default function ContactPage() {
                           className="mt-6 pt-4 border-t"
                         >
                           <p className="text-sm font-medium mb-3">
-                            {t("contact.ticket.conversation")}:
+                            {t("contact.form.message")}:
                           </p>
                           <div className="flex gap-2">
                             <textarea

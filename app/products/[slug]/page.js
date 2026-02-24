@@ -10,14 +10,8 @@ import { fetchAPI, getStrapiMedia } from "@/lib/api";
 import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/PageHeader";
 import {
-  Star,
-  Check,
-  Shield,
-  Truck,
-  Share2,
-  Heart,
-  ShoppingCart,
   Minus,
   Plus,
   Search,
@@ -143,7 +137,7 @@ export default function ProductDetailPage() {
         >
           <WavyTopBackground height="100%" />
         </div>
-        <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
+        <div className="relative flex flex-col items-center justify-center ">
           <div className="container text-center">
             <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
               {t("products.noResults")}
@@ -222,41 +216,11 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden pt-15">
-      {/* Wavy Background */}
-      <div
-        className="absolute top-0 left-0 w-full"
-        style={{ height: "calc(50vh + 80px)" }}
-      >
-        <WavyTopBackground height="100%" />
-      </div>
+    <div className="pb-20">
+      
+      <PageHeader title={name} />
 
-      {/* Top Section with Product Name */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-[calc(50vh - 80px)] pt-20">
-        <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2 text-foreground">
-            {name}
-          </h1>
-
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <svg
-              className="w-56 h-6 text-primary"
-              viewBox="0 0 192 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M 0 6 Q 8 2, 16 6 Q 24 10, 32 6 Q 40 2, 48 6 Q 56 10, 64 6 Q 72 2, 80 6 Q 88 10, 96 6 Q 104 2, 112 6 Q 120 10, 128 6 Q 136 2, 144 6 Q 152 10, 160 6 Q 168 2, 176 6 Q 184 10, 192 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div className="container relative z-10 mt-36 pb-24">
+      <div className="container mx-auto px-4 py-12 md:py-24">
         <div
           className="relative bg-card rounded-lg overflow-hidden z-20"
           style={{
@@ -507,7 +471,7 @@ export default function ProductDetailPage() {
 
           {/* Related Products Card - 40% */}
           <div
-            className="lg:col-span-2 relative bg-card rounded-lg overflow-hidden z-10"
+            className="lg:col-span-2 relative bg-card rounded-lg overflow-hidden z-10 h-fit"
             style={{
               boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.1)",
             }}

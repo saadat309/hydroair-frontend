@@ -202,7 +202,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("checkout.title")} />
 
-      <div className="container max-w-6xl">
+      <div className="container max-w-6xl md:pt-12">
         <div className="mb-8">
           <Link
             href="/cart"
