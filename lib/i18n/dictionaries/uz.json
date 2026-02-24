@@ -1,4 +1,17 @@
 {
+  "maintenance": {
+    "title": "Texnik Xizmat Ko'rsatish",
+    "message": "Hozirda rejalashtirilgan texnik ishlarni olib boramiz. Tez orada qaytamiz!",
+    "contactTitle": "Yordam kerakmi?",
+    "contactMessage": "Savollaringiz bo'lsa yoki tezkor yordam kerak bo'lsa, biz bilan bog'laning:",
+    "apology": "Keltirgan noquvliklar uchun uzr so'raymiz."
+  },
+  "notFound": {
+    "title": "Sahifa Topilmadi",
+    "message": "Kechirasiz, siz qidiraotgan sahifani topa olmadik.",
+    "goHome": "Bosh sahifaga",
+    "browseProducts": "Mahsulotlarni ko'rish"
+  },
   "nav": {
     "home": "Bosh sahifa",
     "products": "Mahsulotlar",
@@ -103,6 +116,7 @@
     "details": {
       "features": "Asosiy Xususiyatlar",
       "description": "Tavsif",
+      "faq": "FAQ",
       "reviews": "Sharhlar",
       "related": "O'xshash Mahsulotlar",
       "warranty": "2 Yillik Kafolat",
@@ -190,6 +204,9 @@
     "subscribe": "Yangiliklarga obuna bo'lish",
     "subscribePlaceholder": "Email manzilingiz",
     "subscribeBtn": "Obuna bo'lish",
+    "subscribeSuccess": "Muvaffaqiyatli obuna bo'ldingiz!",
+    "alreadySubscribed": "Bu email allaqachon obuna bo'lgan!",
+    "subscribeError": "Obuna bo'lish muvaffaqiyatsiz. Qayta urinib ko'ring.",
     "rights": "© 2026 HydroAir Technologies. Barcha huquqlar himoyalangan."
   },
   "about": {

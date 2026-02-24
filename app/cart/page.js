@@ -87,7 +87,7 @@ export default function CartPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("cart.title")} />
 
-      <div className="container max-w-6xl md:pt-12">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-6 py-20 bg-secondary/10 rounded-3xl border border-dashed border-border">
             <div className="text-6xl">🛒</div>
@@ -107,7 +107,8 @@ export default function CartPage() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 bg-card p-4 sm:p-6 rounded-2xl border border-border items-start sm:items-center"
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 bg-background p-4 sm:p-6 rounded-lg items-start sm:items-center"
+                  style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}
                 >
                   <div className="w-20 h-20 sm:w-24 sm:h-24 bg-secondary/20 rounded-xl flex items-center justify-center shrink-0 relative overflow-hidden">
                     {item.image ? (
@@ -168,7 +169,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="w-full lg:w-96 shrink-0">
-              <div className="bg-card p-8 rounded-3xl border border-border sticky top-32">
+              <div className="bg-background p-8 rounded-lg sticky top-32" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
                 <h2 className="text-2xl font-bold font-heading mb-6">
                   {t("cart.summary")}
                 </h2>

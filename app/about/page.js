@@ -16,7 +16,7 @@ export default function AboutPage() {
       <PageHeader title={t('about.title')} />
 
       {/* Content Section */}
-      <section className="container mx-auto px-4 mb-12 md:mt-12">
+      <section className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold">{t('about.mission.title')}</h2>

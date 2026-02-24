@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Loader2, Trash2, History, Plus, ChevronLeft, Droplets as WaterIcon, User } from 'lucide-react';
+import { BotMessageSquare, X, Send, Loader2, Trash2, History, Plus, ChevronLeft, Droplets as WaterIcon, User } from 'lucide-react';
 import { useChatStore } from '@/lib/stores/useChatStore';
 import { useLanguageStore } from '@/lib/stores/useLanguageStore';
 import { useTranslation } from '@/lib/i18n';
@@ -366,7 +366,7 @@ export default function ChatbotWidget() {
         className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-xl shadow-primary/30 z-50 relative overflow-hidden group"
       >
         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-        {isOpen ? <X className="w-8 h-8 relative z-10" /> : <MessageCircle className="w-8 h-8 relative z-10" />}
+        {isOpen ? <X className="w-8 h-8 relative z-10" /> : <BotMessageSquare className="w-8 h-8 relative z-10" />}
       </motion.button>
     </div>
   );

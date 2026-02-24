@@ -16,8 +16,8 @@ export default function CheckoutSuccessPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("checkout.title")} />
 
-      <div className="container mt-36 max-w-2xl text-center">
-        <div className="bg-background p-12 rounded-3xl border border-border shadow-sm">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20 max-w-2xl text-center">
+        <div className="bg-background p-12 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>

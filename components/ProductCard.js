@@ -7,7 +7,6 @@ import { useTranslation } from "@/lib/i18n";
 import { ShoppingCart, Eye, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useCartStore from "@/lib/stores/useCartStore";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import WavyBadge from "@/components/ui/WavyBadge";
 import { getStrapiMedia } from "@/lib/api";
@@ -89,7 +88,6 @@ export default function ProductCard({ product, priceType = "normal" }) {
       image: thumbUrl,
       international_currency: international_currency,
     });
-    toast.success(`${name} added to cart`);
   };
 
   return (

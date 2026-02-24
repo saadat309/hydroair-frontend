@@ -31,25 +31,43 @@ export default function FeaturedProducts() {
       visible: { y: 0, opacity: 1, transition: { duration: 0.8 } },
     };
   
-    // Fetch products from Strapi
+    // Fetch global setting for featured products
     useEffect(() => {
-      async function loadProducts() {
+      async function loadFeaturedProducts() {
         try {
-          const data = await fetchAPI("/products", {
+          const globalData = await fetchAPI("/global-setting", {
             locale: language,
+          });
+          const slugs = globalData?.data?.featured_products?.map(p => p.slug) || [];
+          
+          if (slugs.length === 0) {
+            setIsLoading(false);
+            return;
+          }
+
+          const productsData = await fetchAPI("/products", {
+            locale: language,
+            "filters[slug][$in]": slugs,
             "pagination[limit]": 3,
           });
-          setProducts(data.data || []);
+          
+          const products = productsData.data || [];
+          const sortedProducts = slugs.map(slug => 
+            products.find(p => p.slug === slug)
+          ).filter(Boolean);
+          
+          setProducts(sortedProducts);
         } catch (error) {
           console.error("Failed to load featured products:", error);
         } finally {
           setIsLoading(false);
         }
       }
-      loadProducts();
+      loadFeaturedProducts();
     }, [language]);
   
     return (
+      products.length > 0 && (
       <section className="py-24 bg-secondary relative z-10">
         {/* Wave Background SVG */}
         <div className="absolute inset-0 h-full w-full pointer-events-none z-0">
@@ -150,5 +168,7 @@ export default function FeaturedProducts() {
           </div>
         </div>
       </section>
+      )
     );
   }
+

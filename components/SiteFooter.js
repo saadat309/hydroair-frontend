@@ -1,11 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import Link from "next/link";
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { fetchAPI } from "@/lib/api";
+import { toast } from "sonner";
 
 export default function SiteFooter() {
   const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    
+    if (!email) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      await fetchAPI("/subscription-lists", {
+        method: "POST",
+        body: JSON.stringify({ data: { email } }),
+      });
+      toast.success(t("footer.subscribeSuccess") || "Successfully subscribed!");
+      setEmail("");
+    } catch (error) {
+      const errorMessage = error?.message?.toLowerCase() || "";
+      if (errorMessage.includes("already") || errorMessage.includes("unique")) {
+        toast.info(t("footer.alreadySubscribed") || "This email is already subscribed!");
+      } else {
+        toast.error(t("footer.subscribeError") || "Failed to subscribe. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <footer className="relative bg-foreground text-background mt-20">
@@ -124,15 +155,19 @@ export default function SiteFooter() {
           <p className="mb-4 text-background/70">
             Stay updated with our latest filtration technology and offers.
           </p>
-          <form className="flex flex-col gap-3">
+          <form className="flex flex-col gap-3" onSubmit={handleSubscribe}>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder={t("footer.subscribePlaceholder")}
               className="w-full px-4 py-3 rounded-lg bg-background/10 border border-background/20 focus:outline-none focus:border-primary text-background placeholder:text-background/50"
+              disabled={isSubmitting}
             />
             <button
-              type="button"
-              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              type="submit"
+              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+              disabled={isSubmitting}
             >
               {t("footer.subscribeBtn")}
             </button>

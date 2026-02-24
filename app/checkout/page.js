@@ -202,7 +202,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("checkout.title")} />
 
-      <div className="container max-w-6xl md:pt-12">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
         <div className="mb-8">
           <Link
             href="/cart"
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
 
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Checkout Form */}
-          <div className="flex-1 bg-background p-4 md:p-8 rounded-3xl border border-border shadow-sm">
+          <div className="flex-1 bg-background p-4 md:p-8 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
             <h2 className="text-2xl font-bold font-heading mb-8">
               {t("common.checkout")}
             </h2>
@@ -353,7 +353,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="w-full lg:w-96 shrink-0">
-            <div className="bg-background p-4 md:p-8 rounded-3xl border border-border shadow-sm lg:sticky lg:top-32">
+            <div className="bg-background p-4 md:p-8 rounded-lg lg:sticky lg:top-32" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
               <h3 className="text-xl font-bold mb-6">
                 {t("checkout.orderSummary")}
               </h3>

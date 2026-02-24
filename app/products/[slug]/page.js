@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useParams, notFound } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { fetchAPI, getStrapiMedia } from "@/lib/api";
@@ -11,18 +10,22 @@ import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
+import ProductGallery from "@/components/ProductGallery";
 import {
   Minus,
   Plus,
-  Search,
-  ChevronLeft,
-  ChevronRight,
+  Check,
 } from "lucide-react";
 import { BlocksRenderer } from "@strapi/blocks-react-renderer";
 import WavyTopBackground from "@/components/WavyTopBackground";
-import { cn } from "@/lib/utils";
 import ProductReviews from "@/components/ProductReviews";
 import { StarRating } from "@/components/StarRating";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const WavyDivider = () => (
   <div className="w-full h-3 text-primary/40 my-6 select-none pointer-events-none">
@@ -55,7 +58,6 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -162,10 +164,9 @@ export default function ProductDetailPage() {
     SKU,
     tags,
     reviews,
+    FAQs,
   } = product;
   const imageUrl =
-    getStrapiMedia(images?.[activeImage]?.formats?.medium) ||
-    getStrapiMedia(images?.[activeImage]?.url) ||
     getStrapiMedia(images?.[0]?.formats?.medium) ||
     getStrapiMedia(images?.[0]?.url);
 
@@ -199,20 +200,6 @@ export default function ProductDetailPage() {
       image: imageUrl,
       quantity: quantity,
     });
-    toast.success(`${quantity} ${name} added to cart`);
-  };
-
-  const getOriginalImageUrl = () => {
-    const currentImage = images?.[activeImage] || images?.[0];
-    return getStrapiMedia(currentImage?.url);
-  };
-
-  const goToPrevImage = () => {
-    setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const goToNextImage = () => {
-    setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -220,7 +207,7 @@ export default function ProductDetailPage() {
       
       <PageHeader title={name} />
 
-      <div className="container mx-auto px-4 py-12 md:py-24">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
         <div
           className="relative bg-card rounded-lg overflow-hidden z-20"
           style={{
@@ -230,75 +217,9 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Gallery Section */}
             <div className="p-8 lg:p-16 flex flex-col items-center bg-card lg:sticky lg:top-8 lg:h-fit">
-              <div className="relative group w-full aspect-square max-w-[500px]">
-                {/* Navigation Arrows */}
-                {images && images.length > 1 && (
-                  <>
-                    <button
-                      onClick={goToPrevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-card/80 border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={goToNextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 bg-card/80 border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </>
-                )}
-
-                <div className="absolute top-4 right-4 z-20">
-                  <a
-                    href={getOriginalImageUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-card border border-border rounded-full shadow-lg text-primary hover:bg-primary hover:text-primary-foreground transition-all inline-flex"
-                  >
-                    <Search className="w-5 h-5" />
-                  </a>
-                </div>
-
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt={name}
-                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-card-foreground bg-secondary rounded-lg font-bold italic">
-                    {t("products.noImage") || "No Image"}
-                  </div>
-                )}
+              <div className="w-full max-w-[500px]">
+                <ProductGallery images={images} name={name} />
               </div>
-
-              {/* Thumbnails */}
-              {images && images.length > 1 && (
-                <div className="flex gap-4 mt-12 overflow-x-auto pb-2 no-scrollbar">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImage(idx)}
-                      className={cn(
-                        "w-20 h-20 rounded-lg overflow-hidden border-2 transition-all shrink-0 flex items-center justify-center",
-                        activeImage === idx
-                          ? "border-primary shadow-md"
-                          : "border-transparent opacity-60 grayscale hover:opacity-100 hover:grayscale-0",
-                      )}
-                    >
-                      <img
-                        src={
-                          getStrapiMedia(img.formats?.small) ||
-                          getStrapiMedia(img.url)
-                        }
-                        alt=""
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Info Section */}
@@ -338,13 +259,18 @@ export default function ProductDetailPage() {
 
               {/* Action Area */}
               <div className="mb-8">
-                <div className="bg-secondary rounded-lg p-6 mb-6 inline-block border border-border">
-                  <span className="text-3xl font-black text-primary">
-                    {prefix}
-                    {price * quantity}
-                    {suffix}
-                  </span>
-                </div>
+                {addFeatures && addFeatures.length > 0 && (
+                  <div className="p-4 space-y-3">
+                    {addFeatures.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
+                          <Check className="w-3 h-3 text-primary" />
+                        </div>
+                        <span>{feature.Feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 <div className="flex items-center gap-6">
                   <div className="flex items-center bg-card border-2 border-secondary rounded-full p-1 shadow-inner">
@@ -433,31 +359,68 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Detail Description - Full Width */}
-        <div className="mt-6">
-          <div
-            className="relative bg-card rounded-lg overflow-hidden z-10"
-            style={{
-              boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.1)",
-            }}
-          >
-            <div className="p-8 lg:p-12">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <div className="w-[3px] h-6 bg-primary rounded-full" />
-                {t("products.details.description")}
-              </h3>
-              <div className="bg-secondary rounded-xl p-6 lg:p-8 text-foreground leading-relaxed font-medium">
-                {description ? (
-                  <BlocksRenderer content={description} />
-                ) : (
-                  <p className="text-muted-foreground italic">
-                    No description available.
-                  </p>
-                )}
+        {/* Detail Description & FAQs */}
+        {(description || (FAQs && FAQs.length > 0)) && (
+          <div className={`mt-6 ${description && FAQs?.length > 0 ? 'grid grid-cols-1 lg:grid-cols-5 gap-6' : ''}`}>
+            {/* Description - 60% */}
+            {description && (
+              <div className={`${description && FAQs?.length > 0 ? 'lg:col-span-3' : ''}`}>
+                <div
+                  className="relative bg-card rounded-lg overflow-hidden z-10 h-full"
+                  style={{
+                    boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.1)",
+                  }}
+                >
+                  <div className="p-8 lg:p-12">
+                    <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                      <div className="w-[3px] h-6 bg-primary rounded-full" />
+                      {t("products.details.description")}
+                    </h3>
+                    <div className="bg-secondary rounded-xl p-6 lg:p-8 text-foreground leading-relaxed font-medium">
+                      <BlocksRenderer content={description} />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* FAQs - 40% */}
+            {FAQs && FAQs.length > 0 && (
+              <div className={description ? 'lg:col-span-2' : ''}>
+                <div
+                  className="relative bg-card rounded-lg overflow-hidden z-10 h-full"
+                  style={{
+                    boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.1)",
+                  }}
+                >
+                  <div className="p-8 lg:p-12">
+                    <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                      <div className="w-[3px] h-6 bg-primary rounded-full" />
+                      {t("products.details.faq") || "FAQ"}
+                    </h3>
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="w-full"
+                    >
+                      {FAQs.map((faq, idx) => (
+                        <AccordionItem key={idx} value={`faq-${idx}`}>
+                          <AccordionTrigger className="text-base font-semibold text-left flex items-start justify-start gap-x-2">
+                            <span className="inline-block w-[3px] h-5 bg-primary mr-2 mt-1 shrink-0 rounded-full" />
+                            <span className="leading-tight">{faq.Question}</span>
+                          </AccordionTrigger>
+                          <AccordionContent className="text-foreground/80 text-sm md:text-base leading-relaxed">
+                            {faq.Answer}
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Reviews & Related Products */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">

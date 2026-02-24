@@ -1,4 +1,17 @@
 {
+  "maintenance": {
+    "title": "Under Maintenance",
+    "message": "We're currently performing scheduled maintenance. We'll be back soon!",
+    "contactTitle": "Need Assistance?",
+    "contactMessage": "If you have any questions or need urgent assistance, please contact us:",
+    "apology": "We apologize for any inconvenience caused."
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Sorry, we couldn't find the page you're looking for.",
+    "goHome": "Go Home",
+    "browseProducts": "Browse Products"
+  },
   "nav": {
     "home": "Home",
     "products": "Products",
@@ -103,6 +116,7 @@
     "details": {
       "features": "Key Features",
       "description": "Description",
+      "faq": "FAQ",
       "reviews": "Reviews",
       "related": "Related Products",
       "warranty": "2 Year Warranty",
@@ -190,6 +204,9 @@
     "subscribe": "Subscribe to Newsletter",
     "subscribePlaceholder": "Your email address",
     "subscribeBtn": "Subscribe",
+    "subscribeSuccess": "Successfully subscribed!",
+    "alreadySubscribed": "This email is already subscribed!",
+    "subscribeError": "Failed to subscribe. Please try again.",
     "rights": "© 2026 HydroAir Technologies. All rights reserved."
   },
   "about": {

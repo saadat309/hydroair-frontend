@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingCart, Trash2, Plus, Minus, X } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
@@ -95,7 +94,6 @@ export default function CartDrawer({ children }) {
 
   const handleRemove = (id, name) => {
     removeItem(id);
-    toast.error(`${name} removed from cart`);
   };
 
   return (

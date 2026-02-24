@@ -94,8 +94,8 @@ export default function OrderStatusPage() {
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
         
-        <div className="container mt-12 md:mt-24 max-w-xl">
-          <div className="bg-background p-8 rounded-3xl border border-border shadow-sm">
+        <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20 max-w-xl">
+          <div className="bg-background p-8 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
             <h1 className="text-2xl font-bold mb-6 text-center">
               {t("orders.searchTitle")}
             </h1>
@@ -124,7 +124,7 @@ export default function OrderStatusPage() {
     return (
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
-        <div className="container mt-12 md:mt-24 text-center">
+        <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20 text-center">
           <div className="animate-pulse">
             <div className="h-4 bg-muted rounded w-1/4 mx-auto mb-4"></div>
             <div className="h-32 bg-muted rounded-xl"></div>
@@ -139,8 +139,8 @@ export default function OrderStatusPage() {
       <div className="min-h-screen pb-20">
         <PageHeader title={t("orders.title")} />
         
-        <div className="container mt-12 md:mt-24 max-w-xl">
-          <div className="bg-background p-8 rounded-3xl border border-border shadow-sm text-center">
+        <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20 max-w-xl">
+          <div className="bg-background p-8 rounded-lg text-center" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
             <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">{t("orders.notFound")}</h2>
             <p className="text-muted-foreground mb-6">{error}</p>
@@ -162,7 +162,7 @@ export default function OrderStatusPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("orders.title")} />
 
-      <div className="container mt-12 md:mt-24 max-w-3xl">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20 max-w-3xl">
         <div className="bg-background p-8 rounded-3xl border border-border shadow-sm">
           {/* Order ID */}
           <div className="flex justify-between items-start mb-8">

@@ -172,13 +172,13 @@ export default function ContactPage() {
     <div className="pb-20">
       <PageHeader title={t("contact.title")} />
 
-      <div className="container mx-auto px-4 py-12 md:py-24">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
         <div className="max-w-5xl mx-auto">
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Contact Info */}
             <div className="space-y-8">
-              <div className="bg-primary/5 p-8 rounded-3xl border border-primary/10">
+              <div className="bg-background p-8 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
                 <h3 className="text-xl font-bold mb-6">
                   {t("contact.info.title")}
                 </h3>
@@ -224,7 +224,7 @@ export default function ContactPage() {
               </div>
 
               {/* Ticket Search */}
-              <div className="bg-muted/30 p-8 rounded-3xl border">
+              <div className="bg-background p-8 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <Ticket className="w-5 h-5 text-primary" />{" "}
                   {t("contact.ticket.title")}
@@ -255,7 +255,7 @@ export default function ContactPage() {
             {/* Form or Ticket View */}
             <div className="lg:col-span-2">
               {ticketData ? (
-                <div className="bg-background border rounded-3xl p-8 shadow-sm">
+                <div className="bg-background rounded-lg p-8" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
                   <div className="flex items-center justify-between mb-8 border-b pb-6">
                     <div>
                       <span className="text-xs font-bold text-primary tracking-widest uppercase">
@@ -395,7 +395,7 @@ export default function ContactPage() {
                   </div>
                 </div>
               ) : submittedId ? (
-                <div className="bg-background border rounded-3xl p-12 text-center shadow-sm">
+                <div className="bg-background rounded-lg p-12 text-center" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
@@ -423,7 +423,8 @@ export default function ContactPage() {
               ) : (
                 <form
                   onSubmit={handleSubmit}
-                  className="bg-background border rounded-3xl p-8 md:p-10 shadow-sm space-y-6"
+                  className="bg-background rounded-lg p-8 md:p-10 space-y-6"
+                  style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">

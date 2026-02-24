@@ -2,14 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
+import { fetchAPI } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
 import ChatbotWidget from "@/components/Chatbot/ChatbotWidget";
+import MaintenancePage from "@/components/MaintenancePage";
 import Lenis from 'lenis';
 
 export default function ClientLayout({ children }) {
   const { language: locale, dir } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
+  const [checkedMaintenance, setCheckedMaintenance] = useState(false);
+
+  // Check maintenance mode on mount
+  useEffect(() => {
+    async function checkMaintenance() {
+      try {
+        const data = await fetchAPI("/global-setting", {
+          locale,
+        });
+        setIsMaintenanceMode(data?.data?.Show_Maintenance_Message || false);
+      } catch (error) {
+        console.error("Failed to fetch global setting:", error);
+      } finally {
+        setCheckedMaintenance(true);
+      }
+    }
+    checkMaintenance();
+  }, [locale]);
 
   // Update HTML tag attributes when locale or dir changes
   useEffect(() => {
@@ -48,8 +69,12 @@ export default function ClientLayout({ children }) {
     };
   }, []);
 
-  if (!mounted) {
+  if (!mounted || !checkedMaintenance) {
       return null;
+  }
+
+  if (isMaintenanceMode) {
+    return <MaintenancePage />;
   }
 
   return (

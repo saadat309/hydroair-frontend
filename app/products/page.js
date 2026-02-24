@@ -316,12 +316,12 @@ export default function ProductsPage() {
         </div>
       </PageHeader>
 
-      <div className="container mx-auto px-4 md:py-12">
+      <div className="container mx-auto px-4 md:-mt-10">
         {" "}
         {/* Adjust margin-top to pull products grid up */}
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-12">
           {/* Sidebar - Hidden on Mobile, Shown on Desktop */}
-          <div className="hidden lg:flex order-1 lg:order-2 flex-col gap-8">
+          <div className="hidden md:flex order-1 md:order-2 flex-col gap-8">
             <SearchBoxCard
               initialQuery={searchQuery}
               onSearch={handleSearch}
@@ -330,7 +330,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Main Content: Products Grid - Bottom on Mobile, Left on Desktop */}
-          <div className="order-2 lg:order-1">
+          <div className="order-2 md:order-1">
             {/* Showing X of Y results */}
             <div className="flex justify-between items-center text-foreground text-sm mb-6">
               <span className="font-bold flex items-center">
