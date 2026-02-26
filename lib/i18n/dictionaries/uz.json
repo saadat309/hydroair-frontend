@@ -22,6 +22,8 @@
   "common": {
     "loading": "Yuklanmoqda...",
     "error": "Xatolik yuz berdi",
+    "errorMessage": "Kutilmagan xato yuz berdi. Iltimos, qayta urinib ko'ring.",
+    "tryAgain": "Qayta urinish",
     "viewMore": "Batafsil",
     "addToCart": "Savatga qo'shish",
     "outOfStock": "Sotuvda yo'q",
@@ -91,6 +93,7 @@
   },
 "products": {
     "title": "Bizning Mahsulotlar",
+    "errorLoading": "Mahsulotlarni yuklash muvaffaqiyatsiz tugadi",
     "breadcrumb": "Mahsulotlar",
     "filter": "Filtr",
     "sort": "Saralash",
@@ -248,7 +251,12 @@
       "you": "Siz",
       "support": "Qo'llab-quvvatlash jamoasi",
       "back": "Aloqa formasiga qaytish",
-      "live": "Jonli"
+      "live": "Jonli",
+      "secureAccess": "Xavfsiz kirish talab qilinadi",
+      "secureDescription": "Xavfsizlik nuqtai nazaridan, ushbu chipta bo'yicha suhbatni ko'rish uchun elektron pochtangizga yuborilgan maxsus havola talab qilinadi.",
+      "emailPlaceholder": "Chipta uchun ishlatilgan elektron pochtani kiriting",
+      "requestAccess": "Kirish havolasini so'rash",
+      "accessSent": "Agar ma'lumotlar to'g'ri bo'lsa, kirish havolasi elektron pochtangizga yuborildi."
     },
     "form": {
       "name": "Ism",

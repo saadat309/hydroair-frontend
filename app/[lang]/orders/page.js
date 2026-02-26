@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 export default function OrdersPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [orderId, setOrderId] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (orderId.trim()) {
-      window.location.href = `/orders/${orderId.trim()}`;
+      window.location.href = `/${locale}/orders/${orderId.trim()}`;
     }
   };
 

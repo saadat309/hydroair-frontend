@@ -12,8 +12,7 @@ import { fetchAPI } from "@/lib/api";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 
 export default function CartPage() {
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
+  const { t, locale } = useTranslation();
   const {
     items,
     totalItems,
@@ -27,7 +26,7 @@ export default function CartPage() {
   const getCurrency = (item) => {
     const useInternational = item?.international_currency;
     if (useInternational) return { prefix: "$", suffix: "" };
-    switch (language) {
+    switch (locale) {
       case "ru":
         return { prefix: "", suffix: " ₽" };
       case "uz":
@@ -51,7 +50,7 @@ export default function CartPage() {
     const ids = items.map((item) => item.documentId || item.id);
     try {
       const productsRes = await fetchAPI("/products", {
-        locale: language,
+        locale,
         "filters[id][$in]": ids,
         populate: "*",
       });
@@ -76,7 +75,7 @@ export default function CartPage() {
     } finally {
       setLoading(false);
     }
-  }, [items, language, refreshItem]);
+  }, [items, locale, refreshItem]);
 
   useEffect(() => {
     setLoading(true);
@@ -94,7 +93,7 @@ export default function CartPage() {
             <p className="text-2xl font-semibold text-foreground">
               {t("cart.empty")}
             </p>
-            <Link href="/products">
+            <Link href={`/${locale}/products`}>
               <Button size="lg" className="rounded-full px-8">
                 {t("common.continueShopping")}
               </Button>
@@ -202,7 +201,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Link href="/checkout" className="w-full block">
+                <Link href={`/${locale}/checkout`} className="w-full block">
                   <Button
                     size="lg"
                     className="w-full text-lg font-bold rounded-full py-6 flex items-center justify-center gap-2"

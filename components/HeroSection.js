@@ -10,7 +10,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 
 export default function HeroSection() {
-    const { t } = useTranslation();
+    const { t, locale } = useTranslation();
     const containerRef = useRef(null);
   
     const containerVariants = {
@@ -79,14 +79,14 @@ export default function HeroSection() {
   
               <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 md:gap-6 pt-4">
                   <Link
-                      href="/products"
+                      href={`/${locale}/products`}
                       className="flex-1 md:flex-none text-center px-6 md:px-10 py-3 bg-primary text-primary-foreground rounded-full text-base md:text-lg font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/50 transition-all"
                   >
                       {t('homepage.hero.ctaPrimary')}
                   </Link>
   
                   <Link
-                      href="/about"
+                      href={`/${locale}/about`}
                       className="flex-1 md:flex-none text-center px-6 md:px-10 py-3 bg-background text-foreground border border-border rounded-full text-base md:text-lg font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/50 transition-all"
                   >
                       {t('homepage.hero.ctaSecondary')}

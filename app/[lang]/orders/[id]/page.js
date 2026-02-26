@@ -22,9 +22,8 @@ const statusConfig = {
 const statusFlow = ["pending", "confirmed", "shipped", "delivered"];
 
 export default function OrderStatusPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const params = useParams();
-  const { language } = useLanguageStore();
   const orderId = params?.id;
 
   const [order, setOrder] = useState(null);
@@ -41,7 +40,7 @@ export default function OrderStatusPage() {
     try {
       const res = await fetchAPI(`/orders`, {
         "filters[order_id][$eq]": id,
-        locale: language,
+        locale,
       });
 
       if (res?.data?.length > 0) {
@@ -61,12 +60,12 @@ export default function OrderStatusPage() {
     if (orderId) {
       fetchOrder(orderId);
     }
-  }, [orderId, language]);
+  }, [orderId, locale]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchId.trim()) {
-      window.history.pushState({}, "", `/orders/${searchId.trim()}`);
+      window.history.pushState({}, "", `/${locale}/orders/${searchId.trim()}`);
       fetchOrder(searchId.trim());
     }
   };
@@ -145,7 +144,7 @@ export default function OrderStatusPage() {
             <h2 className="text-2xl font-bold mb-2">{t("orders.notFound")}</h2>
             <p className="text-muted-foreground mb-6">{error}</p>
             
-            <Link href="/orders">
+            <Link href={`/${locale}/orders`}>
               <Button variant="outline">{t("orders.tryAgain")}</Button>
             </Link>
           </div>
@@ -170,7 +169,7 @@ export default function OrderStatusPage() {
               <p className="text-sm text-muted-foreground">Order ID</p>
               <p className="text-2xl font-mono font-bold">{order.order_id}</p>
             </div>
-            <Link href="/orders">
+            <Link href={`/${locale}/orders`}>
               <Button variant="ghost" size="sm">
                 {t("orders.checkAnother")}
               </Button>
@@ -265,7 +264,7 @@ export default function OrderStatusPage() {
 
           {/* Actions */}
           <div className="mt-8 flex gap-4">
-            <Link href="/products" className="flex-1">
+            <Link href={`/${locale}/products`} className="flex-1">
               <Button className="w-full rounded-full">
                 {t("common.continueShopping")}
               </Button>

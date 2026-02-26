@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 
 export default function CheckoutSuccessPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order");
 
@@ -37,7 +37,7 @@ export default function CheckoutSuccessPage() {
           )}
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/products">
+            <Link href={`/${locale}/products`}>
               <Button size="lg" className="rounded-full px-8">
                 {t("common.continueShopping")}
               </Button>

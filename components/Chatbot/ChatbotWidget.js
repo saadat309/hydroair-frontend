@@ -18,8 +18,7 @@ export default function ChatbotWidget() {
     ensureSession, createNewSession, addMessage, switchSession, deleteSession, updateInitialMessage
   } = useChatStore();
   
-  const { locale } = useLanguageStore();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [view, setView] = useState('chat'); // 'chat' or 'history'

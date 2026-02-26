@@ -22,6 +22,8 @@
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
+    "errorMessage": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try Again",
     "viewMore": "View More",
     "addToCart": "Add to Cart",
     "outOfStock": "Out of Stock",
@@ -91,6 +93,7 @@
   },
   "products": {
     "title": "Our Products",
+    "errorLoading": "Failed to load products",
     "breadcrumb": "Products",
     "filter": "Filter",
     "sort": "Sort by",
@@ -248,7 +251,12 @@
       "you": "You",
       "support": "Support Team",
       "back": "Back to Contact Form",
-      "live": "Live"
+      "live": "Live",
+      "secureAccess": "Secure Access Required",
+      "secureDescription": "For security reasons, viewing the conversation for this ticket requires a magic link sent to your email.",
+      "emailPlaceholder": "Enter the email used for the ticket",
+      "requestAccess": "Request Access Link",
+      "accessSent": "If the details match, an access link has been sent to your email."
     },
     "form": {
       "name": "Name",

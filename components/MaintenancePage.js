@@ -1,36 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
-import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { useGlobalStore } from "@/lib/stores/useGlobalStore";
-import { fetchAPI } from "@/lib/api";
 import { Mail, Phone, Clock } from "lucide-react";
 
-export default function MaintenancePage() {
+export default function MaintenancePage({ initialData }) {
   const { t } = useTranslation();
-  const { language } = useLanguageStore();
   const setMaintenanceMode = useGlobalStore((state) => state.setMaintenanceMode);
-  const [maintenanceData, setMaintenanceData] = useState(null);
 
   useEffect(() => {
-    async function checkMaintenance() {
-      try {
-        const data = await fetchAPI("/global-setting", {
-          locale: language,
-        });
-        const isMaintenance = data?.data?.Show_Maintenance_Message || false;
-        setMaintenanceData(data?.data);
-        setMaintenanceMode(isMaintenance);
-      } catch (error) {
-        console.error("Failed to fetch global setting:", error);
-        setMaintenanceMode(false);
-      }
+    if (initialData?.Show_Maintenance_Message) {
+      setMaintenanceMode(true);
     }
-    checkMaintenance();
-  }, [language, setMaintenanceMode]);
+  }, [initialData, setMaintenanceMode]);
 
-  if (!maintenanceData?.Show_Maintenance_Message) {
+  if (!initialData?.Show_Maintenance_Message) {
     return null;
   }
 
@@ -45,7 +30,7 @@ export default function MaintenancePage() {
             {t("maintenance.title") || "Under Maintenance"}
           </h1>
           <p className="text-lg text-foreground/80 leading-relaxed">
-            {t("maintenance.message") || "We're currently performing scheduled maintenance. We'll be back soon!"}
+            {initialData.Maintenance_Message || t("maintenance.message") || "We're currently performing scheduled maintenance. We'll be back soon!"}
           </p>
         </div>
 

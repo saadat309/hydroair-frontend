@@ -1,20 +1,21 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18n";
-import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import useCartStore from "@/lib/stores/useCartStore";
 import CartDrawer from "./CartDrawer";
 
 export default function Navbar() {
-  const { t } = useTranslation();
-  const { language, setLanguage } = useLanguageStore();
+  const { t, locale } = useTranslation();
   const { totalItems } = useCartStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,25 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLanguageChange = (newLocale) => {
+    if (!pathname) {
+      router.push(`/${newLocale}`);
+      return;
+    }
+    const segments = pathname.split("/");
+    const currentLocale = segments[1];
+    
+    if (!['en', 'ru', 'uz'].includes(currentLocale)) {
+      router.push(`/${newLocale}`);
+      return;
+    }
+    
+    segments[1] = newLocale;
+    router.push(segments.join("/"));
+  };
+
+  const getPathWithLocale = (path) => `/${locale}${path === "/" ? "" : path}`;
 
   return (
     <>
@@ -34,7 +54,7 @@ export default function Navbar() {
         }`}
       >
         <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={getPathWithLocale("/")} className="flex items-center gap-2">
             <Image 
                 src="/logo.webp" 
                 alt="HydroAir Technologies" 
@@ -48,25 +68,25 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="/"
+              href={getPathWithLocale("/")}
               className="text-foreground/80 hover:text-primary font-medium transition-colors"
             >
               {t("nav.home")}
             </Link>
             <Link
-              href="/products"
+              href={getPathWithLocale("/products")}
               className="text-foreground/80 hover:text-primary font-medium transition-colors"
             >
               {t("nav.products")}
             </Link>
             <Link
-              href="/about"
+              href={getPathWithLocale("/about")}
               className="text-foreground/80 hover:text-primary font-medium transition-colors"
             >
               {t("nav.about")}
             </Link>
             <Link
-              href="/contact"
+              href={getPathWithLocale("/contact")}
               className="text-foreground/80 hover:text-primary font-medium transition-colors"
             >
               {t("nav.contact")}
@@ -79,9 +99,9 @@ export default function Navbar() {
               {['en', 'ru', 'uz'].map((lang) => (
                 <button
                   key={lang}
-                  onClick={() => setLanguage(lang)}
+                  onClick={() => handleLanguageChange(lang)}
                   className={`uppercase transition-colors ${
-                    language === lang ? "text-primary font-bold" : "text-foreground hover:text-foreground"
+                    locale === lang ? "text-primary font-bold" : "text-foreground hover:text-foreground"
                   }`}
                 >
                   {lang}
@@ -114,10 +134,10 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-background pt-24 pb-12 px-6 md:hidden animate-in slide-in-from-top-5 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-6 text-xl font-heading font-bold">
-                <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.home")}</Link>
-                <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.products")}</Link>
-                <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.about")}</Link>
-                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.contact")}</Link>
+                <Link href={getPathWithLocale("/")} onClick={() => setIsMobileMenuOpen(false)}>{t("nav.home")}</Link>
+                <Link href={getPathWithLocale("/products")} onClick={() => setIsMobileMenuOpen(false)}>{t("nav.products")}</Link>
+                <Link href={getPathWithLocale("/about")} onClick={() => setIsMobileMenuOpen(false)}>{t("nav.about")}</Link>
+                <Link href={getPathWithLocale("/contact")} onClick={() => setIsMobileMenuOpen(false)}>{t("nav.contact")}</Link>
             </div>
              <div className="mt-auto pt-8 border-t border-border">
               <p className="text-sm text-foreground/60 uppercase tracking-widest mb-4 font-bold">{t('language')}</p>
@@ -125,9 +145,9 @@ export default function Navbar() {
                 {['en', 'ru', 'uz'].map((lang) => (
                   <button
                     key={lang}
-                    onClick={() => { setLanguage(lang); setIsMobileMenuOpen(false); }}
+                    onClick={() => { handleLanguageChange(lang); setIsMobileMenuOpen(false); }}
                     className={`uppercase px-6 py-3 border rounded-xl font-bold transition-all ${
-                      language === lang 
+                      locale === lang 
                         ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20" 
                         : "border-border text-foreground hover:border-primary/50"
                     }`}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { fetchAPI } from "@/lib/api";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Filter, ChevronLeft, ChevronRight, X, Search, SlidersHorizontal } from "lucide-react";
 import useCartStore from "@/lib/stores/useCartStore";
 import { toast } from "sonner";
@@ -31,23 +32,24 @@ import {
 
 const PAGE_SIZE = 6;
 
-export default function ProductsPage() {
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
+export default function ProductsClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { t, locale } = useTranslation();
   const { addItem } = useCartStore();
   
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");
     const [selectedCategoryName, setSelectedCategoryName] = useState("");
-    const [selectedTag, setSelectedTag] = useState("all");
+    const [selectedTag, setSelectedTag] = useState(searchParams.get("tag") || "all");
     const [selectedTagName, setSelectedTagName] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [localSearch, setLocalSearch] = useState("");
-    const [selectedSort, setSelectedSort] = useState("default");
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [localSearch, setLocalSearch] = useState(searchParams.get("search") || "");
+    const [selectedSort, setSelectedSort] = useState(searchParams.get("sort") || "default");
     const [isLoading, setIsLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
     const [totalProducts, setTotalProducts] = useState(0);
     const [displayedCount, setDisplayedCount] = useState(0);
     const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
@@ -71,9 +73,19 @@ export default function ProductsPage() {
   }, [searchQuery]);
 
   const handleSearch = (query) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (query.trim() !== "") {
+      params.set("search", query);
+      params.delete("category");
+      params.delete("tag");
+      params.delete("page");
+    } else {
+      params.delete("search");
+    }
+    router.push(`/${locale}/products?${params.toString()}`, { scroll: false });
+    
     setSearchQuery(query);
     if (query.trim() !== "") {
-      // Clear filters when searching globally
       setSelectedCategory("all");
       setSelectedCategoryName("");
       setSelectedTag("all");
@@ -87,11 +99,11 @@ export default function ProductsPage() {
       try {
         const [categoriesRes, tagsRes] = await Promise.all([
           fetchAPI("/categories", { 
-            locale: language,
+            locale,
             fields: ['name', 'slug'],
           }),
           fetchAPI("/tags", {
-            locale: language,
+            locale,
             fields: ['name', 'slug'],
           })
         ]);
@@ -99,7 +111,7 @@ export default function ProductsPage() {
         const categoriesWithCounts = await Promise.all(
           (categoriesRes.data || []).map(async (cat) => {
             const countRes = await fetchAPI("/products", {
-              locale: language,
+              locale,
               'filters[category][slug][$eq]': cat.slug,
               pagination: { page: 1, pageSize: 1 },
             });
@@ -112,14 +124,24 @@ export default function ProductsPage() {
         setCategories(categoriesWithCounts);
         setTags(tagsRes.data || []);
 
+        // Resolve names from slugs if present in URL
+        if (selectedCategory !== "all") {
+          const cat = categoriesWithCounts.find(c => c.slug === selectedCategory);
+          if (cat) setSelectedCategoryName(cat.name);
+        }
+        if (selectedTag !== "all") {
+          const tag = (tagsRes.data || []).find(t => t.slug === selectedTag);
+          if (tag) setSelectedTagName(tag.name);
+        }
+
         const allProductsRes = await fetchAPI("/products", { 
-          locale: language,
+          locale,
           pagination: { page: 1, pageSize: 1 },
         });
         setTotalProducts(allProductsRes.meta?.pagination?.total || 0);
 
         const productFilters = {
-          locale: language,
+          locale,
           pagination: {
             page: currentPage,
             pageSize: PAGE_SIZE,
@@ -163,16 +185,33 @@ export default function ProductsPage() {
     }
 
     fetchData();
-  }, [language, selectedCategory, selectedTag, currentPage, selectedSort, searchQuery]);
+  }, [locale, selectedCategory, selectedTag, currentPage, selectedSort, searchQuery]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory, selectedTag, searchQuery]);
+    const category = searchParams.get("category") || "all";
+    const tag = searchParams.get("tag") || "all";
+    const search = searchParams.get("search") || "";
+    const sort = searchParams.get("sort") || "default";
+    const page = Number(searchParams.get("page")) || 1;
+
+    setSelectedCategory(category);
+    setSelectedTag(tag);
+    setSearchQuery(search);
+    setSelectedSort(sort);
+    setCurrentPage(page);
+  }, [searchParams]);
 
   const handleCategorySelect = (slug, name = "") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (slug === "all") params.delete("category");
+    else params.set("category", slug);
+    params.delete("tag");
+    params.delete("search");
+    params.delete("page");
+    router.push(`/${locale}/products?${params.toString()}`, { scroll: false });
+
     setSelectedCategory(slug);
     setSelectedCategoryName(name || "");
-    // Clear tag and search when category is selected
     setSelectedTag("all");
     setSelectedTagName("");
     setSearchQuery("");
@@ -181,9 +220,16 @@ export default function ProductsPage() {
   };
 
   const handleTagSelect = (slug, name = "") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (slug === "all") params.delete("tag");
+    else params.set("tag", slug);
+    params.delete("category");
+    params.delete("search");
+    params.delete("page");
+    router.push(`/${locale}/products?${params.toString()}`, { scroll: false });
+
     setSelectedTag(slug);
     setSelectedTagName(name || "");
-    // Clear category and search when tag is selected
     setSelectedCategory("all");
     setSelectedCategoryName("");
     setSearchQuery("");
@@ -203,22 +249,36 @@ export default function ProductsPage() {
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
+      const params = new URLSearchParams(searchParams.toString());
+      if (page === 1) params.delete("page");
+      else params.set("page", page);
+      router.push(`/${locale}/products?${params.toString()}`, { scroll: true });
+      
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const clearFilters = () => {
+    router.push(`/${locale}/products`);
     setSelectedCategory("all");
     setSelectedCategoryName("");
     setSelectedTag("all");
     setSelectedTagName("");
     setSearchQuery("");
+    setLocalSearch("");
     setSelectedSort("default");
     setCurrentPage(1);
   };
 
   const hasActiveFilters = selectedCategory !== "all" || selectedTag !== "all" || searchQuery || selectedSort !== "default";
+
+  const handleSortChange = (value) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === "default") params.delete("sort");
+    else params.set("sort", value);
+    router.push(`/${locale}/products?${params.toString()}`, { scroll: false });
+    setSelectedSort(value);
+  };
 
   const getPageNumbers = () => {
     const pages = [];
@@ -344,7 +404,7 @@ export default function ProductsPage() {
               </span>
               {/* Default sorting dropdown */}
               <div className="flex items-center gap-2">
-                <Select value={selectedSort} onValueChange={setSelectedSort}>
+                <Select value={selectedSort} onValueChange={handleSortChange}>
                   <SelectTrigger className="w-[180px] bg-card border border-border rounded-md px-3 py-1 text-sm text-foreground focus:outline-none">
                     <SelectValue
                       placeholder={t("products.sortOptions.default")}

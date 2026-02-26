@@ -19,8 +19,7 @@ import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { fetchAPI } from "@/lib/api";
 
 export default function CartDrawer({ children }) {
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
+  const { t, locale } = useTranslation();
   const {
     items,
     totalItems,
@@ -34,7 +33,7 @@ export default function CartDrawer({ children }) {
   const getCurrency = (item) => {
     const useInternational = item?.international_currency;
     if (useInternational) return { prefix: "$", suffix: "" };
-    switch (language) {
+    switch (locale) {
       case "ru":
         return { prefix: "", suffix: " ₽" };
       case "uz":
@@ -56,7 +55,7 @@ export default function CartDrawer({ children }) {
     try {
       setLoading(true);
       const productsRes = await fetchAPI("/products", {
-        locale: language,
+        locale,
         "filters[id][$in]": ids,
         populate: "*",
       });
@@ -81,16 +80,11 @@ export default function CartDrawer({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [items, language, refreshItem]);
+  }, [items, locale, refreshItem]);
 
   useEffect(() => {
     fetchLocalizedItems();
   }, [fetchLocalizedItems]);
-
-  // Force re-render when language changes
-  useEffect(() => {
-    // This ensures the component re-renders when language changes
-  }, [language]);
 
   const handleRemove = (id, name) => {
     removeItem(id);
@@ -204,7 +198,7 @@ export default function CartDrawer({ children }) {
                 {t("cart.taxShippingCheckout")}
               </p>
               <SheetTrigger asChild>
-                <Link href="/checkout" className="w-full">
+                <Link href={`/${locale}/checkout`} className="w-full">
                   <Button className="w-full h-12 text-lg font-bold rounded-full">
                     {t("common.checkout")}
                   </Button>

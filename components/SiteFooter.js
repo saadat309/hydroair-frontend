@@ -8,9 +8,11 @@ import { fetchAPI } from "@/lib/api";
 import { toast } from "sonner";
 
 export default function SiteFooter() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const getPathWithLocale = (path) => `/${locale}${path === "/" ? "" : path}`;
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -65,13 +67,13 @@ export default function SiteFooter() {
           </h3>
           <ul className="space-y-4">
             <li>
-              <Link href="/" className="hover:text-primary transition-colors">
+              <Link href={getPathWithLocale("/")} className="hover:text-primary transition-colors">
                 {t("nav.home")}
               </Link>
             </li>
             <li>
               <Link
-                href="/products"
+                href={getPathWithLocale("/products")}
                 className="hover:text-primary transition-colors"
               >
                 {t("nav.products")}
@@ -79,7 +81,7 @@ export default function SiteFooter() {
             </li>
             <li>
               <Link
-                href="/about"
+                href={getPathWithLocale("/about")}
                 className="hover:text-primary transition-colors"
               >
                 {t("nav.about")}
@@ -87,7 +89,7 @@ export default function SiteFooter() {
             </li>
             <li>
               <Link
-                href="/contact"
+                href={getPathWithLocale("/contact")}
                 className="hover:text-primary transition-colors"
               >
                 {t("nav.contact")}
@@ -95,7 +97,7 @@ export default function SiteFooter() {
             </li>
             <li>
               <Link
-                href="/orders"
+                href={getPathWithLocale("/orders")}
                 className="hover:text-primary transition-colors"
               >
                 {t("orders.title")}

@@ -1,14 +1,26 @@
-'use client';
-
-import { useTranslation } from "@/lib/i18n";
-import { motion } from "framer-motion";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { CheckCircle2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import BrandStory from "@/components/BrandStory";
 import StatsSection from "@/components/StatsSection";
 
-export default function AboutPage() {
-  const { t } = useTranslation();
+export default async function AboutPage({ params }) {
+  const { lang } = await params;
+  const dictionary = await getDictionary(lang);
+  
+  // Simple server-side translate helper
+  const t = (path) => {
+    const keys = path.split('.');
+    let result = dictionary;
+    for (const key of keys) {
+      if (result && result[key]) {
+        result = result[key];
+      } else {
+        return path;
+      }
+    }
+    return result;
+  };
 
   return (
     <div className="flex flex-col pb-20">
@@ -24,7 +36,7 @@ export default function AboutPage() {
               {t('about.mission.description')}
             </p>
             <div className="space-y-4 pt-4">
-              {t('about.mission.items', { returnObjects: true })?.map?.((item, i) => (
+              {t('about.mission.items')?.map?.((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <CheckCircle2 className="w-6 h-6 text-primary" />
                   <span className="font-medium">{item}</span>

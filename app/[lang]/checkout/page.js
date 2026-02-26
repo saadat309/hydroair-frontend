@@ -24,8 +24,7 @@ const checkoutSchema = z.object({
 });
 
 export default function CheckoutPage() {
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
+  const { t, locale } = useTranslation();
   const { items, totalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +42,7 @@ export default function CheckoutPage() {
   const getCurrency = (item) => {
     const useInternational = item?.international_currency;
     if (useInternational) return { prefix: "$", suffix: "", code: "USD" };
-    switch (language) {
+    switch (locale) {
       case "ru":
         return { prefix: "", suffix: " ₽", code: "RUB" };
       case "uz":
@@ -128,7 +127,7 @@ export default function CheckoutPage() {
       if (res.data) {
         toast.success("Order placed successfully!");
         clearCart();
-        window.location.href = `/checkout/success?order=${orderId}`;
+        window.location.href = `/${locale}/checkout/success?order=${orderId}`;
       }
     } catch (error) {
       console.error("Order submission error:", error);
@@ -147,7 +146,7 @@ export default function CheckoutPage() {
     const ids = items.map((item) => item.documentId || item.id);
     try {
       const productsRes = await fetchAPI("/products", {
-        locale: language,
+        locale,
         "filters[id][$in]": ids,
         populate: "*",
       });
@@ -172,7 +171,7 @@ export default function CheckoutPage() {
     } finally {
       setLoading(false);
     }
-  }, [items, language]);
+  }, [items, locale]);
 
   useEffect(() => {
     setLoading(true);
@@ -190,7 +189,7 @@ export default function CheckoutPage() {
         <PageHeader title={t("checkout.title")} />
         <div className="container mt-36 text-center">
           <h1 className="text-3xl font-bold mb-4">{t("cart.empty")}</h1>
-          <Link href="/products" className="text-primary hover:underline">
+          <Link href={`/${locale}/products`} className="text-primary hover:underline">
             {t("common.continueShopping")}
           </Link>
         </div>
@@ -202,10 +201,10 @@ export default function CheckoutPage() {
     <div className="min-h-screen pb-20">
       <PageHeader title={t("checkout.title")} />
 
-      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
+      <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-10">
         <div className="mb-8">
           <Link
-            href="/cart"
+            href={`/${locale}/cart`}
             className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />

@@ -11,8 +11,7 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button"; // Import Button component
 
 export default function FeaturedProducts() {
-    const { t } = useTranslation();
-    const { language } = useLanguageStore();
+    const { t, locale } = useTranslation();
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
   
@@ -36,7 +35,7 @@ export default function FeaturedProducts() {
       async function loadFeaturedProducts() {
         try {
           const globalData = await fetchAPI("/global-setting", {
-            locale: language,
+            locale,
           });
           const slugs = globalData?.data?.featured_products?.map(p => p.slug) || [];
           
@@ -46,7 +45,7 @@ export default function FeaturedProducts() {
           }
 
           const productsData = await fetchAPI("/products", {
-            locale: language,
+            locale,
             "filters[slug][$in]": slugs,
             "pagination[limit]": 3,
           });
@@ -64,7 +63,7 @@ export default function FeaturedProducts() {
         }
       }
       loadFeaturedProducts();
-    }, [language]);
+    }, [locale]);
   
     return (
       products.length > 0 && (
@@ -157,7 +156,7 @@ export default function FeaturedProducts() {
           </motion.div>
 
           <div className="mt-12 text-center">
-            <Link href="/products" passHref>
+            <Link href={`/${locale}/products`} passHref>
               <Button
                 asChild
                 className="px-8 py-3 text-lg bg-primary text-primary-foreground rounded-full ease-in-out shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300"

@@ -14,15 +14,14 @@ import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { StarRating } from "./StarRating";
 
 export default function ProductCard({ product, priceType = "normal" }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { addItem } = useCartStore();
-  const { language } = useLanguageStore();
 
   const badgeTag = product?.tags?.find(tag => tag.display_as_Badge === true);
 
   const [currency, setCurrency] = useState(() => {
     if (product.international_currency) return { prefix: "$", suffix: "" };
-    switch (language) {
+    switch (locale) {
       case "ru":
         return { prefix: "", suffix: " ₽" };
       case "uz":
@@ -36,7 +35,7 @@ export default function ProductCard({ product, priceType = "normal" }) {
     if (product.international_currency) {
       setCurrency({ prefix: "$", suffix: "" });
     } else {
-      switch (language) {
+      switch (locale) {
         case "ru":
           setCurrency({ prefix: "", suffix: " ₽" });
           break;
@@ -47,7 +46,7 @@ export default function ProductCard({ product, priceType = "normal" }) {
           setCurrency({ prefix: "$", suffix: "" });
       }
     }
-  }, [language, product.international_currency]);
+  }, [locale, product.international_currency]);
 
   const {
     name,
@@ -99,7 +98,7 @@ export default function ProductCard({ product, priceType = "normal" }) {
       )}
 
       <Link
-        href={`/products/${slug}`}
+        href={`/${locale}/products/${slug}`}
         className="relative aspect-square overflow-hidden rounded-t-2xl flex items-center justify-center p-4 bg-background"
       >
         {imageUrl ? (
@@ -116,7 +115,7 @@ export default function ProductCard({ product, priceType = "normal" }) {
       </Link>
 
       <div className="p-4 flex flex-col flex-grow text-center">
-        <Link href={`/products/${slug}`}>
+        <Link href={`/${locale}/products/${slug}`}>
           <h3 className="font-bold text-lg mb-2 text-foreground hover:text-primary transition-colors">
             {name}
           </h3>

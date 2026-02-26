@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { useLanguageStore } from "@/lib/stores/useLanguageStore";
 import { fetchAPI, getStrapiMedia } from "@/lib/api";
@@ -47,11 +47,11 @@ const WavyDivider = () => (
   </div>
 );
 
-export default function ProductDetailPage() {
+export default function ProductDetailClient() {
   const params = useParams();
+  const router = useRouter();
   const slug = params?.slug;
-  const { t } = useTranslation();
-  const { language } = useLanguageStore();
+  const { t, locale } = useTranslation();
   const { addItem } = useCartStore();
 
   const [product, setProduct] = useState(null);
@@ -60,6 +60,9 @@ export default function ProductDetailPage() {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
+  // Track the documentId to handle locale switches seamlessly
+  const lastDocumentIdRef = useRef(null);
+
   useEffect(() => {
     async function loadProduct() {
       if (!slug) return;
@@ -67,29 +70,44 @@ export default function ProductDetailPage() {
       setIsLoading(true);
       setError(null);
       try {
+        let fetchedProduct = null;
+
+        // 1. Try to fetch by slug and current language
         const res = await fetchAPI("/products", {
           "filters[slug][$eq]": slug,
-          locale: language,
+          locale,
         });
 
-        console.log(
-          "Product API Response:",
-          JSON.stringify(res.data?.[0], null, 2),
-        );
+        if (res.data && res.data.length > 0) {
+          fetchedProduct = res.data[0];
+        } 
+        // 2. Fallback: If not found by slug (happens when switching language on localized slug),
+        // try fetching by the last known documentId in the NEW language.
+        else if (lastDocumentIdRef.current) {
+          const resById = await fetchAPI(`/products/${lastDocumentIdRef.current}`, {
+            locale,
+          });
+          if (resById.data) {
+            fetchedProduct = resById.data;
+            // Update the URL to the correct localized slug
+            if (fetchedProduct.slug !== slug) {
+              router.replace(`/${locale}/products/${fetchedProduct.slug}`);
+            }
+          }
+        }
 
-        if (!res.data || res.data.length === 0) {
+        if (!fetchedProduct) {
           setProduct(null);
         } else {
-          setProduct(res.data[0]);
+          setProduct(fetchedProduct);
+          lastDocumentIdRef.current = fetchedProduct.documentId;
 
           // Fetch related products from same category
-          const currentProduct = res.data[0];
-          if (currentProduct.category?.id) {
+          if (fetchedProduct.category?.id) {
             const relatedRes = await fetchAPI("/products", {
-              locale: language,
-              "filters[category][id][$eq]": currentProduct.category.id,
-              "filters[id][$ne]":
-                currentProduct.documentId || currentProduct.id,
+              locale,
+              "filters[category][id][$eq]": fetchedProduct.category.id,
+              "filters[id][$ne]": fetchedProduct.documentId || fetchedProduct.id,
               "pagination[limit]": 4,
             });
             if (relatedRes.data) {
@@ -106,7 +124,7 @@ export default function ProductDetailPage() {
       }
     }
     loadProduct();
-  }, [slug, language]);
+  }, [slug, locale, router]);
 
   if (isLoading) {
     return (
@@ -156,6 +174,7 @@ export default function ProductDetailPage() {
     price,
     old_price,
     international_currency,
+    shortDescription,
     description,
     category,
     images,
@@ -181,7 +200,7 @@ export default function ProductDetailPage() {
   // Currency helper
   const getCurrency = () => {
     if (international_currency) return { prefix: "$", suffix: "" };
-    switch (language) {
+    switch (locale) {
       case "ru":
         return { prefix: "", suffix: " ₽" };
       case "uz":
@@ -204,7 +223,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="pb-20">
-      
       <PageHeader title={name} />
 
       <div className="container mx-auto px-4 pb-12 -mt-5 md:-mt-20">
@@ -252,7 +270,7 @@ export default function ProductDetailPage() {
 
               {/* Description Box */}
               <div className="bg-secondary rounded-lg p-6 lg:p-8 mb-8 text-foreground leading-relaxed font-medium border border-border">
-                {description && <BlocksRenderer content={description} />}
+                {shortDescription && shortDescription}
               </div>
 
               <WavyDivider />
@@ -262,7 +280,10 @@ export default function ProductDetailPage() {
                 {addFeatures && addFeatures.length > 0 && (
                   <div className="p-4 space-y-3">
                     {addFeatures.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3 text-foreground font-medium">
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 text-foreground font-medium"
+                      >
                         <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
                           <Check className="w-3 h-3 text-primary" />
                         </div>
@@ -361,10 +382,14 @@ export default function ProductDetailPage() {
 
         {/* Detail Description & FAQs */}
         {(description || (FAQs && FAQs.length > 0)) && (
-          <div className={`mt-6 ${description && FAQs?.length > 0 ? 'grid grid-cols-1 lg:grid-cols-5 gap-6' : ''}`}>
+          <div
+            className={`mt-6 ${description && FAQs?.length > 0 ? "grid grid-cols-1 lg:grid-cols-5 gap-6" : ""}`}
+          >
             {/* Description - 60% */}
             {description && (
-              <div className={`${description && FAQs?.length > 0 ? 'lg:col-span-3' : ''}`}>
+              <div
+                className={`${description && FAQs?.length > 0 ? "lg:col-span-3" : ""}`}
+              >
                 <div
                   className="relative bg-card rounded-lg overflow-hidden z-10 h-full"
                   style={{
@@ -386,7 +411,7 @@ export default function ProductDetailPage() {
 
             {/* FAQs - 40% */}
             {FAQs && FAQs.length > 0 && (
-              <div className={description ? 'lg:col-span-2' : ''}>
+              <div className={description ? "lg:col-span-2" : ""}>
                 <div
                   className="relative bg-card rounded-lg overflow-hidden z-10 h-full"
                   style={{
@@ -398,16 +423,14 @@ export default function ProductDetailPage() {
                       <div className="w-[3px] h-6 bg-primary rounded-full" />
                       {t("products.details.faq") || "FAQ"}
                     </h3>
-                    <Accordion
-                      type="single"
-                      collapsible
-                      className="w-full"
-                    >
+                    <Accordion type="single" collapsible className="w-full">
                       {FAQs.map((faq, idx) => (
                         <AccordionItem key={idx} value={`faq-${idx}`}>
                           <AccordionTrigger className="text-base font-semibold text-left flex items-start justify-start gap-x-2">
                             <span className="inline-block w-[3px] h-5 bg-primary mr-2 mt-1 shrink-0 rounded-full" />
-                            <span className="leading-tight">{faq.Question}</span>
+                            <span className="leading-tight">
+                              {faq.Question}
+                            </span>
                           </AccordionTrigger>
                           <AccordionContent className="text-foreground/80 text-sm md:text-base leading-relaxed">
                             {faq.Answer}
@@ -449,7 +472,7 @@ export default function ProductDetailPage() {
                   {relatedProducts.map((relProduct) => (
                     <Link
                       key={relProduct.id}
-                      href={`/products/${relProduct.slug}`}
+                      href={`/${locale}/products/${relProduct.slug}`}
                       className="flex gap-4 p-3 rounded-xl hover:bg-secondary/50 transition-colors"
                     >
                       <div className="w-16 h-16 bg-secondary/30 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
@@ -476,17 +499,17 @@ export default function ProductDetailPage() {
                         <p className="text-primary font-bold text-sm mt-1">
                           {relProduct.international_currency
                             ? "$"
-                            : language === "ru"
+                            : locale === "ru"
                               ? ""
-                              : language === "uz"
+                              : locale === "uz"
                                 ? ""
                                 : "$"}
                           {relProduct.price}
                           {relProduct.international_currency
                             ? ""
-                            : language === "ru"
+                            : locale === "ru"
                               ? " ₽"
-                              : language === "uz"
+                              : locale === "uz"
                                 ? " so'm"
                                 : ""}
                         </p>
