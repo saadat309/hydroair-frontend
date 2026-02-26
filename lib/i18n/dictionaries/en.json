@@ -301,5 +301,39 @@
       "createTicket": "I want to create a support ticket.",
       "checkStatus": "How do I check my ticket status?"
     }
+  },
+  "seo": {
+    "home": {
+      "title": "HydroAir Technologies | Clean Air & Water Solutions",
+      "description": "Advanced air and water filtration technologies for a healthier home and office environment. Shop premium filters, purifiers, and water treatment systems."
+    },
+    "products": {
+      "title": "All Products | HydroAir Technologies",
+      "description": "Explore our high-performance air and water filtration solutions. Find the perfect filter for your home or office."
+    },
+    "about": {
+      "title": "About Us | HydroAir Technologies",
+      "description": "Learn about HydroAir Technologies - leading provider of advanced air and water filtration solutions since 2010."
+    },
+    "contact": {
+      "title": "Contact Us | HydroAir Technologies",
+      "description": "Get in touch with HydroAir Technologies. We're here to help with questions about our filtration systems."
+    },
+    "cart": {
+      "title": "Shopping Cart | HydroAir Technologies",
+      "description": "Review your selected air and water filtration products before checkout."
+    },
+    "checkout": {
+      "title": "Checkout | HydroAir Technologies",
+      "description": "Complete your order for HydroAir filtration products."
+    },
+    "orders": {
+      "title": "Track Order | HydroAir Technologies",
+      "description": "Track the status of your HydroAir product order."
+    },
+    "support": {
+      "title": "Support | HydroAir Technologies",
+      "description": "Get support for your HydroAir air and water filtration products."
+    }
   }
 }

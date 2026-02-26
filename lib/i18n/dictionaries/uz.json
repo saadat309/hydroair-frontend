@@ -301,5 +301,39 @@
       "createTicket": "Men qo'llab-quvvatlash chiptasini yaratmoqchiman.",
       "checkStatus": "Chiptam holatini qanday tekshirsam bo'ladi?"
     }
+  },
+  "seo": {
+    "home": {
+      "title": "HydroAir Technologies | Toza Havo va Suv Yechimlari",
+      "description": "Uyingiz va ofisingiz uchun sog'lom muhit yaratuvchi ilg'or havo va suv filtrlash texnologiyalari. Premium filtrlar, tozalash qurilmalari va suvni qayta ishlash tizimlarini xarid qiling."
+    },
+    "products": {
+      "title": "Barcha Mahsulotlar | HydroAir Technologies",
+      "description": "Yuqori samarali havo va suv filtrlash yechimlarimizni ko'ring. Uyingiz yoki ofisingiz uchun mukammal filtrni toping."
+    },
+    "about": {
+      "title": "Biz Haqimizda | HydroAir Technologies",
+      "description": "HydroAir Technologies haqida bilib oling - 2010-yildan beri havo va suv filtrlash yechimlarining yetakchi yetkazib beruvchisi."
+    },
+    "contact": {
+      "title": "Biz Bilan Bog'lanish | HydroAir Technologies",
+      "description": "HydroAir Technologies bilan bog'laning. Biz filtrlash tizimlarimiz bo'yicha savollarda yordam berishga tayyormiz."
+    },
+    "cart": {
+      "title": "Savat | HydroAir Technologies",
+      "description": "Buyurtma berishdan oldin tanlangan havo va suv filtrlash mahsulotlarini ko'ring."
+    },
+    "checkout": {
+      "title": "Buyurtmani Rasmiylashtirish | HydroAir Technologies",
+      "description": "HydroAir filtrlash mahsulotlari uchun buyurtmangizni yakunlang."
+    },
+    "orders": {
+      "title": "Buyurtmani Kuzatish | HydroAir Technologies",
+      "description": "HydroAir mahsulotlari buyurtmangiz holatini kuzating."
+    },
+    "support": {
+      "title": "Qo'llab-quvvatlash | HydroAir Technologies",
+      "description": "HydroAir havo va suv filtrlash mahsulotlaringiz uchun qo'llab-quvvatlash oling."
+    }
   }
 }

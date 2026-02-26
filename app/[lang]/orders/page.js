@@ -1,12 +1,15 @@
-"use client";
+import OrdersClient from "./OrdersClient";
+import { buildDictionarySEO } from "@/lib/seo";
 
-import { useState } from "react";
-import { useTranslation } from "@/lib/i18n";
-import PageHeader from "@/components/PageHeader";
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+export async function generateMetadata({ params }) {
+  const { lang } = await params;
+  const getSEO = buildDictionarySEO(lang, "orders", "/orders");
+  return getSEO();
+}
 
 export default function OrdersPage() {
+  return <OrdersClient />;
+}
   const { t, locale } = useTranslation();
   const [orderId, setOrderId] = useState("");
 

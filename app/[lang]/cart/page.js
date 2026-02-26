@@ -1,17 +1,15 @@
-"use client";
+import CartClient from "./CartClient";
+import { buildDictionarySEO } from "@/lib/seo";
 
-import { useEffect, useCallback, useState } from "react";
-import { useTranslation } from "@/lib/i18n";
-import useCartStore from "@/lib/stores/useCartStore";
-import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import PageHeader from "@/components/PageHeader";
-import { fetchAPI } from "@/lib/api";
-import { useLanguageStore } from "@/lib/stores/useLanguageStore";
+export async function generateMetadata({ params }) {
+  const { lang } = await params;
+  const getSEO = buildDictionarySEO(lang, "cart", "/cart");
+  return getSEO();
+}
 
 export default function CartPage() {
+  return <CartClient />;
+}
   const { t, locale } = useTranslation();
   const {
     items,

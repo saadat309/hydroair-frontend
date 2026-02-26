@@ -1,29 +1,15 @@
-"use client";
+import CheckoutClient from "./CheckoutClient";
+import { buildDictionarySEO } from "@/lib/seo";
 
-import { useEffect, useCallback, useState } from "react";
-import Image from "next/image";
-import { useTranslation } from "@/lib/i18n";
-import useCartStore from "@/lib/stores/useCartStore";
-import Link from "next/link";
-import { ArrowLeft, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PageHeader from "@/components/PageHeader";
-import { fetchAPI } from "@/lib/api";
-import { useLanguageStore } from "@/lib/stores/useLanguageStore";
-import { z } from "zod";
-import { toast } from "sonner";
-
-const checkoutSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
-  postalCode: z.string().min(1, "Postal code is required"),
-});
+export async function generateMetadata({ params }) {
+  const { lang } = await params;
+  const getSEO = buildDictionarySEO(lang, "checkout", "/checkout");
+  return getSEO();
+}
 
 export default function CheckoutPage() {
+  return <CheckoutClient />;
+}
   const { t, locale } = useTranslation();
   const { items, totalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(true);

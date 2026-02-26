@@ -3,6 +3,13 @@ import { CheckCircle2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import BrandStory from "@/components/BrandStory";
 import StatsSection from "@/components/StatsSection";
+import { buildDictionarySEO } from "@/lib/seo";
+
+export async function generateMetadata({ params }) {
+  const { lang } = await params;
+  const getSEO = buildDictionarySEO(lang, "about", "/about");
+  return getSEO();
+}
 
 export default async function AboutPage({ params }) {
   const { lang } = await params;

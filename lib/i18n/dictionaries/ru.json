@@ -301,5 +301,39 @@
       "createTicket": "Я хочу создать тикет в службу поддержки.",
       "checkStatus": "Как мне проверить статус моего тикета?"
     }
+  },
+  "seo": {
+    "home": {
+      "title": "HydroAir Technologies | Решения для чистого воздуха и воды",
+      "description": "Передовые технологии фильтрации воздуха и воды для здоровой среды в доме и офисе. Приобретайте премиальные фильтры, очистители и системы водоподготовки."
+    },
+    "products": {
+      "title": "Все продукты | HydroAir Technologies",
+      "description": "Изучите наши высокопроизводительные решения для фильтрации воздуха и воды. Найдите идеальный фильтр для вашего дома или офиса."
+    },
+    "about": {
+      "title": "О нас | HydroAir Technologies",
+      "description": "Узнайте о HydroAir Technologies - ведущем поставщике передовых решений для фильтрации воздуха и воды с 2010 года."
+    },
+    "contact": {
+      "title": "Связаться с нами | HydroAir Technologies",
+      "description": "Свяжитесь с HydroAir Technologies. Мы готовы помочь с вопросами о наших системах фильтрации."
+    },
+    "cart": {
+      "title": "Корзина | HydroAir Technologies",
+      "description": "Проверьте выбранные продукты фильтрации воздуха и воды перед оформлением заказа."
+    },
+    "checkout": {
+      "title": "Оформление заказа | HydroAir Technologies",
+      "description": "Завершите заказ продуктов фильтрации HydroAir."
+    },
+    "orders": {
+      "title": "Отследить заказ | HydroAir Technologies",
+      "description": "Отслеживайте статус заказа продуктов HydroAir."
+    },
+    "support": {
+      "title": "Поддержка | HydroAir Technologies",
+      "description": "Получите поддержку для ваших продуктов фильтрации воздуха и воды HydroAir."
+    }
   }
 }

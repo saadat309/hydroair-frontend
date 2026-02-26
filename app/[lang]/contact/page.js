@@ -1,23 +1,15 @@
-"use client";
+import ContactClient from "./ContactClient";
+import { buildDictionarySEO } from "@/lib/seo";
 
-import { useState, useEffect } from "react";
-import { useTranslation } from "@/lib/i18n";
-import { useSearchParams, useRouter } from "next/navigation";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
-  Loader2,
-  CheckCircle2,
-  Ticket,
-} from "lucide-react";
-import PageHeader from "@/components/PageHeader";
-import FAQSection from "@/components/FAQSection";
-import { fetchAPI } from "@/lib/api";
-import useTicketStore from "@/lib/stores/useTicketStore";
+export async function generateMetadata({ params }) {
+  const { lang } = await params;
+  const getSEO = buildDictionarySEO(lang, "contact", "/contact");
+  return getSEO();
+}
 
 export default function ContactPage() {
+  return <ContactClient />;
+}
   const { t, locale } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
