@@ -36,7 +36,7 @@ export default function FeaturedProducts() {
         try {
           const globalData = await fetchAPI("/global-setting", {
             locale,
-          }, { cache: 'no-store' });
+          });
           const slugs = globalData?.data?.featured_products?.map(p => p.slug) || [];
           
           if (slugs.length === 0) {
@@ -48,7 +48,7 @@ export default function FeaturedProducts() {
             locale,
             "filters[slug][$in]": slugs,
             "pagination[limit]": 3,
-          }, { cache: 'no-store' });
+          });
           
           const products = productsData.data || [];
           const sortedProducts = slugs.map(slug => 

@@ -75,7 +75,7 @@ async function MainContent({ children, lang }) {
   let isMaintenanceMode = false;
   let maintenanceData = null;
   try {
-    const globalData = await fetchAPI("/global-setting", { locale: lang }, { cache: 'no-store' });
+    const globalData = await fetchAPI("/global-setting", { locale: lang }, { revalidate: 60 });
     isMaintenanceMode = globalData?.data?.Show_Maintenance_Message || false;
     maintenanceData = globalData?.data;
   } catch (error) {
