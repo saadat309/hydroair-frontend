@@ -10,30 +10,25 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const { model, entry, event } = body;
+    const { model, event, entry } = body;
 
     const allLocales = ['en', 'ru', 'uz'];
     
     allLocales.forEach(lang => {
       revalidatePath(`/${lang}`);
       revalidatePath(`/${lang}/products`);
+      revalidatePath(`/${lang}/products/${entry?.slug || ''}`);
       revalidatePath(`/${lang}/about`);
       revalidatePath(`/${lang}/contact`);
+      revalidatePath(`/${lang}/cart`);
+      revalidatePath(`/${lang}/checkout`);
+      revalidatePath(`/${lang}/orders`);
     });
     
     revalidatePath('/');
     revalidatePath('/en');
     revalidatePath('/ru');
     revalidatePath('/uz');
-    revalidatePath('/en/products');
-    revalidatePath('/ru/products');
-    revalidatePath('/uz/products');
-    revalidatePath('/en/about');
-    revalidatePath('/ru/about');
-    revalidatePath('/uz/about');
-    revalidatePath('/en/contact');
-    revalidatePath('/ru/contact');
-    revalidatePath('/uz/contact');
 
     if (model) {
       revalidateTag(`strapi-${model}`);
@@ -51,5 +46,5 @@ export async function POST(request) {
 }
 
 export async function GET() {
-  return NextResponse.json({ message: 'Revalidation endpoint - POST with {"model": "product", "entry": {...}}' });
+  return NextResponse.json({ message: 'Revalidation endpoint - POST with {"model": "product", "event": "entry.*"}' });
 }
