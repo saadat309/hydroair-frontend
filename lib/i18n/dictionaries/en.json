@@ -179,6 +179,7 @@
     },
     "billing": {
       "emailPlaceholder": "Email address",
+      "phonePlaceholder": "Phone number",
       "firstNamePlaceholder": "First name",
       "lastNamePlaceholder": "Last name",
       "addressPlaceholder": "Address",

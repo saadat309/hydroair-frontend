@@ -177,8 +177,9 @@
       "message": "Спасибо за ваш заказ. Мы свяжемся с вами в ближайшее время.",
       "orderId": "ID заказа"
     },
-    "billing": {
+"billing": {
       "emailPlaceholder": "Эл. почта",
+      "phonePlaceholder": "Номер телефона",
       "firstNamePlaceholder": "Имя",
       "lastNamePlaceholder": "Фамилия",
       "addressPlaceholder": "Адрес",

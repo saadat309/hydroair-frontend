@@ -177,8 +177,9 @@
       "message": "Buyurtmangiz uchun tashakkur. Tez orada siz bilan bog'lanamiz.",
       "orderId": "Buyurtma ID"
     },
-    "billing": {
+"billing": {
       "emailPlaceholder": "Elektron pochta",
+      "phonePlaceholder": "Telefon raqami",
       "firstNamePlaceholder": "Ism",
       "lastNamePlaceholder": "Familiya",
       "addressPlaceholder": "Manzil",

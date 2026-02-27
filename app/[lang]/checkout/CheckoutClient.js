@@ -15,6 +15,7 @@ import { toast } from "sonner";
 
 const checkoutSchema = z.object({
   email: z.string().email("Invalid email address"),
+  phone: z.string().min(1, "Phone number is required"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   address: z.string().min(1, "Address is required"),
@@ -28,7 +29,7 @@ export default function CheckoutClient() {
   const { items, totalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ email: "", firstName: "", lastName: "", address: "", city: "", country: "", postalCode: "" });
+  const [formData, setFormData] = useState({ email: "", phone: "", firstName: "", lastName: "", address: "", city: "", country: "", postalCode: "" });
   const [errors, setErrors] = useState({});
 
   const getCurrency = (item) => {
@@ -68,7 +69,7 @@ export default function CheckoutClient() {
       const currency = getCurrency(items[0]);
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
       const cartItems = items.map((item) => ({ title: item.name, product: item.documentId || item.id, quantity: item.quantity, subTotal: String(item.price * item.quantity) }));
-      const orderData = { order_id: orderId, slug: orderId.toLowerCase(), email: formData.email, first_name: formData.firstName, last_name: formData.lastName, address: formData.address, city: formData.city, country: formData.country, postal_code: formData.postalCode, cartItems, total_price: String(totalPrice), currency: currency.code, order_status: "pending" };
+      const orderData = { order_id: orderId, slug: orderId.toLowerCase(), email: formData.email, phone: formData.phone, first_name: formData.firstName, last_name: formData.lastName, address: formData.address, city: formData.city, country: formData.country, postal_code: formData.postalCode, cartItems, total_price: String(totalPrice), currency: currency.code, order_status: "pending" };
       const res = await fetchAPI("/orders", { method: "POST", body: JSON.stringify({ data: orderData }) });
       if (res.data) { toast.success("Order placed successfully!"); clearCart(); window.location.href = `/${locale}/checkout/success?order=${orderId}`; }
     } catch (error) { console.error("Order submission error:", error); toast.error("Failed to place order. Please try again."); }
@@ -104,7 +105,7 @@ export default function CheckoutClient() {
           <div className="flex-1 bg-background p-4 md:p-8 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(var(--color-primary-rgb), 0.15)" }}>
             <h2 className="text-2xl font-bold font-heading mb-8">{t("common.checkout")}</h2>
             <form onSubmit={handleSubmit} className="space-y-8">
-              <section><h3 className="text-lg font-semibold mb-4 text-foreground">{t("checkout.contactInfo")}</h3><div className="grid gap-4"><div><input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder={t("checkout.billing.emailPlaceholder")} className={inputClass("email")} />{errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}</div></div></section>
+              <section><h3 className="text-lg font-semibold mb-4 text-foreground">{t("checkout.contactInfo")}</h3><div className="grid gap-4"><div><input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder={t("checkout.billing.phonePlaceholder")} className={inputClass("phone")} />{errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}</div><div><input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder={t("checkout.billing.emailPlaceholder")} className={inputClass("email")} />{errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}</div></div></section>
               <section>
                 <h3 className="text-lg font-semibold mb-4 text-foreground">{t("checkout.shippingAddress")}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
