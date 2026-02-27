@@ -63,7 +63,6 @@ export default function ProductCard({ product, priceType = "normal" }) {
     getStrapiMedia(images?.[0]?.url) ||
     "/placeholder-product.svg";
 
-  console.log("ProductCard - reviews:", JSON.stringify(reviews, null, 2));
 
   const approvedReviews = reviews?.filter((r) => r.is_approved === true) || [];
   const averageRating =
