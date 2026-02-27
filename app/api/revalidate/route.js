@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag, cache } from 'next/cache';
 
 export async function POST(request) {
   const secret = request.headers.get('x-revalidate-secret');
@@ -31,7 +31,7 @@ export async function POST(request) {
     revalidatePath('/uz');
 
     if (model) {
-      revalidateTag(`strapi-${model}`);
+      revalidateTag(`strapi-${model}`, 'force-dynamic');
     }
 
     return NextResponse.json({ 
