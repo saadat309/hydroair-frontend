@@ -140,7 +140,7 @@ export default function FiltrationTechnology() {
               className="w-full lg:w-1/3 h-[300px] md:h-[400px] relative order-1 lg:order-2 flex items-center justify-center z-10"
             >
               <img
-                src="/photos/bottle.png"
+                src="/photos/bottle.webp"
                 alt="Filtration Bottle"
                 className="h-full w-auto object-contain drop-shadow-2xl animate-in zoom-in duration-1000"
               />

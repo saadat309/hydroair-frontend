@@ -103,7 +103,7 @@ export default function HeroSection() {
               className="w-full lg:w-2/5 flex items-center justify-center p-4 md:p-8 lg:p-15 z-10 lg:h-screen pt-12 lg:pt-0"
           >
               <img
-                  src="/photos/glass.png"
+                  src="/photos/glass.webp"
                   alt="Pure Water Glass"
                   className="w-auto h-auto max-w-[250px] md:max-w-[400px] lg:max-w-full max-h-[40vh] md:max-h-[50vh] lg:max-h-[98%] object-contain drop-shadow-2xl animate-in fade-in zoom-in duration-1000"
               />
