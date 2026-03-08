@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import useCartStore from "@/lib/stores/useCartStore";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, CreditCard, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import { fetchAPI } from "@/lib/api";
@@ -22,6 +22,7 @@ const checkoutSchema = z.object({
   city: z.string().min(1, "City is required"),
   country: z.string().min(1, "Country is required"),
   postalCode: z.string().min(1, "Postal code is required"),
+  payment_method: z.enum(["COD", "ONLINE"]),
 });
 
 export default function CheckoutClient() {
@@ -29,7 +30,7 @@ export default function CheckoutClient() {
   const { items, totalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ email: "", phone: "", firstName: "", lastName: "", address: "", city: "", country: "", postalCode: "" });
+  const [formData, setFormData] = useState({ email: "", phone: "", firstName: "", lastName: "", address: "", city: "", country: "", postalCode: "", payment_method: "COD" });
   const [errors, setErrors] = useState({});
 
   const getCurrency = (item) => {
@@ -69,9 +70,9 @@ export default function CheckoutClient() {
       const currency = getCurrency(items[0]);
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
       const cartItems = items.map((item) => ({ title: item.name, product: item.documentId || item.id, quantity: item.quantity, subTotal: String(item.price * item.quantity) }));
-      const orderData = { order_id: orderId, slug: orderId.toLowerCase(), email: formData.email, phone: formData.phone, first_name: formData.firstName, last_name: formData.lastName, address: formData.address, city: formData.city, country: formData.country, postal_code: formData.postalCode, cartItems, total_price: String(totalPrice), currency: currency.code, order_status: "pending" };
+      const orderData = { order_id: orderId, slug: orderId.toLowerCase(), email: formData.email, phone: formData.phone, first_name: formData.firstName, last_name: formData.lastName, address: formData.address, city: formData.city, country: formData.country, postal_code: formData.postalCode, cartItems, total_price: String(totalPrice), currency: currency.code, order_status: "pending", payment_method: formData.payment_method };
       const res = await fetchAPI("/orders", { method: "POST", body: JSON.stringify({ data: orderData }) });
-      if (res.data) { toast.success("Order placed successfully!"); clearCart(); window.location.href = `/${locale}/checkout/success?order=${orderId}`; }
+      if (res.data) { toast.success("Order placed successfully!"); clearCart(); window.location.href = `/${locale}/checkout/success?order=${orderId}&payment=${formData.payment_method}`; }
     } catch (error) { console.error("Order submission error:", error); toast.error("Failed to place order. Please try again."); }
     finally { setIsSubmitting(false); }
   };
@@ -117,7 +118,32 @@ export default function CheckoutClient() {
                   <div><input type="text" name="postalCode" value={formData.postalCode} onChange={handleInputChange} placeholder={t("checkout.billing.postalCodePlaceholder")} className={inputClass("postalCode")} />{errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}</div>
                 </div>
               </section>
-              <section><h3 className="text-lg font-semibold mb-4 text-foreground">{t("checkout.paymentSection")}</h3><div className="p-6 bg-secondary/20 rounded-xl border border-dashed border-primary/30 text-center text-foreground">{t("checkout.paymentComingSoon")}</div></section>
+              <section>
+                <h3 className="text-lg font-semibold mb-4 text-foreground">{t("checkout.paymentSection") || "Payment Method"}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className={`relative flex cursor-pointer rounded-lg border bg-background p-4 shadow-sm focus:outline-none transition-all ${formData.payment_method === "COD" ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border hover:bg-secondary/10"}`}>
+                    <input type="radio" name="payment_method" value="COD" checked={formData.payment_method === "COD"} onChange={handleInputChange} className="sr-only" />
+                    <span className="flex flex-1">
+                      <span className="flex flex-col">
+                        <span className="block text-sm font-medium text-foreground flex items-center gap-2"><Banknote className="w-4 h-4 text-primary" /> {t("checkout.payment.cod") || "Cash on Delivery"}</span>
+                        <span className="mt-1 flex items-center text-xs text-muted-foreground">{t("checkout.payment.codDesc") || "Pay with cash upon delivery."}</span>
+                      </span>
+                    </span>
+                    {formData.payment_method === "COD" && <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />}
+                  </label>
+                  
+                  <label className={`relative flex cursor-pointer rounded-lg border bg-background p-4 shadow-sm focus:outline-none transition-all ${formData.payment_method === "ONLINE" ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border hover:bg-secondary/10"}`}>
+                    <input type="radio" name="payment_method" value="ONLINE" checked={formData.payment_method === "ONLINE"} onChange={handleInputChange} className="sr-only" />
+                    <span className="flex flex-1">
+                      <span className="flex flex-col">
+                        <span className="block text-sm font-medium text-foreground flex items-center gap-2"><CreditCard className="w-4 h-4 text-primary" /> {t("checkout.payment.online") || "Online Payment"}</span>
+                        <span className="mt-1 flex items-center text-xs text-muted-foreground">{t("checkout.payment.onlineDesc") || "Pay securely via Telegram assistant."}</span>
+                      </span>
+                    </span>
+                    {formData.payment_method === "ONLINE" && <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />}
+                  </label>
+                </div>
+              </section>
               <Button type="submit" size="lg" className="w-full text-lg font-bold rounded-full py-6" disabled={isSubmitting}>{isSubmitting ? t("checkout.processing") : t("checkout.completeOrder")}</Button>
             </form>
           </div>

@@ -168,14 +168,24 @@
     "contactInfo": "Contact Information",
     "shippingAddress": "Shipping Address",
     "orderSummary": "Order Summary",
-    "paymentSection": "Payment",
+    "paymentSection": "Payment Method",
+    "payment": {
+      "cod": "Cash on Delivery",
+      "codDesc": "Pay with cash upon delivery.",
+      "online": "Online Payment",
+      "onlineDesc": "Pay securely via Telegram assistant."
+    },
     "paymentComingSoon": "Payment integration coming soon.",
     "completeOrder": "Complete Order",
     "processing": "Processing...",
     "success": {
       "title": "Order Placed Successfully!",
       "message": "Thank you for your order. We will contact you soon.",
-      "orderId": "Order ID"
+      "orderId": "Order ID",
+      "onlineVerification": "Online Payment Verification",
+      "onlineDesc": "To complete your payment and confirm your order, please contact our agent on Telegram or WhatsApp with your order ID.",
+      "telegramBtn": "Message on Telegram",
+      "whatsappBtn": "Message on WhatsApp"
     },
     "billing": {
       "emailPlaceholder": "Email address",

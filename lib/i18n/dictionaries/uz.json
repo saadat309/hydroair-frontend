@@ -162,20 +162,31 @@
     "coupon": "Kupon Kodi",
     "applyCoupon": "Qo'llash"
   },
+
   "checkout": {
     "title": "Buyurtmani Rasmiylashtirish",
     "backToCart": "Savatga qaytish",
     "contactInfo": "Aloqa ma'lumotlari",
     "shippingAddress": "Yetkazib berish manzili",
     "orderSummary": "Buyurtma xulosasi",
-    "paymentSection": "To'lov",
+    "paymentSection": "To'lov Usuli",
+    "payment": {
+      "cod": "Yetkazib berilganda to'lash",
+      "codDesc": "Buyurtmani qabul qilganda naqd pul bilan to'lash.",
+      "online": "Onlayn To'lov",
+      "onlineDesc": "Telegram yordamchisi orqali xavfsiz to'lov."
+    },
     "paymentComingSoon": "To'lov integratsiyasi tez orada qo'shiladi.",
     "completeOrder": "Buyurtmani yakunlash",
     "processing": "Qayta ishlanmoqda...",
     "success": {
       "title": "Buyurtma muvaffaqiyatli amalga oshirildi!",
       "message": "Buyurtmangiz uchun tashakkur. Tez orada siz bilan bog'lanamiz.",
-      "orderId": "Buyurtma ID"
+      "orderId": "Buyurtma ID",
+      "onlineVerification": "Onlayn To'lovni Tasdiqlash",
+      "onlineDesc": "To'lovni yakunlash va buyurtmani tasdiqlash uchun Telegram yoki WhatsApp orqali agentimiz bilan bog'laning va buyurtma ID sini taqdim eting.",
+      "telegramBtn": "Telegramda Yozish",
+      "whatsappBtn": "WhatsAppda Yozish"
     },
 "billing": {
       "emailPlaceholder": "Elektron pochta",

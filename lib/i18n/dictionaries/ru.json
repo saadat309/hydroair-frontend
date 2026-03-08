@@ -162,20 +162,31 @@
     "coupon": "Код купона",
     "applyCoupon": "Применить"
   },
+
   "checkout": {
     "title": "Оформление заказа",
     "backToCart": "Вернуться в корзину",
     "contactInfo": "Контактная информация",
     "shippingAddress": "Адрес доставки",
     "orderSummary": "Итого заказа",
-    "paymentSection": "Оплата",
+    "paymentSection": "Способ оплаты",
+    "payment": {
+      "cod": "Оплата при получении",
+      "codDesc": "Оплата наличными при курьере.",
+      "online": "Онлайн оплата",
+      "onlineDesc": "Безопасная оплата через Telegram ассистента."
+    },
     "paymentComingSoon": "Интеграция оплаты скоро появится.",
     "completeOrder": "Оформить заказ",
     "processing": "Обработка...",
     "success": {
       "title": "Заказ успешно оформлен!",
       "message": "Спасибо за ваш заказ. Мы свяжемся с вами в ближайшее время.",
-      "orderId": "ID заказа"
+      "orderId": "ID заказа",
+      "onlineVerification": "Подтверждение онлайн оплаты",
+      "onlineDesc": "Для завершения оплаты и подтверждения заказа, пожалуйста, свяжитесь с нашим агентом в Telegram или WhatsApp и сообщите ID вашего заказа.",
+      "telegramBtn": "Написать в Telegram",
+      "whatsappBtn": "Написать в WhatsApp"
     },
 "billing": {
       "emailPlaceholder": "Эл. почта",
