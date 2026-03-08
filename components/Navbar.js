@@ -5,7 +5,7 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useCartStore from "@/lib/stores/useCartStore";
 import CartDrawer from "./CartDrawer";
 
@@ -15,6 +15,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
@@ -26,20 +27,23 @@ export default function Navbar() {
   }, []);
 
   const handleLanguageChange = (newLocale) => {
+    const searchString = searchParams.toString();
+    const query = searchString ? `?${searchString}` : "";
+
     if (!pathname) {
-      router.push(`/${newLocale}`);
+      router.push(`/${newLocale}${query}`);
       return;
     }
     const segments = pathname.split("/");
     const currentLocale = segments[1];
     
     if (!['en', 'ru', 'uz'].includes(currentLocale)) {
-      router.push(`/${newLocale}`);
+      router.push(`/${newLocale}${query}`);
       return;
     }
     
     segments[1] = newLocale;
-    router.push(segments.join("/"));
+    router.push(`${segments.join("/")}${query}`);
   };
 
   const getPathWithLocale = (path) => `/${locale}${path === "/" ? "" : path}`;

@@ -27,6 +27,8 @@ export default function CartDrawer({ children }) {
     removeItem,
     updateQuantity,
     refreshItem,
+    isOpen,
+    setIsOpen,
   } = useCartStore();
   const [loading, setLoading] = useState(false);
 
@@ -91,7 +93,7 @@ export default function CartDrawer({ children }) {
   };
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent
         side="right"
